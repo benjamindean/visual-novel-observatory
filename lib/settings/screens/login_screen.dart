@@ -250,16 +250,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.redAccent.withValues(alpha: 0.1),
+        color: context.colorScheme.error.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.redAccent.withValues(alpha: 0.3)),
+        border: Border.all(
+          color: context.colorScheme.error.withValues(alpha: 0.3),
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
+          Icon(
             Icons.error_outline_rounded,
-            color: Colors.redAccent,
+            color: context.colorScheme.error,
             size: 20,
           ),
           const SizedBox(width: 12),
@@ -267,7 +269,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             child: Text(
               message,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: Colors.redAccent,
+                color: context.colorScheme.error,
               ),
             ),
           ),
@@ -282,7 +284,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: context.appAccentTeal,
-          foregroundColor: Colors.black,
+          foregroundColor: context.colorScheme.onPrimary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(27),
           ),
@@ -290,12 +292,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ),
         onPressed: authState.isValidating ? null : _handleLogin,
         child: authState.isValidating
-            ? const SizedBox(
+            ? SizedBox(
                 width: 24,
                 height: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2.5,
-                  color: Colors.black,
+                  color: context.colorScheme.onPrimary,
                 ),
               )
             : const Text(

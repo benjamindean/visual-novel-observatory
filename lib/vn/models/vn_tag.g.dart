@@ -11,6 +11,7 @@ _VnTag _$VnTagFromJson(Map<String, dynamic> json) => _VnTag(
   name: json['name'] as String? ?? '',
   spoiler: (json['spoiler'] as num?)?.toInt() ?? 0,
   rating: (json['rating'] as num?)?.toDouble(),
+  category: json['category'] as String?,
 );
 
 Map<String, dynamic> _$VnTagToJson(_VnTag instance) => <String, dynamic>{
@@ -18,4 +19,5 @@ Map<String, dynamic> _$VnTagToJson(_VnTag instance) => <String, dynamic>{
   'name': instance.name,
   'spoiler': instance.spoiler,
   'rating': instance.rating,
+  'category': instance.category,
 };

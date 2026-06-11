@@ -39,10 +39,16 @@ class SettingsScreen extends ConsumerWidget {
               children: [
                 _buildThemeModeTile(context, ref, settingsState),
                 if (isDarkActive) ...[
-                  const Divider(color: Colors.white10, height: 1),
+                  Divider(
+                    color: context.appTextPrimary.withValues(alpha: 0.08),
+                    height: 1,
+                  ),
                   _buildTrueBlackTile(context, ref, settingsState),
                 ],
-                const Divider(color: Colors.white10, height: 1),
+                Divider(
+                  color: context.appTextPrimary.withValues(alpha: 0.08),
+                  height: 1,
+                ),
                 _buildThemeTile(context, ref, settingsState),
               ],
             ),
@@ -53,7 +59,10 @@ class SettingsScreen extends ConsumerWidget {
               context,
               children: [
                 _buildSpoilerTile(context, ref, settingsState),
-                const Divider(color: Colors.white10, height: 1),
+                Divider(
+                  color: context.appTextPrimary.withValues(alpha: 0.08),
+                  height: 1,
+                ),
                 _buildExplicitContentTile(context, ref, settingsState),
               ],
             ),
@@ -96,7 +105,7 @@ class SettingsScreen extends ConsumerWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: context.appTextPrimary.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -134,8 +143,8 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: 20),
           OutlinedButton.icon(
             style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.redAccent,
-              side: const BorderSide(color: Colors.redAccent),
+              foregroundColor: context.colorScheme.error,
+              side: BorderSide(color: context.colorScheme.error),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
               ),
@@ -188,7 +197,7 @@ class SettingsScreen extends ConsumerWidget {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: context.appAccentTeal,
-                foregroundColor: Colors.black,
+                foregroundColor: context.colorScheme.onPrimary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
                 ),

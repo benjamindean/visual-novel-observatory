@@ -71,3 +71,22 @@ A predicate is a 3-element JSON array: `["field", "operator", value]`.
 - `devstatus`: Development status (0 = Finished, 1 = In development, 2 = Cancelled).
 - `tag` / `dtag`: Filter by tag ID (e.g. `["tag", "=", "g505"]` or with spoiler/level details `["tag", "=", ["g505", spoilerLevel, minTagLevel]]`).
 
+## VNDB Tag Categories & Sensitive Content Filtering
+- Visual novel tags retrieved from VNDB contain a `category` field of type String:
+  - `"cont"`: Content tags
+  - `"ero"`: Sexual/erotic tags
+  - `"tech"`: Technical tags
+- When `settings.showExplicitContent` is disabled, any tags categorized as `"ero"` MUST be filtered out programmatically from all UI views (detail screens, searches, and selected filter summaries).
+
+## Theming & Color Guidelines
+- **Responsive Tokens**: Always use context extension color tokens (e.g. `context.appTextPrimary`, `context.appTextSecondary`, `context.appSurface`, etc.) rather than hardcoded colors (`Colors.white`, `Colors.white.withValues(...)`, `Colors.black`, `Colors.grey`, `Colors.redAccent`) to ensure full functionality in both Light Mode and Dark Mode.
+- **Borders & Dividers**: Implement adaptive borders and divider lines by wrapping `context.appTextPrimary` with a low opacity value, e.g. `context.appTextPrimary.withValues(alpha: 0.08)`.
+- **Overlay Buttons & Controls**: In buttons or tiles layered on top of primary/secondary colors, use contrasting theme foreground colors (e.g. `context.colorScheme.onPrimary`) rather than hardcoded black or white text.
+
+## Media Viewer & Panning lock
+- When implementing zoomed media views (e.g., custom pinch/pan gesture layouts), prevent conflict between horizontal/vertical scroll navigation and pan gestures:
+  - Lock page scrolling (`PageView.physics = NeverScrollableScrollPhysics()`) when the current image zoom/scale is greater than 1.0.
+  - Disable swipe-to-dismiss gestures when the user is zoomed into an image so they can pan vertically without closing the viewport.
+  - Reset the zoom scale of previous indices back to 1.0 when a swipe transition completes.
+
+

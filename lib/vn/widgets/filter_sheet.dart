@@ -4,6 +4,7 @@ import '../providers/vn_providers.dart';
 import '../models/vn_tag.dart';
 import '../screens/tag_filter_screen.dart';
 import '../../theme/app_theme.dart';
+import '../../settings/providers/settings_provider.dart';
 
 class FilterSheet extends ConsumerStatefulWidget {
   const FilterSheet({super.key});
@@ -26,6 +27,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
     super.initState();
 
     final currentFilters = ref.read(vnFilterProvider);
+    final settings = ref.read(settingsProvider);
 
     _selectedLang = currentFilters.lang;
     _selectedPlatform = currentFilters.platform;
@@ -33,13 +35,22 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
     _selectedDevStatus = currentFilters.devStatus;
     _minRating = currentFilters.minRating;
     _minVotes = currentFilters.minVotes;
-    _selectedTags = List<VnTag>.from(currentFilters.tags);
+
+    final tags = currentFilters.tags;
+
+    if (!settings.showExplicitContent) {
+      _selectedTags = tags.where((tag) => tag.category != 'ero').toList();
+    } else {
+      _selectedTags = List<VnTag>.from(tags);
+    }
   }
 
   void _resetFilters() {
+    final settings = ref.read(settingsProvider);
+
     setState(() {
-      _selectedLang = null;
-      _selectedPlatform = null;
+      _selectedLang = settings.defaultLanguage;
+      _selectedPlatform = settings.defaultPlatform;
       _selectedLength = null;
       _selectedDevStatus = null;
       _minRating = 7.0;
@@ -50,6 +61,12 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
 
   void _applyFilters() {
     final showExplicit = ref.read(vnFilterProvider).showExplicitContent;
+
+    var tags = _selectedTags;
+
+    if (!showExplicit) {
+      tags = tags.where((tag) => tag.category != 'ero').toList();
+    }
 
     ref
         .read(vnFilterProvider.notifier)
@@ -62,7 +79,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
             minRating: _minRating,
             minVotes: _minVotes,
             showExplicitContent: showExplicit,
-            tags: _selectedTags,
+            tags: tags,
           ),
         );
 
@@ -92,7 +109,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
               width: 40.0,
               height: 4.0,
               decoration: BoxDecoration(
-                color: Colors.white24,
+                color: context.appTextPrimary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(2.0),
               ),
             ),
@@ -111,9 +128,9 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
               ),
               TextButton(
                 onPressed: _resetFilters,
-                child: const Text(
+                child: Text(
                   'Reset All',
-                  style: TextStyle(color: Colors.redAccent),
+                  style: TextStyle(color: context.colorScheme.error),
                 ),
               ),
             ],
@@ -282,7 +299,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: context.appAccentTeal,
-              foregroundColor: Colors.black,
+              foregroundColor: context.colorScheme.onPrimary,
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24.0),
@@ -337,7 +354,9 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
               backgroundColor: context.appSurface,
               selectedColor: context.appAccentTeal,
               labelStyle: TextStyle(
-                color: isSelected ? Colors.black : context.appTextSecondary,
+                color: isSelected
+                    ? context.colorScheme.onPrimary
+                    : context.appTextSecondary,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
               side: BorderSide.none,
@@ -375,7 +394,9 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
         decoration: BoxDecoration(
           color: context.appSurface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+          border: Border.all(
+            color: context.appTextPrimary.withValues(alpha: 0.05),
+          ),
         ),
         child: Row(
           children: [

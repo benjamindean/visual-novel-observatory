@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:visual_novel_observatory/vn/models/visual_novel.dart';
 import 'theme/app_theme.dart';
 import 'vn/screens/home_screen.dart';
 import 'vn/screens/vn_detail_screen.dart';
@@ -57,10 +58,10 @@ class VisualNovelObservatoryApp extends ConsumerWidget {
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/detail') {
-          final vnId = settings.arguments as String;
+          final vn = settings.arguments as VisualNovel;
 
           return MaterialPageRoute(
-            builder: (context) => VnDetailScreen(vnId: vnId),
+            builder: (context) => VnDetailScreen(vn: vn),
             settings: settings,
           );
         }

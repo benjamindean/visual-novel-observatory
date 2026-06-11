@@ -99,11 +99,11 @@ class MetadataRow extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: Colors.white.withValues(alpha: 0.06),
+            color: context.appTextPrimary.withValues(alpha: 0.06),
             width: 1,
           ),
           bottom: BorderSide(
-            color: Colors.white.withValues(alpha: 0.06),
+            color: context.appTextPrimary.withValues(alpha: 0.06),
             width: 1,
           ),
         ),
@@ -154,7 +154,7 @@ class MetadataRow extends StatelessWidget {
             value,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: Colors.white,
+              color: context.appTextPrimary,
               fontWeight: FontWeight.bold,
             ),
             maxLines: 1,

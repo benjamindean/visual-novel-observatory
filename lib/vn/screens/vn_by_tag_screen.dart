@@ -140,7 +140,7 @@ class _VnByTagScreenState extends ConsumerState<VnByTagScreen> {
                         onTap: () {
                           Navigator.of(
                             context,
-                          ).pushNamed('/detail', arguments: vn.id);
+                          ).pushNamed('/detail', arguments: vn);
                         },
                       );
                     }, childCount: listState.vns.length),

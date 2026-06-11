@@ -160,7 +160,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               onTap: () {
                                 Navigator.of(
                                   context,
-                                ).pushNamed('/detail', arguments: vn.id);
+                                ).pushNamed('/detail', arguments: vn);
                               },
                             );
                           }, childCount: listState.vns.length),

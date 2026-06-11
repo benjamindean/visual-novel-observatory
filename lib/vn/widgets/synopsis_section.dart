@@ -13,10 +13,12 @@ class SynopsisSection extends StatefulWidget {
 class _SynopsisSectionState extends State<SynopsisSection> {
   bool _isExpanded = false;
 
+  static final RegExp _urlRegExp = RegExp(r'\[url=[^\]]+\]');
+
   // Simple clean-up helper for VNDB bbcode formatting in description
   String _cleanDescription(String text) {
     return text
-        .replaceAll(RegExp(r'\[url=[^\]]+\]'), '')
+        .replaceAll(_urlRegExp, '')
         .replaceAll('[/url]', '')
         .replaceAll('[b]', '')
         .replaceAll('[/b]', '')

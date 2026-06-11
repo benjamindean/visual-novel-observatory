@@ -5,6 +5,7 @@ import '../models/vn_tag.dart';
 import 'filter_sheet.dart';
 import 'sort_menu.dart';
 import '../../theme/app_theme.dart';
+import '../../settings/providers/settings_provider.dart';
 
 class HomeBottomBar extends ConsumerStatefulWidget {
   const HomeBottomBar({super.key});
@@ -34,43 +35,50 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
   void dispose() {
     _searchController.dispose();
     _searchFocusNode.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final filters = ref.watch(vnFilterProvider);
+    final settings = ref.watch(settingsProvider);
     final searchQuery = ref.watch(searchQueryProvider);
     final activeChips = <Widget>[];
-    final hasActiveFilters = !filters.isEmpty;
 
     if (_searchController.text != searchQuery) {
       _searchController.text = searchQuery;
     }
 
-    if (filters.lang != null) {
+    if (filters.lang != settings.defaultLanguage) {
+      final displayLang = filters.lang ?? 'All';
+
       activeChips.add(
         _buildActiveFilterChip(
           context,
-          label: 'Lang: ${filters.lang!.toUpperCase()}',
+          label: 'Lang: ${displayLang.toUpperCase()}',
           onDeleted: () {
             ref
                 .read(vnFilterProvider.notifier)
-                .update(filters.copyWith(lang: () => null));
+                .update(filters.copyWith(lang: () => settings.defaultLanguage));
           },
         ),
       );
     }
 
-    if (filters.platform != null) {
+    if (filters.platform != settings.defaultPlatform) {
+      final displayPlatform = filters.platform ?? 'All';
+
       activeChips.add(
         _buildActiveFilterChip(
           context,
-          label: 'Platform: ${filters.platform!.toUpperCase()}',
+          label: 'Platform: ${displayPlatform.toUpperCase()}',
           onDeleted: () {
             ref
                 .read(vnFilterProvider.notifier)
-                .update(filters.copyWith(platform: () => null));
+                .update(
+                  filters.copyWith(platform: () => settings.defaultPlatform),
+                );
           },
         ),
       );
@@ -158,6 +166,8 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
       );
     }
 
+    final hasActiveFilters = activeChips.isNotEmpty;
+
     return Container(
       decoration: BoxDecoration(
         color: context.appSurface,
@@ -237,10 +247,13 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
                         const SizedBox(width: 8),
                         Container(
                           decoration: BoxDecoration(
-                            color: context.appSearchField,
+                            color: context.colorScheme.primaryContainer
+                                .withValues(alpha: 0.4),
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.05),
+                              color: context.colorScheme.primary.withValues(
+                                alpha: 0.2,
+                              ),
                             ),
                           ),
                           child: IconButton(
@@ -267,10 +280,13 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
                         const Spacer(),
                         Container(
                           decoration: BoxDecoration(
-                            color: context.appSearchField,
+                            color: context.colorScheme.primaryContainer
+                                .withValues(alpha: 0.4),
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.05),
+                              color: context.colorScheme.primary.withValues(
+                                alpha: 0.2,
+                              ),
                             ),
                           ),
                           child: IconButton(
@@ -299,10 +315,19 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
                           children: [
                             Container(
                               decoration: BoxDecoration(
-                                color: context.appSearchField,
+                                color: hasActiveFilters
+                                    ? context.colorScheme.secondaryContainer
+                                          .withValues(alpha: 0.6)
+                                    : context.colorScheme.primaryContainer
+                                          .withValues(alpha: 0.4),
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.05),
+                                  color: hasActiveFilters
+                                      ? context.colorScheme.secondary
+                                            .withValues(alpha: 0.4)
+                                      : context.colorScheme.primary.withValues(
+                                          alpha: 0.2,
+                                        ),
                                 ),
                               ),
                               child: IconButton(
@@ -363,9 +388,13 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
           size: 14,
           color: context.appTextPrimary.withValues(alpha: 0.7),
         ),
-        backgroundColor: context.appSearchField,
+        backgroundColor: context.colorScheme.primaryContainer.withValues(
+          alpha: 0.3,
+        ),
         labelStyle: TextStyle(color: context.appTextPrimary, fontSize: 12),
-        side: BorderSide(color: context.appTextPrimary.withValues(alpha: 0.08)),
+        side: BorderSide(
+          color: context.colorScheme.primary.withValues(alpha: 0.25),
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );

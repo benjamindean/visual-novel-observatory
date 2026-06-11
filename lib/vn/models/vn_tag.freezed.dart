@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$VnTag {
 
- String get id; String get name; int get spoiler; double? get rating;
+ String get id; String get name; int get spoiler; double? get rating; String? get category;
 /// Create a copy of VnTag
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $VnTagCopyWith<VnTag> get copyWith => _$VnTagCopyWithImpl<VnTag>(this as VnTag, 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnTag&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.spoiler, spoiler) || other.spoiler == spoiler)&&(identical(other.rating, rating) || other.rating == rating));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnTag&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.spoiler, spoiler) || other.spoiler == spoiler)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.category, category) || other.category == category));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,spoiler,rating);
+int get hashCode => Object.hash(runtimeType,id,name,spoiler,rating,category);
 
 @override
 String toString() {
-  return 'VnTag(id: $id, name: $name, spoiler: $spoiler, rating: $rating)';
+  return 'VnTag(id: $id, name: $name, spoiler: $spoiler, rating: $rating, category: $category)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $VnTagCopyWith<$Res>  {
   factory $VnTagCopyWith(VnTag value, $Res Function(VnTag) _then) = _$VnTagCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, int spoiler, double? rating
+ String id, String name, int spoiler, double? rating, String? category
 });
 
 
@@ -65,13 +65,14 @@ class _$VnTagCopyWithImpl<$Res>
 
 /// Create a copy of VnTag
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? spoiler = null,Object? rating = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? spoiler = null,Object? rating = freezed,Object? category = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,spoiler: null == spoiler ? _self.spoiler : spoiler // ignore: cast_nullable_to_non_nullable
 as int,rating: freezed == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
-as double?,
+as double?,category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -156,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  int spoiler,  double? rating)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  int spoiler,  double? rating,  String? category)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VnTag() when $default != null:
-return $default(_that.id,_that.name,_that.spoiler,_that.rating);case _:
+return $default(_that.id,_that.name,_that.spoiler,_that.rating,_that.category);case _:
   return orElse();
 
 }
@@ -177,10 +178,10 @@ return $default(_that.id,_that.name,_that.spoiler,_that.rating);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  int spoiler,  double? rating)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  int spoiler,  double? rating,  String? category)  $default,) {final _that = this;
 switch (_that) {
 case _VnTag():
-return $default(_that.id,_that.name,_that.spoiler,_that.rating);case _:
+return $default(_that.id,_that.name,_that.spoiler,_that.rating,_that.category);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +198,10 @@ return $default(_that.id,_that.name,_that.spoiler,_that.rating);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  int spoiler,  double? rating)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  int spoiler,  double? rating,  String? category)?  $default,) {final _that = this;
 switch (_that) {
 case _VnTag() when $default != null:
-return $default(_that.id,_that.name,_that.spoiler,_that.rating);case _:
+return $default(_that.id,_that.name,_that.spoiler,_that.rating,_that.category);case _:
   return null;
 
 }
@@ -212,13 +213,14 @@ return $default(_that.id,_that.name,_that.spoiler,_that.rating);case _:
 @JsonSerializable()
 
 class _VnTag implements VnTag {
-  const _VnTag({this.id = '', this.name = '', this.spoiler = 0, this.rating});
+  const _VnTag({this.id = '', this.name = '', this.spoiler = 0, this.rating, this.category});
   factory _VnTag.fromJson(Map<String, dynamic> json) => _$VnTagFromJson(json);
 
 @override@JsonKey() final  String id;
 @override@JsonKey() final  String name;
 @override@JsonKey() final  int spoiler;
 @override final  double? rating;
+@override final  String? category;
 
 /// Create a copy of VnTag
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +235,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnTag&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.spoiler, spoiler) || other.spoiler == spoiler)&&(identical(other.rating, rating) || other.rating == rating));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnTag&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.spoiler, spoiler) || other.spoiler == spoiler)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.category, category) || other.category == category));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,spoiler,rating);
+int get hashCode => Object.hash(runtimeType,id,name,spoiler,rating,category);
 
 @override
 String toString() {
-  return 'VnTag(id: $id, name: $name, spoiler: $spoiler, rating: $rating)';
+  return 'VnTag(id: $id, name: $name, spoiler: $spoiler, rating: $rating, category: $category)';
 }
 
 
@@ -253,7 +255,7 @@ abstract mixin class _$VnTagCopyWith<$Res> implements $VnTagCopyWith<$Res> {
   factory _$VnTagCopyWith(_VnTag value, $Res Function(_VnTag) _then) = __$VnTagCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, int spoiler, double? rating
+ String id, String name, int spoiler, double? rating, String? category
 });
 
 
@@ -270,13 +272,14 @@ class __$VnTagCopyWithImpl<$Res>
 
 /// Create a copy of VnTag
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? spoiler = null,Object? rating = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? spoiler = null,Object? rating = freezed,Object? category = freezed,}) {
   return _then(_VnTag(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,spoiler: null == spoiler ? _self.spoiler : spoiler // ignore: cast_nullable_to_non_nullable
 as int,rating: freezed == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
-as double?,
+as double?,category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

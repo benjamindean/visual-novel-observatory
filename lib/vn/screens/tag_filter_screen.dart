@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/vn_tag.dart';
 import '../providers/vn_providers.dart';
 import '../../theme/app_theme.dart';
+import '../../settings/providers/settings_provider.dart';
 
 class TagFilterScreen extends ConsumerStatefulWidget {
   final List<VnTag> initialTags;
@@ -22,7 +23,17 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedTags.addAll(widget.initialTags);
+
+    final initial = widget.initialTags;
+    final settings = ref.read(settingsProvider);
+
+    if (!settings.showExplicitContent) {
+      _selectedTags.addAll(
+        initial.where((tag) => tag.category != 'ero').toList(),
+      );
+    } else {
+      _selectedTags.addAll(initial);
+    }
   }
 
   @override
@@ -41,11 +52,21 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
     }
 
     final lowercaseQuery = query.toLowerCase();
-    final allTags = ref.read(localTagsProvider).tags;
-    final results = allTags.where((tag) {
-      return tag.name.toLowerCase().contains(lowercaseQuery) ||
-          tag.id.toLowerCase().contains(lowercaseQuery);
-    }).toList();
+    final settings = ref.read(settingsProvider);
+
+    var allTags = ref.read(localTagsProvider).tags;
+
+    if (!settings.showExplicitContent) {
+      allTags = allTags.where((tag) => tag.category != 'ero').toList();
+    }
+
+    final results = allTags
+        .where(
+          (tag) =>
+              tag.name.toLowerCase().contains(lowercaseQuery) ||
+              tag.id.toLowerCase().contains(lowercaseQuery),
+        )
+        .toList();
 
     setState(() {
       _searchResults = results;
@@ -71,10 +92,16 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final settings = ref.watch(settingsProvider);
     final localTagsState = ref.watch(localTagsProvider);
-    final displayTags = _searchController.text.isEmpty
+
+    var displayTags = _searchController.text.isEmpty
         ? localTagsState.tags
         : _searchResults;
+
+    if (!settings.showExplicitContent) {
+      displayTags = displayTags.where((tag) => tag.category != 'ero').toList();
+    }
 
     return Scaffold(
       appBar: AppBar(

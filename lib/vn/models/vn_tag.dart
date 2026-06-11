@@ -10,6 +10,7 @@ abstract class VnTag with _$VnTag {
     @Default('') String name,
     @Default(0) int spoiler,
     double? rating,
+    String? category,
   }) = _VnTag;
 
   factory VnTag.fromJson(Map<String, dynamic> json) => _$VnTagFromJson(json);
