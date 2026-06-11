@@ -4,7 +4,7 @@ import '../providers/vn_providers.dart';
 import '../models/vn_tag.dart';
 import 'filter_sheet.dart';
 import 'sort_menu.dart';
-import '../../../theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 
 class HomeBottomBar extends ConsumerStatefulWidget {
   const HomeBottomBar({super.key});

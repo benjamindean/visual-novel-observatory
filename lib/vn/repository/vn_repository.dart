@@ -1,4 +1,4 @@
-import '../../../core/api/vndb_client.dart';
+import '../../core/api/vndb_client.dart';
 import '../models/visual_novel.dart';
 
 import '../models/vndb_label.dart';

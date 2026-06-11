@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/vn_providers.dart';
 import '../widgets/vn_card.dart';
-import '../../../theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 
 class VnByTagScreen extends ConsumerStatefulWidget {
   final String tagId;

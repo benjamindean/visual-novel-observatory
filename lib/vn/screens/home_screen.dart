@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/vn_providers.dart';
 import '../widgets/home_bottom_bar.dart';
 import '../widgets/vn_card.dart';
-import '../../../theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../settings/providers/settings_provider.dart';
 

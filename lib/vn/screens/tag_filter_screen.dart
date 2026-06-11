@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/vn_tag.dart';
 import '../providers/vn_providers.dart';
-import '../../../theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 
 class TagFilterScreen extends ConsumerStatefulWidget {
   final List<VnTag> initialTags;

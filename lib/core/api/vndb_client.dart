@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../domain/vn/models/visual_novel.dart';
+import '../../vn/models/visual_novel.dart';
 
 class VndbClient {
   static const String _baseUrl = 'https://api.vndb.org/kana';

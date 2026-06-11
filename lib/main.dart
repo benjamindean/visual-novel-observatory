@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'theme/app_theme.dart';
-import 'domain/vn/screens/home_screen.dart';
-import 'domain/vn/screens/vn_detail_screen.dart';
-import 'domain/vn/screens/vn_by_tag_screen.dart';
-import 'domain/vn/screens/vn_gallery_screen.dart';
-import 'domain/vn/models/vn_screenshot.dart';
-import 'domain/settings/screens/settings_screen.dart';
-import 'domain/settings/screens/login_screen.dart';
+import 'vn/screens/home_screen.dart';
+import 'vn/screens/vn_detail_screen.dart';
+import 'vn/screens/vn_by_tag_screen.dart';
+import 'vn/screens/vn_gallery_screen.dart';
+import 'vn/models/vn_screenshot.dart';
+import 'settings/screens/settings_screen.dart';
+import 'settings/screens/login_screen.dart';
 
-import 'domain/settings/providers/settings_provider.dart';
+import 'settings/providers/settings_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

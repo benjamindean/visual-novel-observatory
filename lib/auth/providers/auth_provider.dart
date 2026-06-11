@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../core/api/vndb_client.dart';
+import '../../core/api/vndb_client.dart';
 
 class AuthState {
   final String? token;

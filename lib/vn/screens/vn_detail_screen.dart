@@ -10,7 +10,7 @@ import '../widgets/detail_header.dart';
 import '../widgets/metadata_row.dart';
 import '../widgets/synopsis_section.dart';
 import '../widgets/tag_chip.dart';
-import '../../../theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../settings/providers/settings_provider.dart';
 

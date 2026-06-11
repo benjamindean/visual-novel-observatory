@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/visual_novel.dart';
 import 'rating_badge.dart';
-import '../../../theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 import '../../settings/providers/settings_provider.dart';
 
 class DetailHeader extends ConsumerWidget {

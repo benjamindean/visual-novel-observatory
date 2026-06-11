@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/vn_providers.dart';
 import '../models/vn_tag.dart';
 import '../screens/tag_filter_screen.dart';
-import '../../../theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 
 class FilterSheet extends ConsumerStatefulWidget {
   const FilterSheet({super.key});
