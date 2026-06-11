@@ -1,0 +1,110 @@
+import 'package:flutter/material.dart';
+import '../../../theme/app_theme.dart';
+
+class SynopsisSection extends StatefulWidget {
+  final String description;
+
+  const SynopsisSection({super.key, required this.description});
+
+  @override
+  State<SynopsisSection> createState() => _SynopsisSectionState();
+}
+
+class _SynopsisSectionState extends State<SynopsisSection> {
+  bool _isExpanded = false;
+
+  // Simple clean-up helper for VNDB bbcode formatting in description
+  String _cleanDescription(String text) {
+    return text
+        .replaceAll(RegExp(r'\[url=[^\]]+\]'), '')
+        .replaceAll('[/url]', '')
+        .replaceAll('[b]', '')
+        .replaceAll('[/b]', '')
+        .replaceAll('[i]', '')
+        .replaceAll('[/i]', '')
+        .replaceAll('[u]', '')
+        .replaceAll('[/u]', '');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cleanedText = _cleanDescription(widget.description);
+
+    // Check if the text is long enough to need expansion
+    final isLong = cleanedText.length > 220;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Story Line',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 8),
+        AnimatedCrossFade(
+          firstChild: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                cleanedText,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppTheme.textSecondary,
+                  height: 1.5,
+                ),
+              ),
+              if (isLong)
+                GestureDetector(
+                  onTap: () => setState(() => _isExpanded = true),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: Text(
+                      'More',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: AppTheme.accentTeal,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          secondChild: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                cleanedText,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppTheme.textSecondary,
+                  height: 1.5,
+                ),
+              ),
+              if (isLong)
+                GestureDetector(
+                  onTap: () => setState(() => _isExpanded = false),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: Text(
+                      'Less',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: AppTheme.accentTeal,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          crossFadeState: _isExpanded
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
+          duration: const Duration(milliseconds: 250),
+        ),
+      ],
+    );
+  }
+}
