@@ -47,9 +47,9 @@ class _VnByTagScreenState extends ConsumerState<VnByTagScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios_new,
-            color: Colors.white,
+            color: context.appTextPrimary,
             size: 18,
           ),
           onPressed: () => Navigator.of(context).pop(),
@@ -60,16 +60,16 @@ class _VnByTagScreenState extends ConsumerState<VnByTagScreen> {
           onRefresh: () => ref
               .read(vnListByTagProvider(widget.tagId).notifier)
               .resetAndFetch(),
-          color: AppTheme.accentTeal,
-          backgroundColor: AppTheme.surface,
+          color: context.appAccentTeal,
+          backgroundColor: context.appSurface,
           child: CustomScrollView(
             controller: _scrollController,
             slivers: [
               if (listState.isLoading)
-                const SliverFillRemaining(
+                SliverFillRemaining(
                   child: Center(
                     child: CircularProgressIndicator(
-                      color: AppTheme.accentTeal,
+                      color: context.appAccentTeal,
                     ),
                   ),
                 )
@@ -95,7 +95,7 @@ class _VnByTagScreenState extends ConsumerState<VnByTagScreen> {
                           const SizedBox(height: 16),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.accentTeal,
+                              backgroundColor: context.appAccentTeal,
                             ),
                             onPressed: () => ref
                                 .read(
@@ -110,58 +110,59 @@ class _VnByTagScreenState extends ConsumerState<VnByTagScreen> {
                   ),
                 )
               else if (listState.vns.isEmpty)
-                const SliverFillRemaining(
+                SliverFillRemaining(
                   child: Center(
                     child: Text(
                       'No visual novels found for this tag',
-                      style: TextStyle(color: AppTheme.textMuted),
+                      style: TextStyle(color: context.appTextMuted),
                     ),
                   ),
                 )
-              else
+              else ...[
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 8,
                   ),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        if (index >= listState.vns.length) {
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 24.0),
-                            child: Center(
-                              child: SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.5,
-                                  color: AppTheme.accentTeal,
-                                ),
-                              ),
-                            ),
-                          );
-                        }
+                  sliver: SliverGrid(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 12,
+                          crossAxisSpacing: 12,
+                          childAspectRatio: 2 / 3,
+                        ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final vn = listState.vns[index];
 
-                        final vn = listState.vns[index];
-
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: VnCard(
-                            vn: vn,
-                            onTap: () {
-                              Navigator.of(
-                                context,
-                              ).pushNamed('/detail', arguments: vn.id);
-                            },
-                          ),
-                        );
-                      },
-                      childCount:
-                          listState.vns.length + (listState.hasMore ? 1 : 0),
-                    ),
+                      return VnCard(
+                        vn: vn,
+                        onTap: () {
+                          Navigator.of(
+                            context,
+                          ).pushNamed('/detail', arguments: vn.id);
+                        },
+                      );
+                    }, childCount: listState.vns.length),
                   ),
                 ),
+                if (listState.hasMore)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: Center(
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            color: context.appAccentTeal,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ],
           ),
         ),

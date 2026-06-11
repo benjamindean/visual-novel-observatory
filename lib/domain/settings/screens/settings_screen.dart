@@ -12,11 +12,12 @@ class SettingsScreen extends ConsumerWidget {
     final authState = ref.watch(authProvider);
     final settingsState = ref.watch(settingsProvider);
     final theme = Theme.of(context);
+    final isDarkActive = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
-        backgroundColor: AppTheme.background,
+        backgroundColor: context.appBackground,
         elevation: 0,
         scrolledUnderElevation: 0,
       ),
@@ -24,40 +25,51 @@ class SettingsScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
           children: [
-            _buildSectionHeader(theme, 'VNDB Profile'),
+            _buildSectionHeader(context, 'VNDB Profile'),
             const SizedBox(height: 12),
             if (authState.isAuthenticated)
               _buildProfileCard(context, ref, theme, authState)
             else
               _buildConnectCard(context, theme),
             const SizedBox(height: 32),
-            _buildSectionHeader(theme, 'Search Defaults'),
+            _buildSectionHeader(context, 'Appearance'),
             const SizedBox(height: 12),
             _buildSettingsCard(
-              theme,
+              context,
               children: [
-                _buildSpoilerTile(ref, settingsState),
+                _buildThemeModeTile(context, ref, settingsState),
+                if (isDarkActive) ...[
+                  const Divider(color: Colors.white10, height: 1),
+                  _buildTrueBlackTile(context, ref, settingsState),
+                ],
                 const Divider(color: Colors.white10, height: 1),
-                _buildLanguageTile(ref, settingsState),
-                const Divider(color: Colors.white10, height: 1),
-                _buildPlatformTile(ref, settingsState),
-                const Divider(color: Colors.white10, height: 1),
-                _buildExplicitContentTile(ref, settingsState),
+                _buildThemeTile(context, ref, settingsState),
               ],
             ),
             const SizedBox(height: 32),
-            _buildAppInfo(theme),
+            _buildSectionHeader(context, 'Search Defaults'),
+            const SizedBox(height: 12),
+            _buildSettingsCard(
+              context,
+              children: [
+                _buildSpoilerTile(context, ref, settingsState),
+                const Divider(color: Colors.white10, height: 1),
+                _buildExplicitContentTile(context, ref, settingsState),
+              ],
+            ),
+            const SizedBox(height: 32),
+            _buildAppInfo(context, theme),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSectionHeader(ThemeData theme, String title) {
+  Widget _buildSectionHeader(BuildContext context, String title) {
     return Text(
       title.toUpperCase(),
-      style: theme.textTheme.labelSmall?.copyWith(
-        color: AppTheme.accentTeal,
+      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+        color: context.appAccentTeal,
         fontWeight: FontWeight.bold,
         letterSpacing: 1.2,
       ),
@@ -73,44 +85,31 @@ class SettingsScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF2E3456), Color(0xFF232738)],
+        gradient: LinearGradient(
+          colors: [
+            context.colorScheme.primary.withValues(alpha: 0.18),
+            context.appSurface,
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
+        border: Border.all(
+          color: context.colorScheme.primary.withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: const BoxDecoration(
-                  color: AppTheme.accentTeal,
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    auth.username?.substring(0, 1).toUpperCase() ?? 'U',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +123,7 @@ class SettingsScreen extends ConsumerWidget {
                     Text(
                       'User ID: ${auth.userId}',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: AppTheme.textMuted,
+                        color: context.appTextMuted,
                       ),
                     ),
                   ],
@@ -132,36 +131,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          if (auth.permissions.isNotEmpty) ...[
-            Text(
-              'Token Permissions:',
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: AppTheme.textSecondary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: auth.permissions.map((perm) {
-                return Chip(
-                  label: Text(
-                    perm,
-                    style: const TextStyle(fontSize: 11, color: Colors.white),
-                  ),
-                  backgroundColor: AppTheme.searchField,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
-                  ),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 20),
-          ],
+          const SizedBox(height: 20),
           OutlinedButton.icon(
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.redAccent,
@@ -187,16 +157,16 @@ class SettingsScreen extends ConsumerWidget {
 
   Widget _buildConnectCard(BuildContext context, ThemeData theme) {
     return Card(
-      color: AppTheme.surface,
+      color: context.appSurface,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Icon(
+            Icon(
               Icons.account_circle_outlined,
               size: 48,
-              color: AppTheme.textMuted,
+              color: context.appTextMuted,
             ),
             const SizedBox(height: 12),
             Text(
@@ -211,13 +181,13 @@ class SettingsScreen extends ConsumerWidget {
               'Sync your list readings, statuses, and manage your VN library directly from Observatory.',
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppTheme.textMuted,
+                color: context.appTextMuted,
               ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.accentTeal,
+                backgroundColor: context.appAccentTeal,
                 foregroundColor: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
@@ -238,15 +208,173 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSettingsCard(ThemeData theme, {required List<Widget> children}) {
+  Widget _buildSettingsCard(
+    BuildContext context, {
+    required List<Widget> children,
+  }) {
     return Card(
-      color: AppTheme.surface,
+      color: context.appSurface,
       clipBehavior: Clip.antiAlias,
       child: Column(children: children),
     );
   }
 
-  Widget _buildSpoilerTile(WidgetRef ref, SettingsState settings) {
+  Widget _buildThemeModeTile(
+    BuildContext context,
+    WidgetRef ref,
+    SettingsState settings,
+  ) {
+    final modeLabels = {
+      'system': 'Follow System',
+      'light': 'Light',
+      'dark': 'Dark',
+    };
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Theme Mode',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: context.appTextPrimary,
+                  ),
+                ),
+                Text(
+                  'Light, Dark, or System mode',
+                  style: TextStyle(fontSize: 12, color: context.appTextMuted),
+                ),
+              ],
+            ),
+          ),
+          DropdownButton<String>(
+            value: settings.themeMode,
+            dropdownColor: context.appSurface,
+            underline: const SizedBox(),
+            alignment: Alignment.centerRight,
+            items: modeLabels.entries.map((entry) {
+              return DropdownMenuItem<String>(
+                value: entry.key,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    entry.value,
+                    style: const TextStyle(fontSize: 14),
+                    textAlign: TextAlign.end,
+                  ),
+                ),
+              );
+            }).toList(),
+            onChanged: (val) {
+              if (val != null) {
+                ref.read(settingsProvider.notifier).setThemeMode(val);
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTrueBlackTile(
+    BuildContext context,
+    WidgetRef ref,
+    SettingsState settings,
+  ) {
+    return SwitchListTile(
+      value: settings.darkIsTrueBlack,
+      title: Text(
+        'True Black Background',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: context.appTextPrimary,
+        ),
+      ),
+      subtitle: Text(
+        'Pure black background for OLED screens',
+        style: TextStyle(fontSize: 12, color: context.appTextMuted),
+      ),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 4.0,
+      ),
+      onChanged: (val) {
+        ref.read(settingsProvider.notifier).setDarkIsTrueBlack(val);
+      },
+    );
+  }
+
+  Widget _buildThemeTile(
+    BuildContext context,
+    WidgetRef ref,
+    SettingsState settings,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'App Theme',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: context.appTextPrimary,
+                  ),
+                ),
+                Text(
+                  'Choose color scheme',
+                  style: TextStyle(fontSize: 12, color: context.appTextMuted),
+                ),
+              ],
+            ),
+          ),
+          DropdownButton<String>(
+            value: settings.themeName,
+            dropdownColor: context.appSurface,
+            underline: const SizedBox(),
+            alignment: Alignment.centerRight,
+            items: AppTheme.themes.entries.map((entry) {
+              return DropdownMenuItem<String>(
+                value: entry.key,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    entry.value,
+                    style: const TextStyle(fontSize: 14),
+                    textAlign: TextAlign.end,
+                  ),
+                ),
+              );
+            }).toList(),
+            onChanged: (val) {
+              if (val != null) {
+                ref.read(settingsProvider.notifier).setThemeName(val);
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSpoilerTile(
+    BuildContext context,
+    WidgetRef ref,
+    SettingsState settings,
+  ) {
     final spoilerLabels = {
       0: 'Hide Spoilers',
       1: 'Show Minor Spoilers',
@@ -258,29 +386,41 @@ class SettingsScreen extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Spoiler Filter',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: context.appTextPrimary,
+                  ),
                 ),
                 Text(
                   'Default spoiler level for tags',
-                  style: TextStyle(fontSize: 12, color: AppTheme.textMuted),
+                  style: TextStyle(fontSize: 12, color: context.appTextMuted),
                 ),
               ],
             ),
           ),
           DropdownButton<int>(
             value: settings.spoilerLevel,
-            dropdownColor: AppTheme.surface,
+            dropdownColor: context.appSurface,
             underline: const SizedBox(),
+            alignment: Alignment.centerRight,
             items: spoilerLabels.entries.map((entry) {
               return DropdownMenuItem<int>(
                 value: entry.key,
-                child: Text(entry.value, style: const TextStyle(fontSize: 14)),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    entry.value,
+                    style: const TextStyle(fontSize: 14),
+                    textAlign: TextAlign.end,
+                  ),
+                ),
               );
             }).toList(),
             onChanged: (val) {
@@ -294,117 +434,20 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildLanguageTile(WidgetRef ref, SettingsState settings) {
-    final languageLabels = {
-      null: 'Any Language',
-      'en': 'English',
-      'ja': 'Japanese',
-      'zh': 'Chinese',
-      'es': 'Spanish',
-      'fr': 'French',
-      'de': 'German',
-    };
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Default Language',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  'Preferred language in searches',
-                  style: TextStyle(fontSize: 12, color: AppTheme.textMuted),
-                ),
-              ],
-            ),
-          ),
-          DropdownButton<String?>(
-            value: settings.defaultLanguage,
-            dropdownColor: AppTheme.surface,
-            underline: const SizedBox(),
-            items: languageLabels.entries.map((entry) {
-              return DropdownMenuItem<String?>(
-                value: entry.key,
-                child: Text(entry.value, style: const TextStyle(fontSize: 14)),
-              );
-            }).toList(),
-            onChanged: (val) {
-              ref.read(settingsProvider.notifier).setDefaultLanguage(val);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPlatformTile(WidgetRef ref, SettingsState settings) {
-    final platformLabels = {
-      null: 'Any Platform',
-      'win': 'Windows',
-      'swi': 'Nintendo Switch',
-      'ps4': 'PlayStation 4',
-      'lin': 'Linux',
-      'mac': 'macOS',
-      'and': 'Android',
-      'ios': 'iOS',
-    };
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Default Platform',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  'Preferred platform filter',
-                  style: TextStyle(fontSize: 12, color: AppTheme.textMuted),
-                ),
-              ],
-            ),
-          ),
-          DropdownButton<String?>(
-            value: settings.defaultPlatform,
-            dropdownColor: AppTheme.surface,
-            underline: const SizedBox(),
-            items: platformLabels.entries.map((entry) {
-              return DropdownMenuItem<String?>(
-                value: entry.key,
-                child: Text(entry.value, style: const TextStyle(fontSize: 14)),
-              );
-            }).toList(),
-            onChanged: (val) {
-              ref.read(settingsProvider.notifier).setDefaultPlatform(val);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildExplicitContentTile(WidgetRef ref, SettingsState settings) {
+  Widget _buildExplicitContentTile(
+    BuildContext context,
+    WidgetRef ref,
+    SettingsState settings,
+  ) {
     return SwitchListTile(
       value: settings.showExplicitContent,
       title: const Text(
         'Show Explicit Content',
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
       ),
-      subtitle: const Text(
+      subtitle: Text(
         'Include 18+ sexual content in search results and uncover blurred images.',
-        style: TextStyle(fontSize: 12, color: AppTheme.textMuted),
+        style: TextStyle(fontSize: 12, color: context.appTextMuted),
       ),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 16.0,
@@ -416,7 +459,7 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildAppInfo(ThemeData theme) {
+  Widget _buildAppInfo(BuildContext context, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Column(
@@ -424,7 +467,7 @@ class SettingsScreen extends ConsumerWidget {
           Text(
             'Observatory v1.0.0',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppTheme.textMuted,
+              color: context.appTextMuted,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -432,7 +475,7 @@ class SettingsScreen extends ConsumerWidget {
           Text(
             'Powered by VNDB API v2 (Kana)',
             style: theme.textTheme.labelSmall?.copyWith(
-              color: AppTheme.textMuted,
+              color: context.appTextMuted,
             ),
           ),
         ],

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/vn_providers.dart';
+import '../models/vn_tag.dart';
 import 'filter_sheet.dart';
+import 'sort_menu.dart';
 import '../../../theme/app_theme.dart';
 
 class HomeBottomBar extends ConsumerStatefulWidget {
@@ -39,8 +41,8 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
   Widget build(BuildContext context) {
     final filters = ref.watch(vnFilterProvider);
     final searchQuery = ref.watch(searchQueryProvider);
-    final theme = Theme.of(context);
     final activeChips = <Widget>[];
+    final hasActiveFilters = !filters.isEmpty;
 
     if (_searchController.text != searchQuery) {
       _searchController.text = searchQuery;
@@ -49,6 +51,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
     if (filters.lang != null) {
       activeChips.add(
         _buildActiveFilterChip(
+          context,
           label: 'Lang: ${filters.lang!.toUpperCase()}',
           onDeleted: () {
             ref
@@ -62,6 +65,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
     if (filters.platform != null) {
       activeChips.add(
         _buildActiveFilterChip(
+          context,
           label: 'Platform: ${filters.platform!.toUpperCase()}',
           onDeleted: () {
             ref
@@ -83,6 +87,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
 
       activeChips.add(
         _buildActiveFilterChip(
+          context,
           label: 'Length: ${lengths[filters.length]}',
           onDeleted: () {
             ref
@@ -98,6 +103,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
 
       activeChips.add(
         _buildActiveFilterChip(
+          context,
           label: 'Status: ${statuses[filters.devStatus]}',
           onDeleted: () {
             ref
@@ -111,6 +117,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
     if (filters.minRating != 7.0) {
       activeChips.add(
         _buildActiveFilterChip(
+          context,
           label: 'Rating >= ${filters.minRating.toStringAsFixed(1)}',
           onDeleted: () {
             ref
@@ -124,6 +131,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
     if (filters.minVotes != 50) {
       activeChips.add(
         _buildActiveFilterChip(
+          context,
           label: 'Votes >= ${filters.minVotes}',
           onDeleted: () {
             ref
@@ -134,13 +142,35 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
       );
     }
 
+    for (final tag in filters.tags) {
+      activeChips.add(
+        _buildActiveFilterChip(
+          context,
+          label: 'Tag: ${tag.name}',
+          onDeleted: () {
+            final newTags = List<VnTag>.from(filters.tags)..remove(tag);
+
+            ref
+                .read(vnFilterProvider.notifier)
+                .update(filters.copyWith(tags: newTags));
+          },
+        ),
+      );
+    }
+
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.surface,
+        color: context.appSurface,
+        border: Border(
+          top: BorderSide(
+            color: Colors.white.withValues(alpha: 0.06),
+            width: 1,
+          ),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 12,
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 16,
             offset: const Offset(0, -4),
           ),
         ],
@@ -205,48 +235,109 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        IconButton(
-                          icon: const Icon(Icons.close_rounded),
-                          onPressed: () {
-                            setState(() {
-                              _isSearchActive = false;
-                              _searchController.clear();
-                            });
-                            ref.read(searchQueryProvider.notifier).update('');
-                          },
+                        Container(
+                          decoration: BoxDecoration(
+                            color: context.appSearchField,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.05),
+                            ),
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.close_rounded,
+                              color: context.appTextPrimary,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isSearchActive = false;
+                                _searchController.clear();
+                              });
+                              ref.read(searchQueryProvider.notifier).update('');
+                            },
+                            tooltip: 'Close Search',
+                          ),
                         ),
                       ],
                     )
                   : Row(
                       children: [
-                        Text(
-                          'Discover',
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                        const SortMenu(),
+                        const Spacer(),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: context.appSearchField,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.05),
+                            ),
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.search_rounded,
+                              color: context.appTextPrimary,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isSearchActive = true;
+                              });
+                              Future.delayed(
+                                const Duration(milliseconds: 50),
+                                () {
+                                  _searchFocusNode.requestFocus();
+                                },
+                              );
+                            },
+                            tooltip: 'Search',
                           ),
                         ),
-                        const Spacer(),
-                        IconButton(
-                          icon: const Icon(Icons.search_rounded),
-                          onPressed: () {
-                            setState(() {
-                              _isSearchActive = true;
-                            });
-                            _searchFocusNode.requestFocus();
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                        IconButton(
-                          icon: const Icon(Icons.tune_rounded),
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              builder: (context) => const FilterSheet(),
-                            );
-                          },
+                        const SizedBox(width: 10),
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: context.appSearchField,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.05),
+                                ),
+                              ),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.tune_rounded,
+                                  color: hasActiveFilters
+                                      ? context.appAccentAmber
+                                      : context.appTextPrimary,
+                                  size: 20,
+                                ),
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (context) => const FilterSheet(),
+                                  );
+                                },
+                                tooltip: 'Filters',
+                              ),
+                            ),
+                            if (hasActiveFilters)
+                              Positioned(
+                                top: -2,
+                                right: -2,
+                                child: Container(
+                                  width: 10,
+                                  height: 10,
+                                  decoration: BoxDecoration(
+                                    color: context.appAccentAmber,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                       ],
                     ),
@@ -257,7 +348,8 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
     );
   }
 
-  Widget _buildActiveFilterChip({
+  Widget _buildActiveFilterChip(
+    BuildContext context, {
     required String label,
     required VoidCallback onDeleted,
   }) {
@@ -266,10 +358,14 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
       child: InputChip(
         label: Text(label),
         onDeleted: onDeleted,
-        deleteIcon: const Icon(Icons.close, size: 14, color: Colors.white70),
-        backgroundColor: AppTheme.searchField,
-        labelStyle: const TextStyle(color: Colors.white, fontSize: 12),
-        side: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
+        deleteIcon: Icon(
+          Icons.close,
+          size: 14,
+          color: context.appTextPrimary.withValues(alpha: 0.7),
+        ),
+        backgroundColor: context.appSearchField,
+        labelStyle: TextStyle(color: context.appTextPrimary, fontSize: 12),
+        side: BorderSide(color: context.appTextPrimary.withValues(alpha: 0.08)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );

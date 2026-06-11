@@ -9,6 +9,8 @@ import 'domain/vn/models/vn_screenshot.dart';
 import 'domain/settings/screens/settings_screen.dart';
 import 'domain/settings/screens/login_screen.dart';
 
+import 'domain/settings/providers/settings_provider.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -18,15 +20,35 @@ void main() {
   );
 }
 
-class VisualNovelObservatoryApp extends StatelessWidget {
+class VisualNovelObservatoryApp extends ConsumerWidget {
   const VisualNovelObservatoryApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+    ThemeMode themeMode;
+
+    switch (settings.themeMode) {
+      case 'light':
+        themeMode = ThemeMode.light;
+        break;
+      case 'dark':
+        themeMode = ThemeMode.dark;
+        break;
+      default:
+        themeMode = ThemeMode.system;
+    }
+
     return MaterialApp(
       title: 'Visual Novel Observatory',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
+      themeMode: themeMode,
+      theme: AppTheme.getTheme(settings.themeName, isDark: false),
+      darkTheme: AppTheme.getTheme(
+        settings.themeName,
+        isDark: true,
+        darkIsTrueBlack: settings.darkIsTrueBlack,
+      ),
       initialRoute: '/',
       routes: {
         '/': (context) => const HomeScreen(),

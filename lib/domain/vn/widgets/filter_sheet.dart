@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/vn_providers.dart';
+import '../models/vn_tag.dart';
+import '../screens/tag_filter_screen.dart';
 import '../../../theme/app_theme.dart';
 
 class FilterSheet extends ConsumerStatefulWidget {
@@ -17,6 +19,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
   int? _selectedDevStatus;
   double _minRating = 7.0;
   int _minVotes = 50;
+  List<VnTag> _selectedTags = [];
 
   @override
   void initState() {
@@ -30,6 +33,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
     _selectedDevStatus = currentFilters.devStatus;
     _minRating = currentFilters.minRating;
     _minVotes = currentFilters.minVotes;
+    _selectedTags = List<VnTag>.from(currentFilters.tags);
   }
 
   void _resetFilters() {
@@ -40,6 +44,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
       _selectedDevStatus = null;
       _minRating = 7.0;
       _minVotes = 50;
+      _selectedTags = [];
     });
   }
 
@@ -57,6 +62,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
             minRating: _minRating,
             minVotes: _minVotes,
             showExplicitContent: showExplicit,
+            tags: _selectedTags,
           ),
         );
 
@@ -68,9 +74,9 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
     final theme = Theme.of(context);
 
     return Container(
-      decoration: const BoxDecoration(
-        color: AppTheme.background,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: context.appBackground,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(24.0),
           topRight: Radius.circular(24.0),
         ),
@@ -124,6 +130,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                   // Language Section
                   _buildSectionHeader(context, 'Language'),
                   _buildChipRow<String>(
+                    context,
                     items: {
                       'en': 'English',
                       'ja': 'Japanese',
@@ -143,6 +150,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                   // Platform Section
                   _buildSectionHeader(context, 'Platform'),
                   _buildChipRow<String>(
+                    context,
                     items: {
                       'win': 'Windows',
                       'swi': 'Switch',
@@ -162,6 +170,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                   // Length Section
                   _buildSectionHeader(context, 'Play Time'),
                   _buildChipRow<int>(
+                    context,
                     items: {
                       1: 'Very Short (<2h)',
                       2: 'Short (2-10h)',
@@ -181,6 +190,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                   // Dev Status Section
                   _buildSectionHeader(context, 'Development Status'),
                   _buildChipRow<int>(
+                    context,
                     items: {0: 'Finished', 1: 'In Dev', 2: 'Cancelled'},
                     selectedValue: _selectedDevStatus,
                     onSelected: (val) {
@@ -189,6 +199,11 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                       });
                     },
                   ),
+                  const SizedBox(height: 16.0),
+
+                  // Tags Section
+                  _buildSectionHeader(context, 'Tags'),
+                  _buildTagsTile(context),
                   const SizedBox(height: 20.0),
 
                   // Rating Slider
@@ -203,8 +218,8 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                       ),
                       Text(
                         '${_minRating.toStringAsFixed(1)} / 10.0',
-                        style: const TextStyle(
-                          color: AppTheme.accentTeal,
+                        style: TextStyle(
+                          color: context.appAccentTeal,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -215,8 +230,8 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                     min: 0.0,
                     max: 10.0,
                     divisions: 100,
-                    activeColor: AppTheme.accentTeal,
-                    inactiveColor: AppTheme.surface,
+                    activeColor: context.appAccentTeal,
+                    inactiveColor: context.appSurface,
                     onChanged: (val) {
                       setState(() {
                         _minRating = val;
@@ -237,8 +252,8 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                       ),
                       Text(
                         '$_minVotes votes',
-                        style: const TextStyle(
-                          color: AppTheme.accentTeal,
+                        style: TextStyle(
+                          color: context.appAccentTeal,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -249,8 +264,8 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
                     min: 0,
                     max: 500,
                     divisions: 50,
-                    activeColor: AppTheme.accentTeal,
-                    inactiveColor: AppTheme.surface,
+                    activeColor: context.appAccentTeal,
+                    inactiveColor: context.appSurface,
                     onChanged: (val) {
                       setState(() {
                         _minVotes = val.round();
@@ -266,7 +281,7 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
           // Apply Button
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.accentTeal,
+              backgroundColor: context.appAccentTeal,
               foregroundColor: Colors.black,
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               shape: RoundedRectangleBorder(
@@ -298,7 +313,8 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
     );
   }
 
-  Widget _buildChipRow<T>({
+  Widget _buildChipRow<T>(
+    BuildContext context, {
     required Map<T, String> items,
     required T? selectedValue,
     required ValueChanged<T?> onSelected,
@@ -318,10 +334,10 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
               onSelected: (selected) {
                 onSelected(selected ? entry.key : null);
               },
-              backgroundColor: AppTheme.surface,
-              selectedColor: AppTheme.accentTeal,
+              backgroundColor: context.appSurface,
+              selectedColor: context.appAccentTeal,
               labelStyle: TextStyle(
-                color: isSelected ? Colors.black : AppTheme.textSecondary,
+                color: isSelected ? Colors.black : context.appTextSecondary,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
               side: BorderSide.none,
@@ -331,6 +347,84 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
             ),
           );
         }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildTagsTile(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context)
+            .push<List<VnTag>>(
+              MaterialPageRoute(
+                builder: (context) =>
+                    TagFilterScreen(initialTags: _selectedTags),
+              ),
+            )
+            .then((result) {
+              if (result != null) {
+                setState(() {
+                  _selectedTags = result;
+                });
+              }
+            });
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: context.appSurface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_selectedTags.isEmpty)
+                    Text(
+                      'Select Tags...',
+                      style: TextStyle(
+                        color: context.appTextSecondary,
+                        fontSize: 14,
+                      ),
+                    )
+                  else
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: _selectedTags.map((tag) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: context.appAccentTeal.withValues(
+                              alpha: 0.15,
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Text(
+                            tag.name,
+                            style: TextStyle(
+                              color: context.appAccentTeal,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(Icons.chevron_right_rounded, color: context.appTextMuted),
+          ],
+        ),
       ),
     );
   }

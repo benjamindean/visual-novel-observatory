@@ -6,12 +6,18 @@ class SettingsState {
   final String? defaultLanguage;
   final String? defaultPlatform;
   final bool showExplicitContent;
+  final String themeName;
+  final String themeMode;
+  final bool darkIsTrueBlack;
 
   SettingsState({
     this.spoilerLevel = 0,
     this.defaultLanguage,
     this.defaultPlatform,
     this.showExplicitContent = false,
+    this.themeName = 'vndb',
+    this.themeMode = 'system',
+    this.darkIsTrueBlack = false,
   });
 
   SettingsState copyWith({
@@ -19,6 +25,9 @@ class SettingsState {
     String? Function()? defaultLanguage,
     String? Function()? defaultPlatform,
     bool? showExplicitContent,
+    String? themeName,
+    String? themeMode,
+    bool? darkIsTrueBlack,
   }) {
     return SettingsState(
       spoilerLevel: spoilerLevel ?? this.spoilerLevel,
@@ -29,6 +38,9 @@ class SettingsState {
           ? defaultPlatform()
           : this.defaultPlatform,
       showExplicitContent: showExplicitContent ?? this.showExplicitContent,
+      themeName: themeName ?? this.themeName,
+      themeMode: themeMode ?? this.themeMode,
+      darkIsTrueBlack: darkIsTrueBlack ?? this.darkIsTrueBlack,
     );
   }
 }
@@ -38,6 +50,9 @@ class SettingsNotifier extends Notifier<SettingsState> {
   static const String _languageKey = 'settings_default_language';
   static const String _platformKey = 'settings_default_platform';
   static const String _explicitKey = 'settings_show_explicit';
+  static const String _themeKey = 'settings_theme_name';
+  static const String _themeModeKey = 'settings_theme_mode';
+  static const String _darkIsTrueBlackKey = 'settings_dark_is_true_black';
 
   @override
   SettingsState build() {
@@ -51,13 +66,43 @@ class SettingsNotifier extends Notifier<SettingsState> {
     final language = prefs.getString(_languageKey);
     final platform = prefs.getString(_platformKey);
     final explicit = prefs.getBool(_explicitKey) ?? false;
+    final theme = prefs.getString(_themeKey) ?? 'vndb';
+    final mode = prefs.getString(_themeModeKey) ?? 'system';
+    final isTrueBlack = prefs.getBool(_darkIsTrueBlackKey) ?? false;
 
     state = SettingsState(
       spoilerLevel: spoiler,
       defaultLanguage: language,
       defaultPlatform: platform,
       showExplicitContent: explicit,
+      themeName: theme,
+      themeMode: mode,
+      darkIsTrueBlack: isTrueBlack,
     );
+  }
+
+  Future<void> setThemeName(String name) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString(_themeKey, name);
+
+    state = state.copyWith(themeName: name);
+  }
+
+  Future<void> setThemeMode(String mode) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString(_themeModeKey, mode);
+
+    state = state.copyWith(themeMode: mode);
+  }
+
+  Future<void> setDarkIsTrueBlack(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setBool(_darkIsTrueBlackKey, value);
+
+    state = state.copyWith(darkIsTrueBlack: value);
   }
 
   Future<void> setSpoilerLevel(int level) async {

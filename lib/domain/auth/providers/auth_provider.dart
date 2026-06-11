@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../vn/providers/vn_providers.dart';
+import '../../../core/api/vndb_client.dart';
 
 class AuthState {
   final String? token;
@@ -73,7 +73,7 @@ class AuthNotifier extends Notifier<AuthState> {
   Future<bool> login(String token) async {
     state = state.copyWith(isValidating: true, errorMessage: () => null);
 
-    final client = ref.read(vndbClientProvider);
+    final client = VndbClient();
 
     try {
       final authInfo = await client.validateToken(token);

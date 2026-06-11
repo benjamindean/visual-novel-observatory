@@ -53,7 +53,7 @@ class _SynopsisSectionState extends State<SynopsisSection> {
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.textSecondary,
+                  color: context.appTextSecondary,
                   height: 1.5,
                 ),
               ),
@@ -65,7 +65,7 @@ class _SynopsisSectionState extends State<SynopsisSection> {
                     child: Text(
                       'More',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: AppTheme.accentTeal,
+                        color: context.appAccentTeal,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -79,7 +79,7 @@ class _SynopsisSectionState extends State<SynopsisSection> {
               Text(
                 cleanedText,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.textSecondary,
+                  color: context.appTextSecondary,
                   height: 1.5,
                 ),
               ),
@@ -91,7 +91,7 @@ class _SynopsisSectionState extends State<SynopsisSection> {
                     child: Text(
                       'Less',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: AppTheme.accentTeal,
+                        color: context.appAccentTeal,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

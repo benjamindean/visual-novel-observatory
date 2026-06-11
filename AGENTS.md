@@ -16,6 +16,7 @@ Styling & Formatting Rules
 3. **State Management**: Use `riverpod` for managing all application state.
 4. **Network Images Caching**: Use `cached_network_image` package for all network images in the application to optimize load times and save bandwidth.
 5. **Widget Atomicity**: Keep widgets as atomic as possible. Break down complex screen layouts and large build methods into small, focused, single-responsibility widgets.
+6. **Thumb-Stretch Awareness**: All primary actions and save/apply buttons should be thumb-stretch aware (e.g. placed at the bottom of screens or cards, stretched horizontally for easy one-handed access).
 
 ## Performance & Architecture Guidelines
 - **Architecture**:

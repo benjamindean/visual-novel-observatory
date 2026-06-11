@@ -1,7 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/api/vndb_client.dart';
 import '../models/visual_novel.dart';
+import '../models/vn_tag.dart';
+import '../models/vndb_label.dart';
+import '../models/vn_ulist_entry.dart';
 import '../repository/vn_repository.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../settings/providers/settings_provider.dart';
@@ -39,6 +44,7 @@ class VnFilterState {
   final double minRating; // 0.0 to 10.0
   final int minVotes;
   final bool showExplicitContent;
+  final List<VnTag> tags;
 
   VnFilterState({
     this.lang,
@@ -48,6 +54,7 @@ class VnFilterState {
     this.minRating = 7.0,
     this.minVotes = 50,
     this.showExplicitContent = false,
+    this.tags = const [],
   });
 
   VnFilterState copyWith({
@@ -58,6 +65,7 @@ class VnFilterState {
     double? minRating,
     int? minVotes,
     bool? showExplicitContent,
+    List<VnTag>? tags,
   }) {
     return VnFilterState(
       lang: lang != null ? lang() : this.lang,
@@ -67,6 +75,7 @@ class VnFilterState {
       minRating: minRating ?? this.minRating,
       minVotes: minVotes ?? this.minVotes,
       showExplicitContent: showExplicitContent ?? this.showExplicitContent,
+      tags: tags ?? this.tags,
     );
   }
 
@@ -77,7 +86,8 @@ class VnFilterState {
       devStatus == null &&
       minRating == 7.0 &&
       minVotes == 50 &&
-      !showExplicitContent;
+      !showExplicitContent &&
+      tags.isEmpty;
 
   List<dynamic> buildApiFilters() {
     final filters = <dynamic>[];
@@ -102,6 +112,10 @@ class VnFilterState {
     filters.add(['rating', '>=', (minRating * 10).round()]);
     filters.add(['votecount', '>=', minVotes]);
 
+    for (final tag in tags) {
+      filters.add(['tag', '=', tag.id]);
+    }
+
     return filters;
   }
 }
@@ -123,6 +137,41 @@ class VnFilterNotifier extends Notifier<VnFilterState> {
 
 final vnFilterProvider = NotifierProvider<VnFilterNotifier, VnFilterState>(
   VnFilterNotifier.new,
+);
+
+class VnSortState {
+  final String field;
+  final bool descending;
+
+  const VnSortState({required this.field, this.descending = true});
+
+  VnSortState copyWith({String? field, bool? descending}) {
+    return VnSortState(
+      field: field ?? this.field,
+      descending: descending ?? this.descending,
+    );
+  }
+}
+
+class VnSortNotifier extends Notifier<VnSortState> {
+  @override
+  VnSortState build() {
+    return const VnSortState(field: 'rating', descending: true);
+  }
+
+  void updateField(String field) {
+    final bool defaultDesc = field != 'title' && field != 'id';
+
+    state = VnSortState(field: field, descending: defaultDesc);
+  }
+
+  void toggleDirection() {
+    state = state.copyWith(descending: !state.descending);
+  }
+}
+
+final vnSortProvider = NotifierProvider<VnSortNotifier, VnSortState>(
+  VnSortNotifier.new,
 );
 
 // State representation for visual novel list
@@ -191,7 +240,12 @@ class VnListNotifier extends Notifier<VnListState> {
 
     // Listen to filter changes to reset list and refetch
     ref.listen<VnFilterState>(vnFilterProvider, (previous, next) {
-      resetAndFetch();
+      Future.microtask(() => resetAndFetch());
+    });
+
+    // Listen to sort changes to reset list and refetch
+    ref.listen<VnSortState>(vnSortProvider, (previous, next) {
+      Future.microtask(() => resetAndFetch());
     });
 
     ref.onDispose(() {
@@ -217,6 +271,7 @@ class VnListNotifier extends Notifier<VnListState> {
 
     final query = ref.read(searchQueryProvider);
     final filtersState = ref.read(vnFilterProvider);
+    final sortState = ref.read(vnSortProvider);
     final currentPage = state.page;
     final repository = ref.read(vnRepositoryProvider);
 
@@ -234,8 +289,8 @@ class VnListNotifier extends Notifier<VnListState> {
             ? ['and', ...apiFilters]
             : (apiFilters.isNotEmpty ? apiFilters.first : []),
         page: currentPage,
-        sort: query.trim().isEmpty ? 'rating' : null,
-        reverse: query.trim().isEmpty,
+        sort: query.trim().isEmpty ? sortState.field : null,
+        reverse: query.trim().isEmpty ? sortState.descending : true,
       );
 
       final List<VisualNovel> allVns = response['vns'] as List<VisualNovel>;
@@ -349,3 +404,315 @@ class VnListByTagNotifier extends Notifier<VnListState> {
 
 final vnListByTagProvider = NotifierProvider.autoDispose
     .family<VnListByTagNotifier, VnListState, String>(VnListByTagNotifier.new);
+
+class VnUlistState {
+  final VnUlistEntry? entry;
+  final bool isLoading;
+  final String? errorMessage;
+
+  const VnUlistState({this.entry, this.isLoading = false, this.errorMessage});
+
+  VnUlistState copyWith({
+    VnUlistEntry? Function()? entry,
+    bool? isLoading,
+    String? Function()? errorMessage,
+  }) {
+    return VnUlistState(
+      entry: entry != null ? entry() : this.entry,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
+    );
+  }
+}
+
+class UserUlistState {
+  final Map<String, VnUlistEntry> entries;
+  final bool isLoading;
+  final String? errorMessage;
+
+  const UserUlistState({
+    this.entries = const {},
+    this.isLoading = false,
+    this.errorMessage,
+  });
+
+  UserUlistState copyWith({
+    Map<String, VnUlistEntry>? entries,
+    bool? isLoading,
+    String? Function()? errorMessage,
+  }) {
+    return UserUlistState(
+      entries: entries ?? this.entries,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
+    );
+  }
+}
+
+class UserUlistNotifier extends Notifier<UserUlistState> {
+  @override
+  UserUlistState build() {
+    final auth = ref.watch(authProvider);
+
+    if (auth.isAuthenticated) {
+      Future.microtask(() => fetchAllEntries());
+    }
+
+    return const UserUlistState();
+  }
+
+  Future<void> fetchAllEntries() async {
+    state = state.copyWith(isLoading: true, errorMessage: () => null);
+
+    final repository = ref.read(vnRepositoryProvider);
+
+    try {
+      final list = <VnUlistEntry>[];
+
+      int page = 1;
+
+      bool hasMore = true;
+
+      while (hasMore) {
+        final data = await repository.getUserList(page: page);
+
+        final results = data['results'] as List? ?? [];
+
+        for (final item in results) {
+          list.add(VnUlistEntry.fromJson(item as Map<String, dynamic>));
+        }
+
+        hasMore = data['more'] as bool? ?? false;
+        page++;
+      }
+
+      final Map<String, VnUlistEntry> entriesMap = {
+        for (final entry in list) entry.id: entry,
+      };
+
+      state = state.copyWith(entries: entriesMap, isLoading: false);
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: () => e.toString(),
+      );
+    }
+  }
+
+  Future<void> updateVote(String vnId, int? voteScore) async {
+    final oldEntries = state.entries;
+
+    final currentEntry = oldEntries[vnId];
+
+    final currentLabels = currentEntry?.labels ?? const [];
+
+    final newEntry = VnUlistEntry(
+      id: vnId,
+      vote: voteScore,
+      labels: currentLabels,
+    );
+
+    final updatedEntries = Map<String, VnUlistEntry>.from(oldEntries);
+
+    updatedEntries[vnId] = newEntry;
+    state = state.copyWith(entries: updatedEntries);
+
+    final repository = ref.read(vnRepositoryProvider);
+
+    try {
+      await repository.updateUserListEntry(
+        vnId: vnId,
+        vote: voteScore,
+        updateVote: true,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        entries: oldEntries,
+        errorMessage: () => e.toString(),
+      );
+    }
+  }
+
+  Future<void> updateLabels(String vnId, List<int> labels) async {
+    final oldEntries = state.entries;
+
+    final currentEntry = oldEntries[vnId];
+
+    final currentVote = currentEntry?.vote;
+
+    final newEntry = VnUlistEntry(id: vnId, vote: currentVote, labels: labels);
+
+    final updatedEntries = Map<String, VnUlistEntry>.from(oldEntries);
+
+    updatedEntries[vnId] = newEntry;
+    state = state.copyWith(entries: updatedEntries);
+
+    final repository = ref.read(vnRepositoryProvider);
+
+    try {
+      await repository.updateUserListEntry(
+        vnId: vnId,
+        labels: labels,
+        updateLabels: true,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        entries: oldEntries,
+        errorMessage: () => e.toString(),
+      );
+    }
+  }
+}
+
+final userUlistProvider = NotifierProvider<UserUlistNotifier, UserUlistState>(
+  UserUlistNotifier.new,
+);
+
+final vnUlistProvider = Provider.autoDispose.family<VnUlistState, String>((
+  ref,
+  vnId,
+) {
+  final ulistState = ref.watch(userUlistProvider);
+
+  final entry = ulistState.entries[vnId];
+
+  return VnUlistState(
+    entry: entry,
+    isLoading: ulistState.isLoading,
+    errorMessage: ulistState.errorMessage,
+  );
+});
+
+final ulistLabelsProvider = FutureProvider<List<VndbLabel>>((ref) async {
+  final repository = ref.watch(vnRepositoryProvider);
+  final auth = ref.watch(authProvider);
+
+  if (!auth.isAuthenticated) {
+    return const [];
+  }
+
+  return repository.getUserListLabels();
+});
+
+class LocalTagsState {
+  final List<VnTag> tags;
+  final bool isLoading;
+  final String? errorMessage;
+  final double progress;
+
+  const LocalTagsState({
+    this.tags = const [],
+    this.isLoading = false,
+    this.errorMessage,
+    this.progress = 0.0,
+  });
+
+  LocalTagsState copyWith({
+    List<VnTag>? tags,
+    bool? isLoading,
+    String? Function()? errorMessage,
+    double? progress,
+  }) {
+    return LocalTagsState(
+      tags: tags ?? this.tags,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
+      progress: progress ?? this.progress,
+    );
+  }
+}
+
+class LocalTagsNotifier extends Notifier<LocalTagsState> {
+  @override
+  LocalTagsState build() {
+    Future.microtask(() => loadLocalTags());
+
+    return const LocalTagsState();
+  }
+
+  Future<void> loadLocalTags() async {
+    state = state.copyWith(isLoading: true, errorMessage: () => null);
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      final content = prefs.getString('vndb_tags_cache');
+
+      if (content != null) {
+        final List<dynamic> jsonList = jsonDecode(content) as List;
+
+        final List<VnTag> loadedTags = jsonList
+            .map((e) => VnTag.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+        state = state.copyWith(tags: loadedTags, isLoading: false);
+
+        return;
+      }
+    } catch (e) {
+      // fallback to api below
+    }
+
+    await fetchAndCacheAllTags();
+  }
+
+  Future<void> fetchAndCacheAllTags() async {
+    state = state.copyWith(
+      isLoading: true,
+      progress: 0.0,
+      errorMessage: () => null,
+    );
+
+    final repository = ref.read(vnRepositoryProvider);
+
+    final List<VnTag> allTags = [];
+
+    try {
+      int page = 1;
+
+      bool hasMore = true;
+
+      while (hasMore) {
+        final data = await repository.getTagsPage(page: page);
+
+        final results = data['results'] as List? ?? [];
+
+        for (final item in results) {
+          allTags.add(VnTag.fromJson(item as Map<String, dynamic>));
+        }
+
+        hasMore = data['more'] as bool? ?? false;
+        page++;
+
+        // There are around 31 pages total
+        final currentProgress = (page - 1) / 32.0;
+
+        state = state.copyWith(
+          progress: currentProgress > 1.0 ? 1.0 : currentProgress,
+        );
+
+        // Delay 50ms to prevent rate limits
+        await Future.delayed(const Duration(milliseconds: 50));
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+
+      final String jsonStr = jsonEncode(
+        allTags.map((e) => e.toJson()).toList(),
+      );
+
+      await prefs.setString('vndb_tags_cache', jsonStr);
+
+      state = state.copyWith(tags: allTags, isLoading: false, progress: 1.0);
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: () => e.toString(),
+      );
+    }
+  }
+}
+
+final localTagsProvider = NotifierProvider<LocalTagsNotifier, LocalTagsState>(
+  LocalTagsNotifier.new,
+);

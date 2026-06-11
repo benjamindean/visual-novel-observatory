@@ -44,9 +44,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Successfully logged in!'),
-          backgroundColor: AppTheme.accentTeal,
+        SnackBar(
+          content: const Text('Successfully logged in!'),
+          backgroundColor: context.appAccentTeal,
         ),
       );
 
@@ -62,7 +62,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Connect VNDB'),
-        backgroundColor: AppTheme.background,
+        backgroundColor: context.appBackground,
         elevation: 0,
         scrolledUnderElevation: 0,
       ),
@@ -73,25 +73,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 16),
-              _buildHeaderIcon(),
+              _buildHeaderIcon(context),
               const SizedBox(height: 24),
               Text(
                 'Observatory syncs with your VNDB account via a secure API token.',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyLarge?.copyWith(
-                  color: AppTheme.textSecondary,
+                  color: context.appTextSecondary,
                 ),
               ),
               const SizedBox(height: 32),
-              _buildInstructionsCard(theme),
+              _buildInstructionsCard(context, theme),
               const SizedBox(height: 32),
-              _buildTokenInputField(theme),
+              _buildTokenInputField(context, theme),
               const SizedBox(height: 24),
               if (authState.errorMessage != null) ...[
                 _buildErrorBanner(theme, authState.errorMessage!),
                 const SizedBox(height: 24),
               ],
-              _buildSubmitButton(authState),
+              _buildSubmitButton(context, authState),
             ],
           ),
         ),
@@ -99,27 +99,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Widget _buildHeaderIcon() {
+  Widget _buildHeaderIcon(BuildContext context) {
     return Center(
       child: Container(
         width: 80,
         height: 80,
         decoration: BoxDecoration(
-          color: AppTheme.accentTeal.withValues(alpha: 0.15),
+          color: context.appAccentTeal.withValues(alpha: 0.15),
           shape: BoxShape.circle,
         ),
-        child: const Icon(
+        child: Icon(
           Icons.vpn_key_rounded,
           size: 40,
-          color: AppTheme.accentTeal,
+          color: context.appAccentTeal,
         ),
       ),
     );
   }
 
-  Widget _buildInstructionsCard(ThemeData theme) {
+  Widget _buildInstructionsCard(BuildContext context, ThemeData theme) {
     return Card(
-      color: AppTheme.surface,
+      color: context.appSurface,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -132,14 +132,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            _buildStepRow('1', 'Go to the VNDB token creation page.'),
+            _buildStepRow(context, '1', 'Go to the VNDB token creation page.'),
             const SizedBox(height: 12),
             _buildStepRow(
+              context,
               '2',
               'Create a token named "Observatory" with at least listread (listwrite is required to modify list entries).',
             ),
             const SizedBox(height: 12),
             _buildStepRow(
+              context,
               '3',
               'Copy the generated token string and paste it below.',
             ),
@@ -147,15 +149,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             Center(
               child: TextButton.icon(
                 onPressed: _launchTokenUrl,
-                icon: const Icon(
+                icon: Icon(
                   Icons.open_in_new_rounded,
                   size: 18,
-                  color: AppTheme.accentTeal,
+                  color: context.appAccentTeal,
                 ),
-                label: const Text(
+                label: Text(
                   'Open VNDB Token Page',
                   style: TextStyle(
-                    color: AppTheme.accentTeal,
+                    color: context.appAccentTeal,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -167,7 +169,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Widget _buildStepRow(String stepNumber, String text) {
+  Widget _buildStepRow(BuildContext context, String stepNumber, String text) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -175,16 +177,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           width: 24,
           height: 24,
           alignment: Alignment.center,
-          decoration: const BoxDecoration(
-            color: AppTheme.searchField,
+          decoration: BoxDecoration(
+            color: context.appSearchField,
             shape: BoxShape.circle,
           ),
           child: Text(
             stepNumber,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: AppTheme.accentTeal,
+              color: context.appAccentTeal,
             ),
           ),
         ),
@@ -192,9 +194,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
-              color: AppTheme.textSecondary,
+              color: context.appTextSecondary,
               height: 1.4,
             ),
           ),
@@ -203,7 +205,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Widget _buildTokenInputField(ThemeData theme) {
+  Widget _buildTokenInputField(BuildContext context, ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -211,7 +213,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           'VNDB API Token',
           style: theme.textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.bold,
-            color: AppTheme.textPrimary,
+            color: context.appTextPrimary,
           ),
         ),
         const SizedBox(height: 8),
@@ -220,7 +222,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           obscureText: _obscureToken,
           autocorrect: false,
           enableSuggestions: false,
-          style: const TextStyle(color: Colors.white, fontFamily: 'monospace'),
+          style: TextStyle(
+            color: context.appTextPrimary,
+            fontFamily: 'monospace',
+          ),
           decoration: InputDecoration(
             hintText: 'xxxx-xxxxx-xxxxx-xxxx...',
             suffixIcon: IconButton(
@@ -271,12 +276,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Widget _buildSubmitButton(AuthState authState) {
+  Widget _buildSubmitButton(BuildContext context, AuthState authState) {
     return SizedBox(
       height: 54,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppTheme.accentTeal,
+          backgroundColor: context.appAccentTeal,
           foregroundColor: Colors.black,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(27),

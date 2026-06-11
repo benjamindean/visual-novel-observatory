@@ -19,6 +19,7 @@ abstract class VisualNovel with _$VisualNovel {
     @JsonKey(name: 'alttitle') String? altTitle,
     String? description,
     double? rating,
+    int? votecount,
     String? imageUrl,
     List<int>? imageDims,
     double? imageSexual,

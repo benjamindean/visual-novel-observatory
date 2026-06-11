@@ -17,10 +17,6 @@ class DetailHeader extends ConsumerWidget {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final settings = ref.watch(settingsProvider);
-
-    final developerName = vn.developers.isNotEmpty
-        ? vn.developers.first.name
-        : 'Unknown Developer';
     final shouldBlur =
         !settings.showExplicitContent &&
         vn.imageSexual != null &&
@@ -31,7 +27,7 @@ class DetailHeader extends ConsumerWidget {
         // Full width cover poster with gradient overlay
         SizedBox(
           width: double.infinity,
-          height: size.height * 0.45,
+          height: size.height * 0.6,
           child: vn.imageUrl != null
               ? ShaderMask(
                   shaderCallback: (rect) {
@@ -52,20 +48,20 @@ class DetailHeader extends ConsumerWidget {
                           imageUrl: vn.imageUrl!,
                           fit: BoxFit.cover,
                           placeholder: (context, url) => Container(
-                            color: AppTheme.surface,
-                            child: const Center(
+                            color: context.appSurface,
+                            child: Center(
                               child: CircularProgressIndicator(
-                                color: AppTheme.accentTeal,
+                                color: context.appAccentTeal,
                               ),
                             ),
                           ),
                           errorWidget: (context, url, error) => Container(
-                            color: AppTheme.surface,
-                            child: const Center(
+                            color: context.appSurface,
+                            child: Center(
                               child: Icon(
                                 Icons.broken_image,
                                 size: 64,
-                                color: AppTheme.textMuted,
+                                color: context.appTextMuted,
                               ),
                             ),
                           ),
@@ -106,12 +102,12 @@ class DetailHeader extends ConsumerWidget {
                   ),
                 )
               : Container(
-                  color: AppTheme.surface,
-                  child: const Center(
+                  color: context.appSurface,
+                  child: Center(
                     child: Icon(
                       Icons.image,
                       size: 64,
-                      color: AppTheme.textMuted,
+                      color: context.appTextMuted,
                     ),
                   ),
                 ),
@@ -144,29 +140,6 @@ class DetailHeader extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Developer Tag
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: AppTheme.accentTeal.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: AppTheme.accentTeal.withValues(alpha: 0.3),
-                  ),
-                ),
-                child: Text(
-                  developerName,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: AppTheme.accentTeal,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-
               // VN Title
               Text(
                 vn.title,
@@ -181,7 +154,7 @@ class DetailHeader extends ConsumerWidget {
                 Text(
                   vn.altTitle!,
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: AppTheme.textMuted,
+                    color: context.appTextMuted,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
@@ -190,7 +163,7 @@ class DetailHeader extends ConsumerWidget {
                 Text(
                   'Aliases: ${vn.aliases.join(", ")}',
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: AppTheme.textMuted,
+                    color: context.appTextMuted,
                   ),
                 ),
               ],
@@ -201,10 +174,17 @@ class DetailHeader extends ConsumerWidget {
                 Row(
                   children: [
                     RatingBadge(rating: vn.rating!, iconSize: 20, fontSize: 16),
-                    const SizedBox(width: 8),
-                    Text(
-                      'from ${vn.lengthMinutes ?? 0} length votes',
-                      style: theme.textTheme.labelSmall,
+                    Visibility(
+                      visible: vn.votecount != null && vn.votecount! > 0,
+                      child: Row(
+                        children: [
+                          const SizedBox(width: 8),
+                          Text(
+                            'from ${vn.votecount} votes',
+                            style: theme.textTheme.labelSmall,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

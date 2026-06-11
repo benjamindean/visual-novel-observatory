@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:share_plus/share_plus.dart';
+import '../models/visual_novel.dart';
 import '../providers/vn_providers.dart';
 import '../widgets/detail_header.dart';
 import '../widgets/metadata_row.dart';
 import '../widgets/synopsis_section.dart';
 import '../widgets/tag_chip.dart';
 import '../../../theme/app_theme.dart';
+import '../../auth/providers/auth_provider.dart';
 import '../../settings/providers/settings_provider.dart';
 
 class VnDetailScreen extends ConsumerWidget {
@@ -21,6 +24,20 @@ class VnDetailScreen extends ConsumerWidget {
     final detailAsync = ref.watch(vnDetailsProvider(vnId));
     final theme = Theme.of(context);
     final settings = ref.watch(settingsProvider);
+    final ulistState = ref.watch(vnUlistProvider(vnId));
+    final authState = ref.watch(authProvider);
+
+    ref.listen<VnUlistState>(vnUlistProvider(vnId), (previous, next) {
+      if (next.errorMessage != null &&
+          next.errorMessage != previous?.errorMessage) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('VNDB Error: ${next.errorMessage}'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    });
 
     return Scaffold(
       body: detailAsync.when(
@@ -39,52 +56,167 @@ class VnDetailScreen extends ConsumerWidget {
                     children: [
                       const SizedBox(height: 16),
 
-                      // Action buttons (Teal Play/Read button + Share/Heart)
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppTheme.accentTeal,
-                                foregroundColor: Colors.black,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 14,
+                      // Action buttons (My Labels, My Vote, Share)
+                      if (authState.isAuthenticated)
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: context.appSurface,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                    side: BorderSide(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.08,
+                                      ),
+                                    ),
+                                  ),
+                                  elevation: 0,
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24),
-                                ),
-                                elevation: 0,
-                              ),
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.play_arrow_rounded,
-                                size: 24,
-                              ),
-                              label: const Text(
-                                'Read Now',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                onPressed: ulistState.isLoading
+                                    ? null
+                                    : () => _showLabelsDialog(context, ref, vn),
+                                icon: ulistState.isLoading
+                                    ? SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: context.appAccentTeal,
+                                        ),
+                                      )
+                                    : Icon(
+                                        Icons.label_outline_rounded,
+                                        size: 20,
+                                        color: context.appAccentTeal,
+                                      ),
+                                label: Text(
+                                  ulistState.entry != null &&
+                                          ulistState.entry!.labels.isNotEmpty
+                                      ? 'Labels (${ulistState.entry!.labels.length})'
+                                      : 'My Labels',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          _ActionButton(
-                            icon: Icons.bookmark_border_rounded,
-                            onTap: () {},
-                          ),
-                          const SizedBox(width: 12),
-                          _ActionButton(
-                            icon: Icons.share_outlined,
-                            onTap: () {},
-                          ),
-                        ],
-                      ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: context.appSurface,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                    side: BorderSide(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.08,
+                                      ),
+                                    ),
+                                  ),
+                                  elevation: 0,
+                                ),
+                                onPressed: ulistState.isLoading
+                                    ? null
+                                    : () => _showVoteDialog(context, ref, vn),
+                                icon: ulistState.isLoading
+                                    ? SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: context.appAccentTeal,
+                                        ),
+                                      )
+                                    : Icon(
+                                        Icons.star_border_rounded,
+                                        size: 20,
+                                        color: context.appAccentTeal,
+                                      ),
+                                label: Text(
+                                  ulistState.entry?.vote != null
+                                      ? 'Vote: ${ulistState.entry!.vote! / 10}'
+                                      : 'My Vote',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            _ActionButton(
+                              icon: Icons.share_outlined,
+                              onTap: () {
+                                SharePlus.instance.share(
+                                  ShareParams(
+                                    text: 'https://vndb.org/${vn.id}',
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        )
+                      else
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: context.appAccentTeal,
+                                  foregroundColor: Colors.black,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
+                                  elevation: 0,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pushNamed('/login');
+                                },
+                                icon: const Icon(Icons.login_rounded, size: 20),
+                                label: const Text(
+                                  'Connect VNDB',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            _ActionButton(
+                              icon: Icons.share_outlined,
+                              onTap: () {
+                                SharePlus.instance.share(
+                                  ShareParams(
+                                    text: 'https://vndb.org/${vn.id}',
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       const SizedBox(height: 24),
 
-                      // Metadata Row (Release, Playtime, Platforms)
+                      // Metadata Row (Release, Playtime)
                       MetadataRow(vn: vn),
+                      const SizedBox(height: 20),
+
+                      // Platforms Section
+                      _buildPlatformBadges(context, theme, vn.platforms),
                       const SizedBox(height: 24),
 
                       // Synopsis Section (Expandable description)
@@ -139,25 +271,25 @@ class VnDetailScreen extends ConsumerWidget {
                                           height: 150,
                                           placeholder: (context, url) =>
                                               Container(
-                                                color: AppTheme.surface,
+                                                color: context.appSurface,
                                                 width: 240,
                                                 height: 150,
-                                                child: const Center(
+                                                child: Center(
                                                   child:
                                                       CircularProgressIndicator(
-                                                        color:
-                                                            AppTheme.accentTeal,
+                                                        color: context
+                                                            .appAccentTeal,
                                                       ),
                                                 ),
                                               ),
                                           errorWidget: (context, url, error) =>
                                               Container(
-                                                color: AppTheme.surface,
+                                                color: context.appSurface,
                                                 width: 240,
                                                 height: 150,
-                                                child: const Icon(
+                                                child: Icon(
                                                   Icons.broken_image,
-                                                  color: AppTheme.textMuted,
+                                                  color: context.appTextMuted,
                                                 ),
                                               ),
                                         ),
@@ -211,6 +343,7 @@ class VnDetailScreen extends ConsumerWidget {
                               .map(
                                 (tag) => TagChip(
                                   label: tag.name,
+                                  score: tag.rating,
                                   onTap: () {
                                     Navigator.of(context).pushNamed(
                                       '/tag-list',
@@ -241,10 +374,10 @@ class VnDetailScreen extends ConsumerWidget {
                           runSpacing: 8,
                           children: vn.extLinks.map((link) {
                             return ActionChip(
-                              avatar: const Icon(
+                              avatar: Icon(
                                 Icons.link_rounded,
                                 size: 16,
-                                color: AppTheme.accentTeal,
+                                color: context.appAccentTeal,
                               ),
                               label: Text(link.label),
                               onPressed: () async {
@@ -257,7 +390,7 @@ class VnDetailScreen extends ConsumerWidget {
                                   );
                                 }
                               },
-                              backgroundColor: AppTheme.surface,
+                              backgroundColor: context.appSurface,
                               side: BorderSide(
                                 color: Colors.white.withValues(alpha: 0.08),
                               ),
@@ -277,8 +410,8 @@ class VnDetailScreen extends ConsumerWidget {
             ),
           );
         },
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: AppTheme.accentTeal),
+        loading: () => Center(
+          child: CircularProgressIndicator(color: context.appAccentTeal),
         ),
         error: (error, stackTrace) => Padding(
           padding: const EdgeInsets.all(24.0),
@@ -300,7 +433,7 @@ class VnDetailScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.accentTeal,
+                    backgroundColor: context.appAccentTeal,
                   ),
                   onPressed: () => ref.refresh(vnDetailsProvider(vnId)),
                   child: const Text('Retry'),
@@ -310,6 +443,81 @@ class VnDetailScreen extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildPlatformBadges(
+    BuildContext context,
+    ThemeData theme,
+    List<String> platforms,
+  ) {
+    if (platforms.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final platformMeta = <String, (String, IconData)>{
+      'win': ('Windows', Icons.laptop_windows_rounded),
+      'swi': ('Nintendo Switch', Icons.sports_esports_rounded),
+      'ps4': ('PlayStation 4', Icons.gamepad_rounded),
+      'ps5': ('PlayStation 5', Icons.gamepad_rounded),
+      'ps3': ('PlayStation 3', Icons.gamepad_rounded),
+      'psv': ('PlayStation Vita', Icons.tablet_android_rounded),
+      'psp': ('PlayStation Portable', Icons.tablet_android_rounded),
+      'and': ('Android', Icons.android_rounded),
+      'ios': ('iOS', Icons.phone_iphone_rounded),
+      'mac': ('macOS', Icons.laptop_mac_rounded),
+      'lin': ('Linux', Icons.terminal_rounded),
+      'web': ('Web Browser', Icons.language_rounded),
+    };
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'PLATFORMS',
+          style: theme.textTheme.labelSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: context.appTextMuted,
+            letterSpacing: 1,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: platforms.map((platformCode) {
+            final meta =
+                platformMeta[platformCode.toLowerCase()] ??
+                (platformCode.toUpperCase(), Icons.gamepad_rounded);
+
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: context.appSurface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: context.appTextPrimary.withValues(alpha: 0.05),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(meta.$2, size: 16, color: context.appAccentTeal),
+                  const SizedBox(width: 8),
+                  Text(
+                    meta.$1,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: context.appTextPrimary,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }
@@ -328,12 +536,259 @@ class _ActionButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: AppTheme.surface,
+          color: context.appSurface,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+          border: Border.all(
+            color: context.appTextPrimary.withValues(alpha: 0.08),
+          ),
         ),
-        child: Icon(icon, color: Colors.white, size: 22),
+        child: Icon(icon, color: context.appTextPrimary, size: 22),
       ),
     );
   }
+}
+
+const Map<int, String> _ratingDescriptions = {
+  10: 'Masterpiece',
+  9: 'Excellent',
+  8: 'Very good',
+  7: 'Good',
+  6: 'Decent',
+  5: 'Average',
+  4: 'Bad',
+  3: 'Very bad',
+  2: 'Horrible',
+  1: 'Worst ever',
+};
+
+void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Consumer(
+        builder: (context, ref, child) {
+          final labelsAsync = ref.watch(ulistLabelsProvider);
+          final ulistState = ref.watch(vnUlistProvider(vn.id));
+
+          return AlertDialog(
+            backgroundColor: context.appSurface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: Text(
+              'My Labels',
+              style: TextStyle(
+                color: context.appTextPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: labelsAsync.when(
+                data: (allLabels) {
+                  if (allLabels.isEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: Text(
+                        'No labels found.',
+                        style: TextStyle(color: context.appTextMuted),
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  }
+
+                  final selectedLabels = ulistState.entry?.labels ?? const [];
+
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: allLabels.length,
+                    itemBuilder: (context, index) {
+                      final label = allLabels[index];
+                      final isSelected = selectedLabels.contains(label.id);
+
+                      return CheckboxListTile(
+                        activeColor: context.appAccentTeal,
+                        checkColor: Colors.black,
+                        title: Text(
+                          label.label,
+                          style: TextStyle(color: context.appTextPrimary),
+                        ),
+                        value: isSelected,
+                        onChanged: ulistState.isLoading
+                            ? null
+                            : (checked) {
+                                final newLabels = List<int>.from(
+                                  selectedLabels,
+                                );
+
+                                if (checked == true) {
+                                  newLabels.add(label.id);
+                                } else {
+                                  newLabels.remove(label.id);
+                                }
+
+                                ref
+                                    .read(userUlistProvider.notifier)
+                                    .updateLabels(vn.id, newLabels);
+                              },
+                      );
+                    },
+                  );
+                },
+                loading: () => Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: CircularProgressIndicator(
+                      color: context.appAccentTeal,
+                    ),
+                  ),
+                ),
+                error: (err, stack) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 24.0),
+                  child: Text(
+                    'Error: $err',
+                    style: const TextStyle(color: Colors.redAccent),
+                  ),
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  'Close',
+                  style: TextStyle(color: context.appAccentTeal),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}
+
+void _showVoteDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Consumer(
+        builder: (context, ref, child) {
+          final ulistState = ref.watch(vnUlistProvider(vn.id));
+          final currentVote = ulistState.entry?.vote != null
+              ? (ulistState.entry!.vote! / 10).round()
+              : null;
+
+          return AlertDialog(
+            backgroundColor: context.appSurface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: Text(
+              'My Vote',
+              style: TextStyle(
+                color: context.appTextPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  if (currentVote != null) ...[
+                    ListTile(
+                      leading: Icon(Icons.star, color: context.appAccentTeal),
+                      title: Text(
+                        'Current Vote: $currentVote (${_ratingDescriptions[currentVote]})',
+                        style: TextStyle(
+                          color: context.appTextPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const Divider(color: Colors.white12),
+                  ],
+                  ..._ratingDescriptions.entries.map((entry) {
+                    final score = entry.key;
+                    final label = entry.value;
+                    final isSelected = currentVote == score;
+
+                    return ListTile(
+                      leading: Icon(
+                        isSelected
+                            ? Icons.star_rounded
+                            : Icons.star_border_rounded,
+                        color: isSelected
+                            ? context.appAccentTeal
+                            : context.appTextMuted,
+                      ),
+                      title: Text(
+                        '$score - $label',
+                        style: TextStyle(
+                          color: isSelected
+                              ? context.appTextPrimary
+                              : context.appTextMuted,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                      ),
+                      trailing: isSelected
+                          ? Icon(
+                              Icons.check_circle_outline,
+                              color: context.appAccentTeal,
+                            )
+                          : null,
+                      onTap: ulistState.isLoading
+                          ? null
+                          : () {
+                              ref
+                                  .read(userUlistProvider.notifier)
+                                  .updateVote(vn.id, score * 10);
+                              Navigator.of(context).pop();
+                            },
+                    );
+                  }),
+                  if (currentVote != null) ...[
+                    const Divider(color: Colors.white12),
+                    ListTile(
+                      leading: const Icon(
+                        Icons.delete_outline_rounded,
+                        color: Colors.redAccent,
+                      ),
+                      title: const Text(
+                        'Clear Vote',
+                        style: TextStyle(
+                          color: Colors.redAccent,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onTap: ulistState.isLoading
+                          ? null
+                          : () {
+                              ref
+                                  .read(userUlistProvider.notifier)
+                                  .updateVote(vn.id, null);
+                              Navigator.of(context).pop();
+                            },
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: context.appAccentTeal),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
 }

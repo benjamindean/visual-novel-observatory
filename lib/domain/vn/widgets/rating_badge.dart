@@ -18,12 +18,12 @@ class RatingBadge extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.star_rounded, color: AppTheme.accentAmber, size: iconSize),
+        Icon(Icons.star_rounded, color: context.appAccentAmber, size: iconSize),
         const SizedBox(width: 4),
         Text(
           rating.toStringAsFixed(1),
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
-            color: AppTheme.accentAmber,
+            color: context.appAccentAmber,
             fontSize: fontSize,
             fontWeight: FontWeight.bold,
           ),
