@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../models/vn_tag.dart';
 import 'tag_chip.dart';
-import '../../theme/app_theme.dart';
+import 'expand_toggle_button.dart';
 import '../../settings/providers/settings_provider.dart';
 
 class TagsSection extends ConsumerStatefulWidget {
@@ -72,34 +72,13 @@ class _TagsSectionState extends ConsumerState<TagsSection> {
         ),
         if (displayTagsList.length > widget.initialLimit) ...[
           const SizedBox(height: 12),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-              onPressed: () {
-                setState(() {
-                  _areTagsExpanded = !_areTagsExpanded;
-                });
-              },
-              icon: Icon(
-                _areTagsExpanded
-                    ? Icons.keyboard_arrow_up_rounded
-                    : Icons.keyboard_arrow_down_rounded,
-                color: context.appAccentTeal,
-                size: 20,
-              ),
-              label: Text(
-                _areTagsExpanded ? 'Show Less' : 'Show More',
-                style: TextStyle(
-                  color: context.appAccentTeal,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: const Size(50, 30),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-            ),
+          ExpandToggleButton(
+            isExpanded: _areTagsExpanded,
+            onPressed: () {
+              setState(() {
+                _areTagsExpanded = !_areTagsExpanded;
+              });
+            },
           ),
         ],
       ],

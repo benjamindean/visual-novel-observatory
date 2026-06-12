@@ -31,7 +31,7 @@ class VnDetailScreen extends ConsumerWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('VNDB Error: ${next.errorMessage}'),
-            backgroundColor: Colors.redAccent,
+            backgroundColor: context.colorScheme.error,
           ),
         );
       }
@@ -112,8 +112,8 @@ class VnDetailScreen extends ConsumerWidget {
                                     alignment: Alignment.center,
                                     child: Text(
                                       '${ulistState.entry!.labels.length}',
-                                      style: const TextStyle(
-                                        color: Colors.black,
+                                      style: TextStyle(
+                                        color: context.colorScheme.onPrimary,
                                         fontSize: 11,
                                         fontWeight: FontWeight.w900,
                                       ),
@@ -179,8 +179,8 @@ class VnDetailScreen extends ConsumerWidget {
                                     alignment: Alignment.center,
                                     child: Text(
                                       '${(ulistState.entry!.vote! / 10).toInt()}',
-                                      style: const TextStyle(
-                                        color: Colors.black,
+                                      style: TextStyle(
+                                        color: context.colorScheme.onPrimary,
                                         fontSize: 11,
                                         fontWeight: FontWeight.w900,
                                       ),
@@ -414,7 +414,7 @@ void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
 
                             return CheckboxListTile(
                               activeColor: context.appAccentTeal,
-                              checkColor: Colors.black,
+                              checkColor: context.colorScheme.onPrimary,
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 20.0,
                               ),

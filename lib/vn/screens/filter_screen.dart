@@ -22,6 +22,8 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
   double _minRating = 7.0;
   int _minVotes = 50;
   List<VnTag> _selectedTags = [];
+  String _selectedSortField = 'rating';
+  bool _selectedSortDescending = true;
 
   @override
   void initState() {
@@ -29,6 +31,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
 
     final currentFilters = ref.read(vnFilterProvider);
     final settings = ref.read(settingsProvider);
+    final currentSort = ref.read(vnSortProvider);
     final tags = currentFilters.tags;
 
     _selectedLang = currentFilters.lang;
@@ -37,6 +40,8 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
     _selectedDevStatus = currentFilters.devStatus;
     _minRating = currentFilters.minRating;
     _minVotes = currentFilters.minVotes;
+    _selectedSortField = currentSort.field;
+    _selectedSortDescending = currentSort.descending;
 
     if (!settings.showExplicitContent) {
       _selectedTags = tags.where((tag) => tag.category != 'ero').toList();
@@ -56,6 +61,8 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
       _minRating = 7.0;
       _minVotes = 50;
       _selectedTags = [];
+      _selectedSortField = 'rating';
+      _selectedSortDescending = true;
     });
   }
 
@@ -78,6 +85,13 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
             showExplicitContent: showExplicit,
             tags: tags,
           ),
+        );
+
+    ref
+        .read(vnSortProvider.notifier)
+        .updateSort(
+          field: _selectedSortField,
+          descending: _selectedSortDescending,
         );
 
     context.pop();
@@ -113,6 +127,49 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16.0),
+              // Sort Section
+              _buildSectionHeader(context, 'Sort By'),
+              _buildChipRow<String>(
+                context,
+                items: {
+                  'rating': 'Rating',
+                  'votecount': 'Votes',
+                  'released': 'Release Date',
+                  'title': 'Title',
+                },
+                selectedValue: _selectedSortField,
+                onSelected: (val) {
+                  if (val != null) {
+                    setState(() {
+                      _selectedSortField = val;
+                      _selectedSortDescending = val != 'title' && val != 'id';
+                    });
+                  }
+                },
+              ),
+              const SizedBox(height: 20.0),
+
+              _buildSectionHeader(context, 'Sort Direction'),
+              _buildChipRow<bool>(
+                context,
+                items: {true: 'Descending', false: 'Ascending'},
+                selectedValue: _selectedSortDescending,
+                onSelected: (val) {
+                  if (val != null) {
+                    setState(() {
+                      _selectedSortDescending = val;
+                    });
+                  }
+                },
+              ),
+              const SizedBox(height: 20.0),
+
+              Divider(
+                color: context.appTextPrimary.withValues(alpha: 0.08),
+                height: 1.0,
+              ),
+              const SizedBox(height: 20.0),
+
               // Language Section
               _buildSectionHeader(context, 'Language'),
               _buildChipRow<String>(

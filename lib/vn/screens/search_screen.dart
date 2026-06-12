@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/vn_providers.dart';
 import '../widgets/vn_card.dart';
+import '../widgets/app_search_input.dart';
 import '../../theme/app_theme.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
@@ -55,149 +56,74 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     Widget buildBody() {
       // 1. Loading State (when no vns are loaded yet)
       if (searchState.isLoading && searchState.vns.isEmpty) {
-        return CustomScrollView(
-          physics: const NeverScrollableScrollPhysics(),
-          slivers: [
-            SliverAppBar(
-              floating: true,
-              snap: false,
-              pinned: false,
-              elevation: 0,
-              scrolledUnderElevation: 0,
-              backgroundColor: context.appBackground,
-              titleSpacing: 20,
-              title: Text(
-                'Search',
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: -0.5,
-                ),
-              ),
-            ),
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: CircularProgressIndicator(color: context.appAccentTeal),
-              ),
-            ),
-          ],
+        return Center(
+          child: CircularProgressIndicator(color: context.appAccentTeal),
         );
       }
 
       // 2. Error State (when no vns are loaded yet)
       if (searchState.errorMessage != null && searchState.vns.isEmpty) {
-        return CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverAppBar(
-              floating: true,
-              snap: false,
-              pinned: false,
-              elevation: 0,
-              scrolledUnderElevation: 0,
-              backgroundColor: context.appBackground,
-              titleSpacing: 20,
-              title: Text(
-                'Search',
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: -0.5,
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline_rounded,
+                  size: 48,
+                  color: context.colorScheme.error,
                 ),
-              ),
-            ),
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.error_outline_rounded,
-                        size: 48,
-                        color: Colors.redAccent,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        searchState.errorMessage!,
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: context.appAccentTeal,
-                          foregroundColor: context.colorScheme.onPrimary,
-                        ),
-                        onPressed: () =>
-                            ref.read(vnSearchProvider.notifier).resetAndFetch(),
-                        child: const Text('Retry'),
-                      ),
-                    ],
+                const SizedBox(height: 16),
+                Text(searchState.errorMessage!, textAlign: TextAlign.center),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: context.appAccentTeal,
+                    foregroundColor: context.colorScheme.onPrimary,
                   ),
+                  onPressed: () =>
+                      ref.read(vnSearchProvider.notifier).resetAndFetch(),
+                  child: const Text('Retry'),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         );
       }
 
       // 3. Initial Empty State (when search query is empty)
       if (query.trim().isEmpty) {
         if (recentVns.isEmpty) {
-          return CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              SliverAppBar(
-                floating: true,
-                snap: false,
-                pinned: false,
-                elevation: 0,
-                scrolledUnderElevation: 0,
-                backgroundColor: context.appBackground,
-                titleSpacing: 20,
-                title: Text(
-                  'Search',
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: -0.5,
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.search_rounded,
+                    size: 64,
+                    color: context.appTextMuted,
                   ),
-                ),
-              ),
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.search_rounded,
-                          size: 64,
-                          color: context.appTextMuted,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Search Visual Novels',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Search results and your recently viewed titles will appear here.',
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: context.appTextMuted,
-                          ),
-                        ),
-                      ],
+                  const SizedBox(height: 16),
+                  Text(
+                    'Search Visual Novels',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Search results and your recently viewed titles will appear here.',
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: context.appTextMuted,
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           );
         }
 
@@ -205,25 +131,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         return CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            SliverAppBar(
-              floating: true,
-              snap: false,
-              pinned: false,
-              elevation: 0,
-              scrolledUnderElevation: 0,
-              backgroundColor: context.appBackground,
-              titleSpacing: 20,
-              title: Text(
-                'Search',
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: -0.5,
-                ),
-              ),
-            ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20.0, 0.0, 16.0, 8.0),
+                padding: const EdgeInsets.fromLTRB(20.0, 12.0, 16.0, 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -267,62 +177,40 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 }, childCount: recentVns.length),
               ),
             ),
+            // Padding to ensure grid items scroll past the floating bottom bar
+            const SliverToBoxAdapter(child: SizedBox(height: 90)),
           ],
         );
       }
 
       // 4. No Results Found State
       if (searchState.vns.isEmpty) {
-        return CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverAppBar(
-              floating: true,
-              snap: false,
-              pinned: false,
-              elevation: 0,
-              scrolledUnderElevation: 0,
-              backgroundColor: context.appBackground,
-              titleSpacing: 20,
-              title: Text(
-                'Search',
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: -0.5,
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.search_off_rounded,
+                  size: 64,
+                  color: context.appTextMuted,
                 ),
-              ),
-            ),
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.search_off_rounded,
-                        size: 64,
-                        color: context.appTextMuted,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No results found',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Try searching for something else.',
-                        style: TextStyle(color: context.appTextMuted),
-                      ),
-                    ],
+                const SizedBox(height: 16),
+                Text(
+                  'No results found',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
+                const SizedBox(height: 8),
+                Text(
+                  'Try searching for something else.',
+                  style: TextStyle(color: context.appTextMuted),
+                ),
+              ],
             ),
-          ],
+          ),
         );
       }
 
@@ -331,24 +219,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         controller: _scrollController,
         physics: const BouncingScrollPhysics(),
         slivers: [
-          SliverAppBar(
-            floating: true,
-            snap: false,
-            pinned: false,
-            elevation: 0,
-            scrolledUnderElevation: 0,
-            backgroundColor: context.appBackground,
-            titleSpacing: 20,
-            title: Text(
-              'Search',
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                letterSpacing: -0.5,
-              ),
-            ),
-          ),
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -385,40 +257,43 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ),
               ),
             ),
+          // Padding to ensure grid items scroll past the floating bottom bar
+          const SliverToBoxAdapter(child: SizedBox(height: 90)),
         ],
       );
     }
 
     return Scaffold(
       body: SafeArea(
-        bottom: false,
-        child: Column(
+        child: Stack(
           children: [
-            Expanded(child: buildBody()),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 8.0,
-              ),
-              child: TextField(
-                controller: _searchController,
-                onChanged: (val) {
-                  ref.read(searchScreenQueryProvider.notifier).update(val);
-                },
-                decoration: InputDecoration(
-                  hintText: 'Search a title...',
-                  prefixIcon: const Icon(Icons.search_rounded),
-                  suffixIcon: _searchController.text.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear_rounded),
-                          onPressed: () {
-                            _searchController.clear();
-                            ref
-                                .read(searchScreenQueryProvider.notifier)
-                                .update('');
-                          },
-                        )
-                      : null,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 8.0),
+                  child: Text(
+                    'Search',
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                ),
+                Expanded(child: buildBody()),
+              ],
+            ),
+            // Floating organic bottom search bar (thumb-stretch aware)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                child: AppSearchInput(
+                  controller: _searchController,
+                  onChanged: (val) {
+                    ref.read(searchScreenQueryProvider.notifier).update(val);
+                  },
+                  hintText: 'Search visual novels...',
                 ),
               ),
             ),

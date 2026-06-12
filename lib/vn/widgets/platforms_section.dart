@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_theme.dart';
+import 'app_chip.dart';
 
 class PlatformsSection extends StatelessWidget {
   final List<String> platforms;
@@ -47,28 +47,7 @@ class PlatformsSection extends StatelessWidget {
                 platformMeta[platformCode.toLowerCase()] ??
                 (platformCode.toUpperCase(), Icons.gamepad_rounded);
 
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: context.appSurface,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(meta.$2, size: 16, color: context.appAccentTeal),
-                  const SizedBox(width: 8),
-                  Text(
-                    meta.$1,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: context.appTextPrimary,
-                    ),
-                  ),
-                ],
-              ),
-            );
+            return AppChip(label: meta.$1, leadingIcon: meta.$2);
           }).toList(),
         ),
       ],

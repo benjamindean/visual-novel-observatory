@@ -7,6 +7,21 @@ class MetadataRow extends StatelessWidget {
 
   const MetadataRow({super.key, required this.vn});
 
+  static const _months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+
   String _formatReleaseDate(String? released) {
     if (released == null || released == 'TBA') {
       return 'TBA';
@@ -19,41 +34,13 @@ class MetadataRow extends StatelessWidget {
         final year = parts[0];
         final month = int.parse(parts[1]);
         final day = int.parse(parts[2]);
-        final months = [
-          'Jan',
-          'Feb',
-          'Mar',
-          'Apr',
-          'May',
-          'Jun',
-          'Jul',
-          'Aug',
-          'Sep',
-          'Oct',
-          'Nov',
-          'Dec',
-        ];
 
-        return '${months[month - 1]} $day, $year';
+        return '${_months[month - 1]} $day, $year';
       } else if (parts.length == 2) {
         final year = parts[0];
         final month = int.parse(parts[1]);
-        final months = [
-          'Jan',
-          'Feb',
-          'Mar',
-          'Apr',
-          'May',
-          'Jun',
-          'Jul',
-          'Aug',
-          'Sep',
-          'Oct',
-          'Nov',
-          'Dec',
-        ];
 
-        return '${months[month - 1]} $year';
+        return '${_months[month - 1]} $year';
       }
     } catch (_) {}
 

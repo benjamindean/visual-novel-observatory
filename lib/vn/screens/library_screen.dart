@@ -305,10 +305,10 @@ class LibraryScreen extends ConsumerWidget {
                                   alignment: Alignment.center,
                                   child: Text(
                                     '$count',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.w900,
-                                      color: Colors.black,
+                                      color: context.colorScheme.onPrimary,
                                     ),
                                   ),
                                 ),
@@ -379,10 +379,10 @@ class LibraryScreen extends ConsumerWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.error_outline_rounded,
                           size: 48,
-                          color: Colors.redAccent,
+                          color: context.colorScheme.error,
                         ),
                         const SizedBox(height: 16),
                         Text(err.toString(), textAlign: TextAlign.center),

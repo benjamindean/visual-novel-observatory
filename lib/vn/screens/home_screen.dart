@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/vn_providers.dart';
 import '../widgets/vn_card.dart';
-import '../widgets/sort_menu.dart';
 import '../../theme/app_theme.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../settings/providers/settings_provider.dart';
@@ -87,8 +86,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                       ),
                       actions: [
-                        const SortMenu(),
-                        const SizedBox(width: 8),
                         Stack(
                           clipBehavior: Clip.none,
                           children: [
@@ -175,10 +172,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.error_outline,
                                   size: 48,
-                                  color: Colors.redAccent,
+                                  color: context.colorScheme.error,
                                 ),
                                 const SizedBox(height: 16),
                                 Text(

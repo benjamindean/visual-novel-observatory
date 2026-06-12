@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/vn_tag.dart';
 import '../providers/vn_providers.dart';
+import '../widgets/app_search_input.dart';
 import '../../theme/app_theme.dart';
 import '../../settings/providers/settings_provider.dart';
 
@@ -167,175 +168,177 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                 ),
               ),
             )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+          : Stack(
               children: [
-                // Selected Tags wrap section
-                if (_selectedTags.isNotEmpty) ...[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 8.0,
-                    ),
-                    child: Text(
-                      'SELECTED TAGS (${_selectedTags.length})',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: context.appTextMuted,
-                        letterSpacing: 1.0,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    constraints: const BoxConstraints(maxHeight: 120),
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: _selectedTags.map((tag) {
-                          return InputChip(
-                            label: Text(tag.name),
-                            onDeleted: () => _toggleTag(tag),
-                            deleteIcon: const Icon(
-                              Icons.cancel_rounded,
-                              size: 16,
-                              color: Colors.white70,
-                            ),
-
-                            labelStyle: TextStyle(
-                              color: context.appAccentTeal,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                ],
-
-                // Search results
-                Expanded(
-                  child: displayTags.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.tag_rounded,
-                                size: 64,
-                                color: context.appTextMuted,
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                _searchController.text.isEmpty
-                                    ? 'No tags loaded'
-                                    : 'No tags found matching "${_searchController.text}"',
-                                style: TextStyle(
-                                  color: context.appTextMuted,
-                                  fontSize: 16,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Selected Tags wrap section
+                    if (_selectedTags.isNotEmpty) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8.0,
+                        ),
+                        child: Text(
+                          'SELECTED TAGS (${_selectedTags.length})',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: context.appTextMuted,
+                            letterSpacing: 1.0,
                           ),
-                        )
-                      : ListView.builder(
+                        ),
+                      ),
+                      Container(
+                        constraints: const BoxConstraints(maxHeight: 120),
+                        child: SingleChildScrollView(
                           physics: const BouncingScrollPhysics(),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                            vertical: 8.0,
-                          ),
-                          itemCount: displayTags.length,
-                          itemBuilder: (context, index) {
-                            final tag = displayTags[index];
-                            final isSelected = _selectedTags.any(
-                              (t) => t.id == tag.id,
-                            );
-
-                            return Container(
-                              margin: const EdgeInsets.only(bottom: 8.0),
-                              child: Material(
-                                color: isSelected
-                                    ? context.colorScheme.surfaceContainerHigh
-                                    : context.appSurface,
-                                clipBehavior: Clip.antiAlias,
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: _selectedTags.map((tag) {
+                              return InputChip(
+                                label: Text(tag.name),
+                                onDeleted: () => _toggleTag(tag),
+                                deleteIcon: Icon(
+                                  Icons.cancel_rounded,
+                                  size: 16,
+                                  color: context.appTextMuted,
+                                ),
+                                labelStyle: TextStyle(
+                                  color: context.appAccentTeal,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                child: ListTile(
-                                  leading: Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: isSelected
-                                          ? context.colorScheme.primaryContainer
-                                          : context
-                                                .colorScheme
-                                                .surfaceContainer,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      Icons.tag_rounded,
-                                      size: 18,
-                                      color: isSelected
-                                          ? context.appAccentTeal
-                                          : context.appTextSecondary,
-                                    ),
-                                  ),
-                                  title: Text(
-                                    tag.name,
-                                    style: TextStyle(
-                                      color: isSelected
-                                          ? Colors.white
-                                          : context.appTextPrimary,
-                                      fontWeight: isSelected
-                                          ? FontWeight.bold
-                                          : FontWeight.w500,
-                                    ),
-                                  ),
-                                  trailing: Checkbox(
-                                    activeColor: context.appAccentTeal,
-                                    checkColor: Colors.black,
-                                    value: isSelected,
-                                    onChanged: (_) => _toggleTag(tag),
-                                  ),
-                                  onTap: () => _toggleTag(tag),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 4,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
+                              );
+                            }).toList(),
+                          ),
                         ),
+                      ),
+                    ],
+
+                    // Search results
+                    Expanded(
+                      child: displayTags.isEmpty
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.tag_rounded,
+                                    size: 64,
+                                    color: context.appTextMuted,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    _searchController.text.isEmpty
+                                        ? 'No tags loaded'
+                                        : 'No tags found matching "${_searchController.text}"',
+                                    style: TextStyle(
+                                      color: context.appTextMuted,
+                                      fontSize: 16,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            )
+                          : ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              padding: const EdgeInsets.fromLTRB(
+                                16.0,
+                                8.0,
+                                16.0,
+                                90.0,
+                              ),
+                              itemCount: displayTags.length,
+                              itemBuilder: (context, index) {
+                                final tag = displayTags[index];
+                                final isSelected = _selectedTags.any(
+                                  (t) => t.id == tag.id,
+                                );
+
+                                return Container(
+                                  margin: const EdgeInsets.only(bottom: 8.0),
+                                  child: Material(
+                                    color: isSelected
+                                        ? context
+                                              .colorScheme
+                                              .surfaceContainerHigh
+                                        : context.appSurface,
+                                    clipBehavior: Clip.antiAlias,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: ListTile(
+                                      leading: Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: isSelected
+                                              ? context
+                                                    .colorScheme
+                                                    .primaryContainer
+                                              : context
+                                                    .colorScheme
+                                                    .surfaceContainer,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.tag_rounded,
+                                          size: 18,
+                                          color: isSelected
+                                              ? context.appAccentTeal
+                                              : context.appTextSecondary,
+                                        ),
+                                      ),
+                                      title: Text(
+                                        tag.name,
+                                        style: TextStyle(
+                                          color: isSelected
+                                              ? context
+                                                    .colorScheme
+                                                    .onPrimaryContainer
+                                              : context.appTextPrimary,
+                                          fontWeight: isSelected
+                                              ? FontWeight.bold
+                                              : FontWeight.w500,
+                                        ),
+                                      ),
+                                      trailing: Checkbox(
+                                        activeColor: context.appAccentTeal,
+                                        checkColor:
+                                            context.colorScheme.onPrimary,
+                                        value: isSelected,
+                                        onChanged: (_) => _toggleTag(tag),
+                                      ),
+                                      onTap: () => _toggleTag(tag),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 4,
+                                          ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: 8.0,
-                  ),
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: _performSearch,
-                    decoration: InputDecoration(
+                // Floating organic bottom search bar (thumb-stretch aware)
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                    child: AppSearchInput(
+                      controller: _searchController,
+                      onChanged: _performSearch,
                       hintText:
                           'Search tags (e.g. Magic, Female Protagonist)...',
-                      prefixIcon: const Icon(Icons.search_rounded),
-                      suffixIcon: _searchController.text.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear_rounded),
-                              onPressed: () {
-                                _searchController.clear();
-                                _performSearch('');
-                              },
-                            )
-                          : null,
                     ),
                   ),
                 ),

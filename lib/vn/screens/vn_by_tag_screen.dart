@@ -45,7 +45,7 @@ class _VnByTagScreenState extends ConsumerState<VnByTagScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.tagName),
-        backgroundColor: Colors.transparent,
+        backgroundColor: context.appBackground,
         elevation: 0,
         leading: IconButton(
           icon: Icon(
@@ -82,10 +82,10 @@ class _VnByTagScreenState extends ConsumerState<VnByTagScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.error_outline,
                             size: 48,
-                            color: Colors.redAccent,
+                            color: context.colorScheme.error,
                           ),
                           const SizedBox(height: 16),
                           Text(

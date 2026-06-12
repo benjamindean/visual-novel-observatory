@@ -321,6 +321,10 @@ class VnSortNotifier extends Notifier<VnSortState> {
   void toggleDirection() {
     state = state.copyWith(descending: !state.descending);
   }
+
+  void updateSort({required String field, required bool descending}) {
+    state = VnSortState(field: field, descending: descending);
+  }
 }
 
 final vnSortProvider = NotifierProvider<VnSortNotifier, VnSortState>(

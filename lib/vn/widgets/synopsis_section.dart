@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'expand_toggle_button.dart';
 import '../../theme/app_theme.dart';
 
 class SynopsisSection extends StatefulWidget {
@@ -60,17 +61,11 @@ class _SynopsisSectionState extends State<SynopsisSection> {
                 ),
               ),
               if (isLong)
-                GestureDetector(
-                  onTap: () => setState(() => _isExpanded = true),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
-                    child: Text(
-                      'More',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: context.appAccentTeal,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: ExpandToggleButton(
+                    isExpanded: false,
+                    onPressed: () => setState(() => _isExpanded = true),
                   ),
                 ),
             ],
@@ -86,17 +81,11 @@ class _SynopsisSectionState extends State<SynopsisSection> {
                 ),
               ),
               if (isLong)
-                GestureDetector(
-                  onTap: () => setState(() => _isExpanded = false),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
-                    child: Text(
-                      'Less',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: context.appAccentTeal,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: ExpandToggleButton(
+                    isExpanded: true,
+                    onPressed: () => setState(() => _isExpanded = false),
                   ),
                 ),
             ],
