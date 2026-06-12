@@ -99,10 +99,14 @@ abstract class VisualNovel with _$VisualNovel {
 
   // Helper to format release date
   String get releaseYear {
-    if (released == null || released == 'TBA') return 'TBA';
+    if (released == null || released == 'TBA') {
+      return 'TBA';
+    }
+
     if (released!.length >= 4) {
       return released!.substring(0, 4);
     }
+
     return released!;
   }
 }

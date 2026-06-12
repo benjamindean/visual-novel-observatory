@@ -53,12 +53,10 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
 
     final lowercaseQuery = query.toLowerCase();
     final settings = ref.read(settingsProvider);
-
-    var allTags = ref.read(localTagsProvider).tags;
-
-    if (!settings.showExplicitContent) {
-      allTags = allTags.where((tag) => tag.category != 'ero').toList();
-    }
+    final rawTags = ref.read(localTagsProvider).tags;
+    final allTags = settings.showExplicitContent
+        ? rawTags
+        : rawTags.where((tag) => tag.category != 'ero').toList();
 
     final results = allTags
         .where(
@@ -94,14 +92,12 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
     final theme = Theme.of(context);
     final settings = ref.watch(settingsProvider);
     final localTagsState = ref.watch(localTagsProvider);
-
-    var displayTags = _searchController.text.isEmpty
+    final initialTags = _searchController.text.isEmpty
         ? localTagsState.tags
         : _searchResults;
-
-    if (!settings.showExplicitContent) {
-      displayTags = displayTags.where((tag) => tag.category != 'ero').toList();
-    }
+    final displayTags = settings.showExplicitContent
+        ? initialTags
+        : initialTags.where((tag) => tag.category != 'ero').toList();
 
     return Scaffold(
       appBar: AppBar(

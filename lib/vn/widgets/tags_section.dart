@@ -19,22 +19,21 @@ class TagsSection extends ConsumerStatefulWidget {
 class _TagsSectionState extends ConsumerState<TagsSection> {
   bool _areTagsExpanded = false;
 
+  List<VnTag> _getDisplayTags(bool showExplicitContent) {
+    final filtered = showExplicitContent
+        ? List<VnTag>.from(widget.tags)
+        : widget.tags.where((tag) => tag.category != 'ero').toList();
+
+    filtered.sort((a, b) => (b.rating ?? 0.0).compareTo(a.rating ?? 0.0));
+
+    return filtered;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final settings = ref.watch(settingsProvider);
-
-    var displayTagsList = List<VnTag>.from(widget.tags);
-
-    if (!settings.showExplicitContent) {
-      displayTagsList = displayTagsList
-          .where((tag) => tag.category != 'ero')
-          .toList();
-    }
-
-    displayTagsList.sort(
-      (a, b) => (b.rating ?? 0.0).compareTo(a.rating ?? 0.0),
-    );
+    final displayTagsList = _getDisplayTags(settings.showExplicitContent);
 
     if (displayTagsList.isEmpty) {
       return const SizedBox.shrink();

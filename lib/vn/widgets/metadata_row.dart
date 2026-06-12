@@ -8,7 +8,9 @@ class MetadataRow extends StatelessWidget {
   const MetadataRow({super.key, required this.vn});
 
   String _formatReleaseDate(String? released) {
-    if (released == null || released == 'TBA') return 'TBA';
+    if (released == null || released == 'TBA') {
+      return 'TBA';
+    }
 
     try {
       final parts = released.split('-');

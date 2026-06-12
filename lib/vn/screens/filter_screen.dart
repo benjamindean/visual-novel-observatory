@@ -61,11 +61,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
 
   void _applyFilters() {
     final showExplicit = ref.read(vnFilterProvider).showExplicitContent;
-    var tags = _selectedTags;
-
-    if (!showExplicit) {
-      tags = tags.where((tag) => tag.category != 'ero').toList();
-    }
+    final tags = showExplicit
+        ? _selectedTags
+        : _selectedTags.where((tag) => tag.category != 'ero').toList();
 
     ref
         .read(vnFilterProvider.notifier)
