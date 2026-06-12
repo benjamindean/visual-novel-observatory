@@ -388,10 +388,13 @@ void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                       data: (allLabels) {
                         final filteredLabels = allLabels
                             .where(
-                              (label) =>
-                                  label.label != null &&
-                                  label.label!.toLowerCase() != 'no label' &&
-                                  label.label!.toLowerCase() != 'voted',
+                              (l) => l.label != null && l.label!.isNotEmpty,
+                            )
+                            .where((l) => l.id != 0 && l.id != 7)
+                            .where(
+                              (l) =>
+                                  l.label!.toLowerCase() != 'no label' &&
+                                  l.label!.toLowerCase() != 'voted',
                             )
                             .toList();
 
