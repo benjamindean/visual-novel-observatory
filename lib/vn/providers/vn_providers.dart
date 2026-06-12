@@ -950,12 +950,10 @@ class LocalTagsNotifier extends Notifier<LocalTagsState> {
     );
 
     final repository = ref.read(vnRepositoryProvider);
-
     final List<VnTag> allTags = [];
 
     try {
       int page = 1;
-
       bool hasMore = true;
 
       while (hasMore) {

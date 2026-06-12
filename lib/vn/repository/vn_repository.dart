@@ -1,6 +1,5 @@
 import '../../core/api/vndb_client.dart';
 import '../models/visual_novel.dart';
-
 import '../models/vndb_label.dart';
 import '../models/vn_ulist_entry.dart';
 

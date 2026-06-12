@@ -223,7 +223,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20.0, 16.0, 16.0, 8.0),
+                padding: const EdgeInsets.fromLTRB(20.0, 0.0, 16.0, 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -348,7 +348,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,

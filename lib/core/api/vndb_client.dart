@@ -1,15 +1,18 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import '../../vn/models/visual_novel.dart';
 
 class VndbClient {
   static const String _baseUrl = 'https://api.vndb.org/kana';
-  final http.Client _client;
+  final Dio _dio;
   final String? _token;
 
-  VndbClient({http.Client? client, String? token})
-    : _client = client ?? http.Client(),
-      _token = token;
+  VndbClient({Dio? dio, String? token}) : _dio = dio ?? Dio(), _token = token {
+    _dio.options.baseUrl = _baseUrl;
+    _dio.options.headers = {
+      'Content-Type': 'application/json',
+      if (_token != null) 'Authorization': 'Token $_token',
+    };
+  }
 
   // Selected fields for listing and detail screens
   static const String _vnFields =
@@ -18,43 +21,40 @@ class VndbClient {
 
   /// Helper to send generic POST query to VNDB /vn endpoint
   Future<Map<String, dynamic>> _postVnQuery(Map<String, dynamic> body) async {
-    final uri = Uri.parse('$_baseUrl/vn');
+    try {
+      final response = await _dio.post<Map<String, dynamic>>('/vn', data: body);
 
-    final response = await _client.post(
-      uri,
-      headers: {
-        'Content-Type': 'application/json',
-        if (_token != null) 'Authorization': 'Token $_token',
-      },
-      body: jsonEncode(body),
-    );
-
-    if (response.statusCode == 200) {
-      return jsonDecode(utf8.decode(response.bodyBytes))
-          as Map<String, dynamic>;
-    } else {
+      if (response.statusCode == 200 && response.data != null) {
+        return response.data!;
+      } else {
+        throw Exception(
+          'Failed to query VNDB API: Code ${response.statusCode}\nBody: ${response.data}',
+        );
+      }
+    } on DioException catch (e) {
       throw Exception(
-        'Failed to query VNDB API: Code ${response.statusCode}\nBody: ${utf8.decode(response.bodyBytes)}',
+        'Failed to query VNDB API: ${e.message}\nBody: ${e.response?.data}',
       );
     }
   }
 
   /// Validate a token using the authinfo endpoint
   Future<Map<String, dynamic>> validateToken(String token) async {
-    final uri = Uri.parse('$_baseUrl/authinfo');
-
-    final response = await _client.get(
-      uri,
-      headers: {'Authorization': 'Token $token'},
-    );
-
-    if (response.statusCode == 200) {
-      return jsonDecode(utf8.decode(response.bodyBytes))
-          as Map<String, dynamic>;
-    } else {
-      throw Exception(
-        'Invalid API token or connection error. Code: ${response.statusCode}',
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/authinfo',
+        options: Options(headers: {'Authorization': 'Token $token'}),
       );
+
+      if (response.statusCode == 200 && response.data != null) {
+        return response.data!;
+      } else {
+        throw Exception(
+          'Invalid API token or connection error. Code: ${response.statusCode}',
+        );
+      }
+    } on DioException catch (e) {
+      throw Exception('Invalid API token or connection error: ${e.message}');
     }
   }
 
@@ -78,10 +78,13 @@ class VndbClient {
     };
 
     final data = await _postVnQuery(body);
+
     final results = data['results'] as List? ?? [];
+
     final vns = results
         .map((e) => VisualNovel.fromJson(e as Map<String, dynamic>))
         .toList();
+
     final hasMore = data['more'] as bool? ?? false;
 
     return {'vns': vns, 'hasMore': hasMore};
@@ -102,10 +105,13 @@ class VndbClient {
     };
 
     final data = await _postVnQuery(body);
+
     final results = data['results'] as List? ?? [];
+
     final vns = results
         .map((e) => VisualNovel.fromJson(e as Map<String, dynamic>))
         .toList();
+
     final hasMore = data['more'] as bool? ?? false;
 
     return {'vns': vns, 'hasMore': hasMore};
@@ -128,10 +134,13 @@ class VndbClient {
     };
 
     final data = await _postVnQuery(body);
+
     final results = data['results'] as List? ?? [];
+
     final vns = results
         .map((e) => VisualNovel.fromJson(e as Map<String, dynamic>))
         .toList();
+
     final hasMore = data['more'] as bool? ?? false;
 
     return {'vns': vns, 'hasMore': hasMore};
@@ -148,7 +157,7 @@ class VndbClient {
     final body = {
       'filters': filters,
       'fields': _vnFields,
-      'sort': ?sort,
+      'sort': sort,
       if (sort != null) 'reverse': reverse,
       'results': resultsPerPage,
       'page': page,
@@ -156,11 +165,13 @@ class VndbClient {
     };
 
     final data = await _postVnQuery(body);
+
     final results = data['results'] as List? ?? [];
 
     final vns = results
         .map((e) => VisualNovel.fromJson(e as Map<String, dynamic>))
         .toList();
+
     final hasMore = data['more'] as bool? ?? false;
 
     return {'vns': vns, 'hasMore': hasMore};
@@ -174,6 +185,7 @@ class VndbClient {
     };
 
     final data = await _postVnQuery(body);
+
     final results = data['results'] as List? ?? [];
 
     if (results.isEmpty) {
@@ -185,62 +197,56 @@ class VndbClient {
 
   /// Fetch user list custom and system labels
   Future<List<Map<String, dynamic>>> getUserListLabels() async {
-    final uri = Uri.parse('$_baseUrl/ulist_labels');
+    try {
+      final response = await _dio.get<Map<String, dynamic>>('/ulist_labels');
 
-    final response = await _client.get(
-      uri,
-      headers: {if (_token != null) 'Authorization': 'Token $_token'},
-    );
+      if (response.statusCode == 200 && response.data != null) {
+        final labels = response.data!['labels'] as List? ?? [];
 
-    if (response.statusCode == 200) {
-      final data =
-          jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-
-      final labels = data['labels'] as List? ?? [];
-
-      return labels.map((e) => e as Map<String, dynamic>).toList();
-    } else {
+        return labels.map((e) => e as Map<String, dynamic>).toList();
+      } else {
+        throw Exception(
+          'Failed to get ulist labels: Code ${response.statusCode}\nBody: ${response.data}',
+        );
+      }
+    } on DioException catch (e) {
       throw Exception(
-        'Failed to get ulist labels: Code ${response.statusCode}\nBody: ${utf8.decode(response.bodyBytes)}',
+        'Failed to get ulist labels: ${e.message}\nBody: ${e.response?.data}',
       );
     }
   }
 
   /// Get user list entry for a specific visual novel
-  /// Get user list entry for a specific visual novel
   Future<Map<String, dynamic>?> getUserListEntry({
     required String user,
     required String vnId,
   }) async {
-    final uri = Uri.parse('$_baseUrl/ulist');
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/ulist',
+        data: {
+          'user': user,
+          'filters': ['id', '=', vnId],
+          'fields': 'id, vote, labels{id}',
+        },
+      );
 
-    final response = await _client.post(
-      uri,
-      headers: {
-        'Content-Type': 'application/json',
-        if (_token != null) 'Authorization': 'Token $_token',
-      },
-      body: jsonEncode({
-        'user': user,
-        'filters': ['id', '=', vnId],
-        'fields': 'id, vote, labels{id}',
-      }),
-    );
+      if (response.statusCode == 200 && response.data != null) {
+        final results = response.data!['results'] as List? ?? [];
 
-    if (response.statusCode == 200) {
-      final data =
-          jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+        if (results.isNotEmpty) {
+          return results.first as Map<String, dynamic>;
+        }
 
-      final results = data['results'] as List? ?? [];
-
-      if (results.isNotEmpty) {
-        return results.first as Map<String, dynamic>;
+        return null;
+      } else {
+        throw Exception(
+          'Failed to query ulist entry: Code ${response.statusCode}\nBody: ${response.data}',
+        );
       }
-
-      return null;
-    } else {
+    } on DioException catch (e) {
       throw Exception(
-        'Failed to query ulist entry: Code ${response.statusCode}\nBody: ${utf8.decode(response.bodyBytes)}',
+        'Failed to query ulist entry: ${e.message}\nBody: ${e.response?.data}',
       );
     }
   }
@@ -253,8 +259,6 @@ class VndbClient {
     List<int>? labels,
     bool updateLabels = false,
   }) async {
-    final uri = Uri.parse('$_baseUrl/ulist/$vnId');
-
     final body = <String, dynamic>{};
 
     if (updateVote) {
@@ -265,18 +269,19 @@ class VndbClient {
       body['labels'] = labels ?? <int>[];
     }
 
-    final response = await _client.patch(
-      uri,
-      headers: {
-        'Content-Type': 'application/json',
-        if (_token != null) 'Authorization': 'Token $_token',
-      },
-      body: jsonEncode(body),
-    );
+    try {
+      final response = await _dio.patch<dynamic>('/ulist/$vnId', data: body);
 
-    if (response.statusCode < 200 || response.statusCode >= 300) {
+      if (response.statusCode == null ||
+          response.statusCode! < 200 ||
+          response.statusCode! >= 300) {
+        throw Exception(
+          'Failed to update ulist entry: Code ${response.statusCode}\nBody: ${response.data}',
+        );
+      }
+    } on DioException catch (e) {
       throw Exception(
-        'Failed to update ulist entry: Code ${response.statusCode}\nBody: ${utf8.decode(response.bodyBytes)}',
+        'Failed to update ulist entry: ${e.message}\nBody: ${e.response?.data}',
       );
     }
   }
@@ -287,29 +292,28 @@ class VndbClient {
     required int page,
     int resultsPerPage = 100,
   }) async {
-    final uri = Uri.parse('$_baseUrl/ulist');
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/ulist',
+        data: {
+          'user': user,
+          'fields':
+              'id, vote, labels{id}, vn{id, title, description, rating, votecount, released, platforms, languages, length, length_minutes, image{url, dims, sexual}}',
+          'results': resultsPerPage,
+          'page': page,
+        },
+      );
 
-    final response = await _client.post(
-      uri,
-      headers: {
-        'Content-Type': 'application/json',
-        if (_token != null) 'Authorization': 'Token $_token',
-      },
-      body: jsonEncode({
-        'user': user,
-        'fields':
-            'id, vote, labels{id}, vn{id, title, description, rating, votecount, released, platforms, languages, length, length_minutes, image{url, dims, sexual}}',
-        'results': resultsPerPage,
-        'page': page,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      return jsonDecode(utf8.decode(response.bodyBytes))
-          as Map<String, dynamic>;
-    } else {
+      if (response.statusCode == 200 && response.data != null) {
+        return response.data!;
+      } else {
+        throw Exception(
+          'Failed to query ulist: Code ${response.statusCode}\nBody: ${response.data}',
+        );
+      }
+    } on DioException catch (e) {
       throw Exception(
-        'Failed to query ulist: Code ${response.statusCode}\nBody: ${utf8.decode(response.bodyBytes)}',
+        'Failed to query ulist: ${e.message}\nBody: ${e.response?.data}',
       );
     }
   }
@@ -319,27 +323,26 @@ class VndbClient {
     required int page,
     int resultsPerPage = 100,
   }) async {
-    final uri = Uri.parse('$_baseUrl/tag');
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/tag',
+        data: {
+          'fields': 'id, name, description, category',
+          'results': resultsPerPage,
+          'page': page,
+        },
+      );
 
-    final response = await _client.post(
-      uri,
-      headers: {
-        'Content-Type': 'application/json',
-        if (_token != null) 'Authorization': 'Token $_token',
-      },
-      body: jsonEncode({
-        'fields': 'id, name, description, category',
-        'results': resultsPerPage,
-        'page': page,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      return jsonDecode(utf8.decode(response.bodyBytes))
-          as Map<String, dynamic>;
-    } else {
+      if (response.statusCode == 200 && response.data != null) {
+        return response.data!;
+      } else {
+        throw Exception(
+          'Failed to query tags: Code ${response.statusCode}\nBody: ${response.data}',
+        );
+      }
+    } on DioException catch (e) {
       throw Exception(
-        'Failed to query tags: Code ${response.statusCode}\nBody: ${utf8.decode(response.bodyBytes)}',
+        'Failed to query tags: ${e.message}\nBody: ${e.response?.data}',
       );
     }
   }
