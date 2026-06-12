@@ -20,9 +20,6 @@ class TagChip extends StatelessWidget {
           decoration: BoxDecoration(
             color: context.appSurface,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: context.appTextPrimary.withValues(alpha: 0.05),
-            ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -44,7 +41,7 @@ class TagChip extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: context.appAccentTeal.withValues(alpha: 0.85),
+                    color: context.appAccentTeal,
                   ),
                 ),
               ],

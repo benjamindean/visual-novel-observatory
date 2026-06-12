@@ -14,7 +14,7 @@ class VndbSourceNote extends StatelessWidget {
         Text(
           'All data is sourced from VNDB.',
           style: theme.textTheme.bodySmall?.copyWith(
-            color: context.appTextMuted.withValues(alpha: 0.5),
+            color: context.appTextMuted,
             fontSize: 11.0,
             letterSpacing: 0.2,
           ),
@@ -24,7 +24,7 @@ class VndbSourceNote extends StatelessWidget {
         Text(
           'Observatory is not affiliated with VNDB.',
           style: theme.textTheme.labelSmall?.copyWith(
-            color: context.appTextMuted.withValues(alpha: 0.35),
+            color: context.appTextMuted,
             fontSize: 10.0,
             letterSpacing: 0.1,
           ),

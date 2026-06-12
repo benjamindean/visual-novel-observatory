@@ -73,7 +73,7 @@ class DetailHeader extends ConsumerWidget {
                             child: BackdropFilter(
                               filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                               child: Container(
-                                color: Colors.black.withValues(alpha: 0.5),
+                                color: Colors.black54,
                                 alignment: Alignment.center,
                                 child: const Column(
                                   mainAxisAlignment: MainAxisAlignment.center,

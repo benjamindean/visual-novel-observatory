@@ -20,11 +20,8 @@ class SortMenu extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: context.colorScheme.primaryContainer.withValues(alpha: 0.4),
+        color: context.colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: context.colorScheme.primary.withValues(alpha: 0.2),
-        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -95,11 +92,7 @@ class SortMenu extends ConsumerWidget {
               ),
             ),
           ),
-          Container(
-            width: 1,
-            height: 18,
-            color: context.appTextPrimary.withValues(alpha: 0.08),
-          ),
+          Container(width: 1, height: 18, color: context.theme.dividerColor),
           InkWell(
             borderRadius: const BorderRadius.only(
               topRight: Radius.circular(20),

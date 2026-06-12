@@ -16,15 +16,29 @@ class AppTheme {
   static const Color textSecondary = Color(0xFFB0B3C1);
 
   // Custom VNDB Color Scheme configuration
-  static const FlexSchemeColor _vndbColors = FlexSchemeColor(
-    primary: Color(0xFF4C72A4), // VNDB Blue primary accent
-    primaryContainer: Color(0xFF2E3D59),
-    secondary: Color(0xFF26C6DA), // Teal secondary accent
-    secondaryContainer: Color(0xFF13626C),
-    tertiary: Color(0xFFFFB300), // Amber tertiary accent
-    tertiaryContainer: Color(0xFF7F5900),
-    appBarColor: Color(0xFF161C2E),
-    error: Color(0xFFCF6679),
+  static const FlexSchemeData vndbThemeData = FlexSchemeData(
+    name: 'VNDB',
+    description: 'VNDB custom color scheme.',
+    light: FlexSchemeColor(
+      primary: Color(0xFF385B88),
+      primaryContainer: Color(0xFFDBE5F0),
+      secondary: Color(0xFF006974),
+      secondaryContainer: Color(0xFF9FF0FA),
+      tertiary: Color(0xFF8B5000),
+      tertiaryContainer: Color(0xFFFFDFB4),
+      appBarColor: Color(0xFFDBE5F0),
+      error: Color(0xFFBA1A1A),
+    ),
+    dark: FlexSchemeColor(
+      primary: Color(0xFF4C72A4), // VNDB Blue primary accent
+      primaryContainer: Color(0xFF2E3D59),
+      secondary: Color(0xFF26C6DA), // Teal secondary accent
+      secondaryContainer: Color(0xFF13626C),
+      tertiary: Color(0xFFFFB300), // Amber tertiary accent
+      tertiaryContainer: Color(0xFF7F5900),
+      appBarColor: Color(0xFF161C2E),
+      error: Color(0xFFCF6679),
+    ),
   );
 
   // Map theme names to their corresponding FlexScheme (or custom)
@@ -35,6 +49,14 @@ class AppTheme {
     'deepBlue': 'Deep Blue',
     'dellGenoa': 'Dell Genoa',
     'shark': 'Shark Dark',
+    'sakura': 'Sakura Pink',
+    'jungle': 'Jungle Green',
+    'mango': 'Mango Orange',
+    'outerSpace': 'Outer Space',
+    'gold': 'Gold Sunset',
+    'indigo': 'Indigo Night',
+    'redWine': 'Red Wine',
+    'bahamaBlue': 'Bahama Blue',
   };
 
   static FlexScheme _mapThemeNameToScheme(String themeName) {
@@ -49,6 +71,22 @@ class AppTheme {
         return FlexScheme.dellGenoa;
       case 'shark':
         return FlexScheme.shark;
+      case 'sakura':
+        return FlexScheme.sakura;
+      case 'jungle':
+        return FlexScheme.jungle;
+      case 'mango':
+        return FlexScheme.mango;
+      case 'outerSpace':
+        return FlexScheme.outerSpace;
+      case 'gold':
+        return FlexScheme.gold;
+      case 'indigo':
+        return FlexScheme.indigo;
+      case 'redWine':
+        return FlexScheme.redWine;
+      case 'bahamaBlue':
+        return FlexScheme.bahamaBlue;
       default:
         return FlexScheme.material;
     }
@@ -64,134 +102,159 @@ class AppTheme {
 
     if (isDark) {
       return FlexThemeData.dark(
-        scheme: isCustomVndb ? null : scheme,
-        colors: isCustomVndb ? _vndbColors : null,
-        useMaterial3: true,
         darkIsTrueBlack: darkIsTrueBlack,
-        surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
-        blendLevel: darkIsTrueBlack ? 0 : 12,
-        scaffoldBackground: (isCustomVndb && !darkIsTrueBlack)
-            ? const Color(0xFF161C2E)
-            : null,
-        fontFamily: GoogleFonts.inter().fontFamily,
-        textTheme: TextTheme(
-          headlineLarge: GoogleFonts.poppins(
-            fontWeight: FontWeight.bold,
-            color: textPrimary,
-          ),
-          headlineMedium: GoogleFonts.poppins(
-            fontWeight: FontWeight.bold,
-            color: textPrimary,
-          ),
-          titleLarge: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-            color: textPrimary,
-          ),
-          titleMedium: GoogleFonts.poppins(
-            fontWeight: FontWeight.w500,
-            color: textPrimary,
-          ),
-          bodyLarge: GoogleFonts.inter(
-            fontWeight: FontWeight.normal,
-            color: textSecondary,
-            height: 1.5,
-          ),
-          bodyMedium: GoogleFonts.inter(
-            fontWeight: FontWeight.normal,
-            color: textSecondary,
-            height: 1.4,
-          ),
-          labelLarge: GoogleFonts.inter(
-            fontWeight: FontWeight.w600,
-            color: textPrimary,
-          ),
-          labelSmall: GoogleFonts.inter(
-            fontWeight: FontWeight.normal,
-            color: textMuted,
-          ),
-        ),
+        scheme: isCustomVndb ? null : scheme,
+        colors: isCustomVndb ? vndbThemeData.dark : null,
+        usedColors: 6,
+        surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,
+        blendLevel: 12,
         subThemesData: const FlexSubThemesData(
-          cardElevation: 0,
-          cardRadius: 16,
-          chipRadius: 20,
+          chipSchemeColor: SchemeColor.surfaceContainer,
+          cardElevation: 1.0,
+          listTileTextSchemeColor: SchemeColor.onSurface,
+          appBarScrolledUnderElevation: 0.0,
+          interactionEffects: true,
+          tintedDisabledControls: true,
+          blendOnLevel: 12,
+          blendOnColors: true,
+          useM2StyleDividerInM3: true,
+          defaultRadius: 12.0,
+          elevatedButtonSchemeColor: SchemeColor.onPrimaryContainer,
+          elevatedButtonSecondarySchemeColor: SchemeColor.primaryContainer,
+          outlinedButtonOutlineSchemeColor: SchemeColor.primary,
+          toggleButtonsBorderSchemeColor: SchemeColor.primary,
+          segmentedButtonSchemeColor: SchemeColor.primary,
+          segmentedButtonBorderSchemeColor: SchemeColor.primary,
+          scaffoldBackgroundBaseColor:
+              FlexScaffoldBaseColor.surfaceContainerLow,
+          unselectedToggleIsColored: true,
+          sliderValueTinted: true,
+          inputDecoratorSchemeColor: SchemeColor.primary,
+          inputDecoratorIsFilled: true,
+          inputDecoratorBackgroundAlpha: 43,
           inputDecoratorBorderType: FlexInputBorderType.outline,
-          inputDecoratorRadius: 24,
           inputDecoratorUnfocusedHasBorder: false,
-          inputDecoratorFocusedBorderWidth: 1.5,
-          bottomNavigationBarElevation: 8,
-          bottomNavigationBarOpacity: 1.0,
+          inputDecoratorFocusedBorderWidth: 1.0,
+          inputDecoratorPrefixIconSchemeColor: SchemeColor.primary,
+          fabUseShape: true,
+          fabAlwaysCircular: true,
+          fabSchemeColor: SchemeColor.secondary,
+          popupMenuRadius: 8.0,
+          popupMenuElevation: 3.0,
+          alignedDropdown: true,
+          drawerIndicatorRadius: 12.0,
+          drawerIndicatorSchemeColor: SchemeColor.primary,
+          bottomNavigationBarMutedUnselectedLabel: false,
+          bottomNavigationBarMutedUnselectedIcon: false,
+          menuRadius: 8.0,
+          menuElevation: 3.0,
+          menuBarRadius: 0.0,
+          menuBarElevation: 2.0,
+          menuBarShadowColor: Color(0x00000000),
+          navigationBarSelectedLabelSchemeColor: SchemeColor.primary,
+          navigationBarSelectedIconSchemeColor: SchemeColor.onPrimary,
+          navigationBarIndicatorSchemeColor: SchemeColor.primary,
+          navigationBarIndicatorRadius: 12.0,
+          navigationRailSelectedLabelSchemeColor: SchemeColor.primary,
+          navigationRailSelectedIconSchemeColor: SchemeColor.onPrimary,
+          navigationRailUseIndicator: true,
+          navigationRailIndicatorSchemeColor: SchemeColor.primary,
+          navigationRailIndicatorOpacity: 1.0,
+          navigationRailIndicatorRadius: 12.0,
+          navigationRailBackgroundSchemeColor: SchemeColor.tertiaryContainer,
+          navigationRailLabelType: NavigationRailLabelType.all,
         ),
-      ).copyWith(
-        cardColor: const Color(0xFF20273F),
-        appBarTheme: const AppBarTheme(
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          backgroundColor: Colors.transparent,
+        keyColors: const FlexKeyColors(
+          useSecondary: true,
+          useTertiary: true,
+          keepSecondaryContainer: true,
         ),
+        visualDensity: FlexColorScheme.comfortablePlatformDensity,
+        useMaterial3: true,
+        variant: FlexSchemeVariant.candyPop,
+        fontFamily: GoogleFonts.openSans().fontFamily,
       );
     } else {
       return FlexThemeData.light(
         scheme: isCustomVndb ? null : scheme,
-        colors: isCustomVndb ? _vndbColors : null,
-        useMaterial3: true,
-        surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
+        colors: isCustomVndb ? vndbThemeData.light : null,
+        usedColors: 6,
+        surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,
         blendLevel: 12,
-        fontFamily: GoogleFonts.inter().fontFamily,
-        textTheme: TextTheme(
-          headlineLarge: GoogleFonts.poppins(
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-          headlineMedium: GoogleFonts.poppins(
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-          titleLarge: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
-          ),
-          titleMedium: GoogleFonts.poppins(
-            fontWeight: FontWeight.w500,
-            color: Colors.black87,
-          ),
-          bodyLarge: GoogleFonts.inter(
-            fontWeight: FontWeight.normal,
-            color: Colors.black87,
-            height: 1.5,
-          ),
-          bodyMedium: GoogleFonts.inter(
-            fontWeight: FontWeight.normal,
-            color: Colors.black87,
-            height: 1.4,
-          ),
-          labelLarge: GoogleFonts.inter(
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
-          ),
-          labelSmall: GoogleFonts.inter(
-            fontWeight: FontWeight.normal,
-            color: Colors.black54,
-          ),
-        ),
         subThemesData: const FlexSubThemesData(
-          cardElevation: 0,
-          cardRadius: 16,
-          chipRadius: 20,
+          chipSchemeColor: SchemeColor.surfaceContainer,
+          cardElevation: 1.0,
+          appBarScrolledUnderElevation: 0.0,
+          interactionEffects: true,
+          tintedDisabledControls: true,
+          blendOnLevel: 12,
+          useM2StyleDividerInM3: false,
+          defaultRadius: 12.0,
+          listTileTextSchemeColor: SchemeColor.onSurface,
+          elevatedButtonSchemeColor: SchemeColor.onPrimaryContainer,
+          elevatedButtonSecondarySchemeColor: SchemeColor.primaryContainer,
+          outlinedButtonOutlineSchemeColor: SchemeColor.primary,
+          toggleButtonsBorderSchemeColor: SchemeColor.primary,
+          segmentedButtonSchemeColor: SchemeColor.primary,
+          segmentedButtonBorderSchemeColor: SchemeColor.primary,
+          unselectedToggleIsColored: true,
+          sliderValueTinted: true,
+          inputDecoratorSchemeColor: SchemeColor.primary,
+          inputDecoratorIsFilled: true,
+          inputDecoratorBackgroundAlpha: 31,
           inputDecoratorBorderType: FlexInputBorderType.outline,
-          inputDecoratorRadius: 24,
           inputDecoratorUnfocusedHasBorder: false,
-          inputDecoratorFocusedBorderWidth: 1.5,
-          bottomNavigationBarElevation: 8,
-          bottomNavigationBarOpacity: 1.0,
+          inputDecoratorFocusedBorderWidth: 1.0,
+          inputDecoratorPrefixIconSchemeColor: SchemeColor.primary,
+          fabUseShape: true,
+          fabAlwaysCircular: true,
+          fabSchemeColor: SchemeColor.secondary,
+          popupMenuRadius: 8.0,
+          popupMenuElevation: 3.0,
+          alignedDropdown: true,
+          drawerIndicatorRadius: 12.0,
+          drawerIndicatorSchemeColor: SchemeColor.primary,
+          bottomNavigationBarMutedUnselectedLabel: false,
+          bottomNavigationBarMutedUnselectedIcon: false,
+          menuRadius: 8.0,
+          menuElevation: 3.0,
+          menuBarRadius: 0.0,
+          menuBarElevation: 2.0,
+          menuBarShadowColor: Color(0x00000000),
+          navigationBarSelectedLabelSchemeColor: SchemeColor.primary,
+          navigationBarSelectedIconSchemeColor: SchemeColor.onPrimary,
+          navigationBarIndicatorSchemeColor: SchemeColor.primary,
+          navigationBarIndicatorRadius: 12.0,
+          navigationRailSelectedLabelSchemeColor: SchemeColor.primary,
+          navigationRailSelectedIconSchemeColor: SchemeColor.onPrimary,
+          navigationRailUseIndicator: true,
+          navigationRailIndicatorSchemeColor: SchemeColor.primary,
+          navigationRailIndicatorOpacity: 1.0,
+          navigationRailIndicatorRadius: 12.0,
+          navigationRailBackgroundSchemeColor: SchemeColor.tertiaryContainer,
+          navigationRailLabelType: NavigationRailLabelType.all,
         ),
-      ).copyWith(
-        appBarTheme: const AppBarTheme(
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          backgroundColor: Colors.transparent,
+        keyColors: const FlexKeyColors(
+          useSecondary: true,
+          useTertiary: true,
+          keepPrimary: true,
+          keepSecondaryContainer: true,
         ),
+        variant: FlexSchemeVariant.candyPop,
+        visualDensity: FlexColorScheme.comfortablePlatformDensity,
+        fontFamily: GoogleFonts.openSans().fontFamily,
       );
     }
+  }
+
+  static List<Color> getThemeColors(String themeName, bool isDark) {
+    final theme = getTheme(themeName, isDark: isDark);
+
+    return [
+      theme.colorScheme.primary,
+      theme.colorScheme.secondary,
+      theme.colorScheme.tertiary,
+    ];
   }
 
   // Keeping darkTheme getter for default compatibility

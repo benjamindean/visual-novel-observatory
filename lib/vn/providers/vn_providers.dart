@@ -648,6 +648,7 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
 
     try {
       final list = <VnUlistEntry>[];
+
       int page = 1;
       bool hasMore = true;
 
@@ -746,37 +747,30 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
     } catch (_) {}
   }
 
-  Future<void> updateVote(
-    String vnId,
-    int? voteScore, {
-    VisualNovel? vn,
-  }) async {
+  Future<void> updateVote(VisualNovel vn, int? voteScore) async {
     final oldEntries = state.entries;
-
-    final currentEntry = oldEntries[vnId];
-
+    final currentEntry = oldEntries[vn.id];
     final currentLabels = currentEntry?.labels ?? const [];
 
-    final currentVn = vn ?? currentEntry?.vn;
-
     final newEntry = VnUlistEntry(
-      id: vnId,
+      id: vn.id,
       vote: voteScore,
       labels: currentLabels,
-      vn: currentVn,
+      vn: vn,
     );
 
     final updatedEntries = Map<String, VnUlistEntry>.from(oldEntries);
 
-    updatedEntries[vnId] = newEntry;
+    updatedEntries[vn.id] = newEntry;
     state = state.copyWith(entries: updatedEntries);
+
     await _saveEntriesToCache(updatedEntries);
 
     final repository = ref.read(vnRepositoryProvider);
 
     try {
       await repository.updateUserListEntry(
-        vnId: vnId,
+        vnId: vn.id,
         vote: voteScore,
         updateVote: true,
       );

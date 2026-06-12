@@ -174,7 +174,7 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
     final bgOpacity = (1.0 - dragRatio).clamp(0.0, 1.0);
 
     return Scaffold(
-      backgroundColor: Colors.black.withValues(alpha: bgOpacity),
+      backgroundColor: Color.fromRGBO(0, 0, 0, bgOpacity),
       body: Stack(
         children: [
           GestureDetector(
@@ -246,9 +246,7 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
                                       sigmaY: 20,
                                     ),
                                     child: Container(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.6,
-                                      ),
+                                      color: Colors.black54,
                                       alignment: Alignment.center,
                                       child: Column(
                                         mainAxisAlignment:

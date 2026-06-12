@@ -8,6 +8,7 @@ import 'core/navigation/router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Hive.initFlutter();
   await AppStorage.init();
 
@@ -20,26 +21,25 @@ void main() async {
 class VisualNovelObservatoryApp extends ConsumerWidget {
   const VisualNovelObservatoryApp({super.key});
 
+  ThemeMode getThemeMode(SettingsState settings) {
+    switch (settings.themeMode) {
+      case 'light':
+        return ThemeMode.light;
+      case 'dark':
+        return ThemeMode.dark;
+      default:
+        return ThemeMode.system;
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
-    ThemeMode themeMode;
-
-    switch (settings.themeMode) {
-      case 'light':
-        themeMode = ThemeMode.light;
-        break;
-      case 'dark':
-        themeMode = ThemeMode.dark;
-        break;
-      default:
-        themeMode = ThemeMode.system;
-    }
 
     return MaterialApp.router(
       title: 'Visual Novel Observatory',
       debugShowCheckedModeBanner: false,
-      themeMode: themeMode,
+      themeMode: getThemeMode(settings),
       theme: AppTheme.getTheme(settings.themeName, isDark: false),
       darkTheme: AppTheme.getTheme(
         settings.themeName,

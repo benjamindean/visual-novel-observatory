@@ -12,8 +12,6 @@ import '../../settings/screens/settings_screen.dart';
 import '../../settings/screens/login_screen.dart';
 import '../../vn/screens/filter_screen.dart';
 
-import '../../theme/app_theme.dart';
-
 class ScaffoldWithNavBar extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
@@ -21,74 +19,33 @@ class ScaffoldWithNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
-
     return Scaffold(
       body: navigationShell,
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: context.appSurface,
-          border: Border(
-            top: BorderSide(
-              color: context.appTextPrimary.withValues(alpha: 0.08),
-              width: 1.0,
-            ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: navigationShell.currentIndex,
+        onDestinationSelected: (index) {
+          navigationShell.goBranch(
+            index,
+            initialLocation: index == navigationShell.currentIndex,
+          );
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home_rounded),
+            label: 'Home',
           ),
-        ),
-        child: NavigationBarTheme(
-          data: NavigationBarThemeData(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            indicatorColor: context.appAccentTeal.withValues(alpha: 0.12),
-            iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {
-              if (states.contains(WidgetState.selected)) {
-                return IconThemeData(color: context.appAccentTeal);
-              }
-
-              return IconThemeData(color: context.appTextSecondary);
-            }),
-            labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>((
-              states,
-            ) {
-              final baseStyle = theme.textTheme.labelSmall ?? const TextStyle();
-
-              if (states.contains(WidgetState.selected)) {
-                return baseStyle.copyWith(
-                  color: context.appAccentTeal,
-                  fontWeight: FontWeight.w600,
-                );
-              }
-
-              return baseStyle.copyWith(color: context.appTextSecondary);
-            }),
+          NavigationDestination(
+            icon: Icon(Icons.search_outlined),
+            selectedIcon: Icon(Icons.search_rounded),
+            label: 'Search',
           ),
-          child: NavigationBar(
-            selectedIndex: navigationShell.currentIndex,
-            onDestinationSelected: (index) {
-              navigationShell.goBranch(
-                index,
-                initialLocation: index == navigationShell.currentIndex,
-              );
-            },
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home_rounded),
-                label: 'Home',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.search_outlined),
-                selectedIcon: Icon(Icons.search_rounded),
-                label: 'Search',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.library_books_outlined),
-                selectedIcon: Icon(Icons.library_books_rounded),
-                label: 'Library',
-              ),
-            ],
+          NavigationDestination(
+            icon: Icon(Icons.library_books_outlined),
+            selectedIcon: Icon(Icons.library_books_rounded),
+            label: 'Library',
           ),
-        ),
+        ],
       ),
     );
   }

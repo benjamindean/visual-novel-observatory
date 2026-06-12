@@ -197,9 +197,7 @@ class LibraryScreen extends ConsumerWidget {
                                 Icon(
                                   Icons.folder_open_rounded,
                                   size: 64,
-                                  color: context.appTextMuted.withValues(
-                                    alpha: 0.5,
-                                  ),
+                                  color: context.appTextMuted,
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
@@ -258,7 +256,7 @@ class LibraryScreen extends ConsumerWidget {
                       color: context.appSurface,
                       border: Border(
                         top: BorderSide(
-                          color: context.appTextPrimary.withValues(alpha: 0.08),
+                          color: context.theme.dividerColor,
                           width: 1.0,
                         ),
                       ),

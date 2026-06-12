@@ -94,7 +94,7 @@ class ScreenshotsSection extends ConsumerWidget {
                                   sigmaY: 10,
                                 ),
                                 child: Container(
-                                  color: Colors.black.withValues(alpha: 0.5),
+                                  color: Colors.black54,
                                   alignment: Alignment.center,
                                   child: const Icon(
                                     Icons.visibility_off_rounded,

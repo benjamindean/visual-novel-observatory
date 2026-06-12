@@ -105,7 +105,37 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
           'Filter by Tags',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        elevation: 0,
+        scrolledUnderElevation: 0,
       ),
+      bottomNavigationBar:
+          localTagsState.isLoading && localTagsState.tags.isEmpty
+          ? null
+          : BottomAppBar(
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: context.appAccentTeal,
+                    foregroundColor: context.colorScheme.onPrimary,
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24.0),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop(_selectedTags);
+                  },
+                  child: const Text(
+                    'Save Tags',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ),
+              ),
+            ),
       body: localTagsState.isLoading && localTagsState.tags.isEmpty
           ? Center(
               child: Padding(
@@ -144,7 +174,7 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                 if (_selectedTags.isNotEmpty) ...[
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0,
+                      horizontal: 16.0,
                       vertical: 8.0,
                     ),
                     child: Text(
@@ -160,7 +190,7 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                     constraints: const BoxConstraints(maxHeight: 120),
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Wrap(
                         spacing: 8,
                         runSpacing: 8,
@@ -173,17 +203,11 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                               size: 16,
                               color: Colors.white70,
                             ),
-                            backgroundColor: context.appAccentTeal.withValues(
-                              alpha: 0.15,
-                            ),
+
                             labelStyle: TextStyle(
                               color: context.appAccentTeal,
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                            ),
-                            side: BorderSide(
-                              color: context.appAccentTeal,
-                              width: 0.5,
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -192,10 +216,6 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                         }).toList(),
                       ),
                     ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Divider(color: Colors.white10, height: 24),
                   ),
                 ],
 
@@ -209,9 +229,7 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                               Icon(
                                 Icons.tag_rounded,
                                 size: 64,
-                                color: context.appTextMuted.withValues(
-                                  alpha: 0.5,
-                                ),
+                                color: context.appTextMuted,
                               ),
                               const SizedBox(height: 16),
                               Text(
@@ -244,30 +262,21 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                               margin: const EdgeInsets.only(bottom: 8.0),
                               child: Material(
                                 color: isSelected
-                                    ? context.appSurface.withValues(alpha: 0.5)
+                                    ? context.colorScheme.surfaceContainerHigh
                                     : context.appSurface,
                                 clipBehavior: Clip.antiAlias,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  side: BorderSide(
-                                    color: isSelected
-                                        ? context.appAccentTeal.withValues(
-                                            alpha: 0.4,
-                                          )
-                                        : Colors.white.withValues(alpha: 0.04),
-                                  ),
                                 ),
                                 child: ListTile(
                                   leading: Container(
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                       color: isSelected
-                                          ? context.appAccentTeal.withValues(
-                                              alpha: 0.1,
-                                            )
-                                          : Colors.white.withValues(
-                                              alpha: 0.03,
-                                            ),
+                                          ? context.colorScheme.primaryContainer
+                                          : context
+                                                .colorScheme
+                                                .surfaceContainer,
                                       shape: BoxShape.circle,
                                     ),
                                     child: Icon(
@@ -306,18 +315,10 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                           },
                         ),
                 ),
-                Container(
+                Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8.0,
                     vertical: 8.0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: context.appSurface,
-                    border: Border(
-                      top: BorderSide(
-                        color: context.appTextPrimary.withValues(alpha: 0.08),
-                      ),
-                    ),
                   ),
                   child: TextField(
                     controller: _searchController,
@@ -335,53 +336,6 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                               },
                             )
                           : null,
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 16.0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: context.appSurface,
-                    border: Border(
-                      top: BorderSide(
-                        color: context.appTextPrimary.withValues(alpha: 0.08),
-                      ),
-                    ),
-                  ),
-                  child: SafeArea(
-                    top: false,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: context.appAccentTeal,
-                              foregroundColor: context.colorScheme.onPrimary,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16.0,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(24.0),
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop(_selectedTags);
-                            },
-                            child: const Text(
-                              'Save Tags',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.0,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                 ),

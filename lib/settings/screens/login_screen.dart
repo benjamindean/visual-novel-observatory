@@ -110,7 +110,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         width: 80,
         height: 80,
         decoration: BoxDecoration(
-          color: context.appAccentTeal.withValues(alpha: 0.15),
+          color: context.colorScheme.primaryContainer,
           shape: BoxShape.circle,
         ),
         child: Icon(
@@ -255,11 +255,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: context.colorScheme.error.withValues(alpha: 0.1),
+        color: context.colorScheme.errorContainer,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: context.colorScheme.error.withValues(alpha: 0.3),
-        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

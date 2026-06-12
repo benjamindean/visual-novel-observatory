@@ -75,7 +75,7 @@ class VnCard extends ConsumerWidget {
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                       child: Container(
-                        color: Colors.black.withValues(alpha: 0.55),
+                        color: Colors.black54,
                         alignment: Alignment.center,
                         child: const Icon(
                           Icons.visibility_off_rounded,
@@ -89,17 +89,17 @@ class VnCard extends ConsumerWidget {
               // Bottom gradient overlay for text legibility
               Positioned.fill(
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
                         Colors.transparent,
-                        Colors.black.withValues(alpha: 0.1),
-                        Colors.black.withValues(alpha: 0.65),
-                        Colors.black.withValues(alpha: 0.85),
+                        Colors.black12,
+                        Colors.black54,
+                        Colors.black87,
                       ],
-                      stops: const [0.0, 0.45, 0.75, 1.0],
+                      stops: [0.0, 0.45, 0.75, 1.0],
                     ),
                   ),
                 ),
@@ -138,7 +138,7 @@ class VnCard extends ConsumerWidget {
                           Text(
                             'No Rating',
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.6),
+                              color: Colors.white60,
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
                             ),

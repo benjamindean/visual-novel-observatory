@@ -146,11 +146,10 @@ class VndbClient {
     return {'vns': vns, 'hasMore': hasMore};
   }
 
-  /// Get visual novels with custom filters and search query
   Future<Map<String, dynamic>> getVisualNovels({
     required List<dynamic> filters,
     required int page,
-    int resultsPerPage = 15,
+    int resultsPerPage = 22,
     String? sort,
     bool reverse = true,
   }) async {
@@ -165,9 +164,7 @@ class VndbClient {
     };
 
     final data = await _postVnQuery(body);
-
     final results = data['results'] as List? ?? [];
-
     final vns = results
         .map((e) => VisualNovel.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -177,7 +174,6 @@ class VndbClient {
     return {'vns': vns, 'hasMore': hasMore};
   }
 
-  /// Get details for a single visual novel by id
   Future<VisualNovel> getVisualNovelDetails(String id) async {
     final body = {
       'filters': ['id', '=', id],
@@ -195,7 +191,6 @@ class VndbClient {
     return VisualNovel.fromJson(results.first as Map<String, dynamic>);
   }
 
-  /// Fetch user list custom and system labels
   Future<List<Map<String, dynamic>>> getUserListLabels() async {
     try {
       final response = await _dio.get<Map<String, dynamic>>('/ulist_labels');
@@ -216,7 +211,6 @@ class VndbClient {
     }
   }
 
-  /// Get user list entry for a specific visual novel
   Future<Map<String, dynamic>?> getUserListEntry({
     required String user,
     required String vnId,
@@ -251,7 +245,6 @@ class VndbClient {
     }
   }
 
-  /// Update user list entry with vote and labels
   Future<void> updateUserListEntry({
     required String vnId,
     int? vote,
@@ -286,7 +279,6 @@ class VndbClient {
     }
   }
 
-  /// Get user list entries (paginated)
   Future<Map<String, dynamic>> getUserList({
     required String user,
     required int page,
@@ -298,7 +290,8 @@ class VndbClient {
         data: {
           'user': user,
           'fields':
-              'id, vote, labels{id}, vn{id, title, description, rating, votecount, released, platforms, languages, length, length_minutes, image{url, dims, sexual}}',
+              'id, vote, labels{id}, vn{title, alttitle, aliases, extlinks{id,name,label,url}, description, rating, votecount, released, platforms, languages, length, length_minutes, '
+              'image{url,dims,thumbnail,sexual}, developers{id,name,original}, tags{id,name,spoiler,rating,category}, screenshots{url,dims,thumbnail,sexual}}',
           'results': resultsPerPage,
           'page': page,
         },
@@ -318,7 +311,6 @@ class VndbClient {
     }
   }
 
-  /// Get tags page from VNDB database
   Future<Map<String, dynamic>> getTagsPage({
     required int page,
     int resultsPerPage = 100,

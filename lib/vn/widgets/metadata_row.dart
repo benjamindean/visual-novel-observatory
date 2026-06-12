@@ -100,14 +100,8 @@ class MetadataRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(
-            color: context.appTextPrimary.withValues(alpha: 0.06),
-            width: 1,
-          ),
-          bottom: BorderSide(
-            color: context.appTextPrimary.withValues(alpha: 0.06),
-            width: 1,
-          ),
+          top: BorderSide(color: context.theme.dividerColor, width: 1),
+          bottom: BorderSide(color: context.theme.dividerColor, width: 1),
         ),
       ),
       child: Row(

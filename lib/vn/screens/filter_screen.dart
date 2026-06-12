@@ -106,191 +106,181 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 16.0),
-                    // Language Section
-                    _buildSectionHeader(context, 'Language'),
-                    _buildChipRow<String>(
-                      context,
-                      items: {
-                        'en': 'English',
-                        'ja': 'Japanese',
-                        'zh': 'Chinese',
-                        'es': 'Spanish',
-                        'ko': 'Korean',
-                      },
-                      selectedValue: _selectedLang,
-                      onSelected: (val) {
-                        setState(() {
-                          _selectedLang = val;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 20.0),
-
-                    // Platform Section
-                    _buildSectionHeader(context, 'Platform'),
-                    _buildChipRow<String>(
-                      context,
-                      items: {
-                        'win': 'Windows',
-                        'swi': 'Switch',
-                        'ps4': 'PS4',
-                        'and': 'Android',
-                        'ios': 'iOS',
-                      },
-                      selectedValue: _selectedPlatform,
-                      onSelected: (val) {
-                        setState(() {
-                          _selectedPlatform = val;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 20.0),
-
-                    // Length Section
-                    _buildSectionHeader(context, 'Play Time'),
-                    _buildChipRow<int>(
-                      context,
-                      items: {
-                        1: 'Very Short (<2h)',
-                        2: 'Short (2-10h)',
-                        3: 'Medium (10-30h)',
-                        4: 'Long (30-50h)',
-                        5: 'Very Long (>50h)',
-                      },
-                      selectedValue: _selectedLength,
-                      onSelected: (val) {
-                        setState(() {
-                          _selectedLength = val;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 20.0),
-
-                    // Dev Status Section
-                    _buildSectionHeader(context, 'Development Status'),
-                    _buildChipRow<int>(
-                      context,
-                      items: {0: 'Finished', 1: 'In Dev', 2: 'Cancelled'},
-                      selectedValue: _selectedDevStatus,
-                      onSelected: (val) {
-                        setState(() {
-                          _selectedDevStatus = val;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 20.0),
-
-                    // Tags Section
-                    _buildSectionHeader(context, 'Tags'),
-                    _buildTagsTile(context),
-                    const SizedBox(height: 24.0),
-
-                    // Rating Slider
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Minimum Rating',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          '${_minRating.toStringAsFixed(1)} / 10.0',
-                          style: TextStyle(
-                            color: context.appAccentTeal,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Slider(
-                      value: _minRating,
-                      min: 0.0,
-                      max: 10.0,
-                      divisions: 100,
-                      activeColor: context.appAccentTeal,
-                      inactiveColor: context.appSurface,
-                      onChanged: (val) {
-                        setState(() {
-                          _minRating = val;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 20.0),
-
-                    // Vote Count Slider
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Minimum Votes',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          '$_minVotes votes',
-                          style: TextStyle(
-                            color: context.appAccentTeal,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Slider(
-                      value: _minVotes.toDouble(),
-                      min: 0,
-                      max: 500,
-                      divisions: 50,
-                      activeColor: context.appAccentTeal,
-                      inactiveColor: context.appSurface,
-                      onChanged: (val) {
-                        setState(() {
-                          _minVotes = val.round();
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 24.0),
-                  ],
-                ),
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 16.0),
+              // Language Section
+              _buildSectionHeader(context, 'Language'),
+              _buildChipRow<String>(
+                context,
+                items: {
+                  'en': 'English',
+                  'ja': 'Japanese',
+                  'zh': 'Chinese',
+                  'es': 'Spanish',
+                  'ko': 'Korean',
+                },
+                selectedValue: _selectedLang,
+                onSelected: (val) {
+                  setState(() {
+                    _selectedLang = val;
+                  });
+                },
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: context.appAccentTeal,
-                    foregroundColor: context.colorScheme.onPrimary,
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24.0),
-                    ),
-                  ),
-                  onPressed: _applyFilters,
-                  child: const Text(
-                    'Apply Filters',
-                    style: TextStyle(
+              const SizedBox(height: 20.0),
+
+              // Platform Section
+              _buildSectionHeader(context, 'Platform'),
+              _buildChipRow<String>(
+                context,
+                items: {
+                  'win': 'Windows',
+                  'swi': 'Switch',
+                  'ps4': 'PS4',
+                  'and': 'Android',
+                  'ios': 'iOS',
+                },
+                selectedValue: _selectedPlatform,
+                onSelected: (val) {
+                  setState(() {
+                    _selectedPlatform = val;
+                  });
+                },
+              ),
+              const SizedBox(height: 20.0),
+
+              // Length Section
+              _buildSectionHeader(context, 'Play Time'),
+              _buildChipRow<int>(
+                context,
+                items: {
+                  1: 'Very Short (<2h)',
+                  2: 'Short (2-10h)',
+                  3: 'Medium (10-30h)',
+                  4: 'Long (30-50h)',
+                  5: 'Very Long (>50h)',
+                },
+                selectedValue: _selectedLength,
+                onSelected: (val) {
+                  setState(() {
+                    _selectedLength = val;
+                  });
+                },
+              ),
+              const SizedBox(height: 20.0),
+
+              // Dev Status Section
+              _buildSectionHeader(context, 'Development Status'),
+              _buildChipRow<int>(
+                context,
+                items: {0: 'Finished', 1: 'In Dev', 2: 'Cancelled'},
+                selectedValue: _selectedDevStatus,
+                onSelected: (val) {
+                  setState(() {
+                    _selectedDevStatus = val;
+                  });
+                },
+              ),
+              const SizedBox(height: 20.0),
+
+              // Tags Section
+              _buildSectionHeader(context, 'Tags'),
+              _buildTagsTile(context),
+              const SizedBox(height: 24.0),
+
+              // Rating Slider
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Minimum Rating',
+                    style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16.0,
                     ),
                   ),
-                ),
+                  Text(
+                    '${_minRating.toStringAsFixed(1)} / 10.0',
+                    style: TextStyle(
+                      color: context.appAccentTeal,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              Slider(
+                value: _minRating,
+                min: 0.0,
+                max: 10.0,
+                divisions: 100,
+                activeColor: context.appAccentTeal,
+                inactiveColor: context.appSurface,
+                onChanged: (val) {
+                  setState(() {
+                    _minRating = val;
+                  });
+                },
+              ),
+              const SizedBox(height: 20.0),
+
+              // Vote Count Slider
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Minimum Votes',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    '$_minVotes votes',
+                    style: TextStyle(
+                      color: context.appAccentTeal,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              Slider(
+                value: _minVotes.toDouble(),
+                min: 0,
+                max: 500,
+                divisions: 50,
+                activeColor: context.appAccentTeal,
+                inactiveColor: context.appSurface,
+                onChanged: (val) {
+                  setState(() {
+                    _minVotes = val.round();
+                  });
+                },
+              ),
+              const SizedBox(height: 24.0),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: context.appAccentTeal,
+              foregroundColor: context.colorScheme.onPrimary,
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24.0),
               ),
             ),
-          ],
+            onPressed: _applyFilters,
+            child: const Text(
+              'Apply Filters',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+            ),
+          ),
         ),
       ),
     );
@@ -333,6 +323,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
               },
               backgroundColor: context.appSurface,
               selectedColor: context.appAccentTeal,
+              checkmarkColor: context.colorScheme.onPrimary,
               labelStyle: TextStyle(
                 color: isSelected
                     ? context.colorScheme.onPrimary
@@ -340,11 +331,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
               ),
-              side: BorderSide(
-                color: isSelected
-                    ? Colors.transparent
-                    : context.appTextPrimary.withValues(alpha: 0.05),
-              ),
+              side: BorderSide.none,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.0),
               ),
@@ -379,9 +366,6 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
         decoration: BoxDecoration(
           color: context.appSurface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: context.appTextPrimary.withValues(alpha: 0.05),
-          ),
         ),
         child: Row(
           children: [
@@ -408,9 +392,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                             vertical: 5,
                           ),
                           decoration: BoxDecoration(
-                            color: context.appAccentTeal.withValues(
-                              alpha: 0.15,
-                            ),
+                            color: context.colorScheme.primaryContainer,
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Text(

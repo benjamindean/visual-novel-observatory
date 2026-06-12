@@ -400,14 +400,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 horizontal: 8.0,
                 vertical: 8.0,
               ),
-              decoration: BoxDecoration(
-                color: context.appSurface,
-                border: Border(
-                  top: BorderSide(
-                    color: context.appTextPrimary.withValues(alpha: 0.08),
-                  ),
-                ),
-              ),
               child: TextField(
                 controller: _searchController,
                 onChanged: (val) {

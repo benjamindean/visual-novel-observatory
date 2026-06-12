@@ -52,9 +52,6 @@ class PlatformsSection extends StatelessWidget {
               decoration: BoxDecoration(
                 color: context.appSurface,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: context.appTextPrimary.withValues(alpha: 0.05),
-                ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,

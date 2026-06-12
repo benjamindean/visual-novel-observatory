@@ -42,16 +42,10 @@ class SettingsScreen extends ConsumerWidget {
               children: [
                 _buildThemeModeTile(context, ref, settingsState),
                 if (isDarkActive) ...[
-                  Divider(
-                    color: context.appTextPrimary.withValues(alpha: 0.08),
-                    height: 1,
-                  ),
+                  Divider(height: 1),
                   _buildTrueBlackTile(context, ref, settingsState),
                 ],
-                Divider(
-                  color: context.appTextPrimary.withValues(alpha: 0.08),
-                  height: 1,
-                ),
+                Divider(height: 1),
                 _buildThemeTile(context, ref, settingsState),
               ],
             ),
@@ -62,10 +56,7 @@ class SettingsScreen extends ConsumerWidget {
               context,
               children: [
                 _buildSpoilerTile(context, ref, settingsState),
-                Divider(
-                  color: context.appTextPrimary.withValues(alpha: 0.08),
-                  height: 1,
-                ),
+                Divider(height: 1),
                 _buildExplicitContentTile(context, ref, settingsState),
               ],
             ),
@@ -103,24 +94,18 @@ class SettingsScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            context.colorScheme.primary.withValues(alpha: 0.18),
-            context.appSurface,
-          ],
+          colors: [context.colorScheme.primaryContainer, context.appSurface],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: context.appTextPrimary.withValues(alpha: 0.04),
+            color: Colors.black12,
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
-        border: Border.all(
-          color: context.colorScheme.primary.withValues(alpha: 0.1),
-        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -192,12 +177,16 @@ class SettingsScreen extends ConsumerWidget {
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              context.colorScheme.onPrimary,
+                              context.colorScheme.inverseSurface,
                             ),
                           ),
                         )
-                      : const Icon(Icons.sync_rounded, size: 18),
-                  label: const Text(
+                      : Icon(
+                          Icons.sync_rounded,
+                          size: 18,
+                          color: context.colorScheme.onPrimary,
+                        ),
+                  label: Text(
                     'Sync Data',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
@@ -218,7 +207,11 @@ class SettingsScreen extends ConsumerWidget {
                   onPressed: () {
                     _showDisconnectConfirmation(context, ref);
                   },
-                  icon: const Icon(Icons.logout_rounded, size: 18),
+                  icon: Icon(
+                    Icons.logout_rounded,
+                    size: 18,
+                    color: context.colorScheme.onPrimary,
+                  ),
                   label: const Text(
                     'Disconnect',
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -287,6 +280,7 @@ class SettingsScreen extends ConsumerWidget {
   Widget _buildConnectCard(BuildContext context, ThemeData theme) {
     return Card(
       color: context.appSurface,
+      margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -344,6 +338,7 @@ class SettingsScreen extends ConsumerWidget {
     return Card(
       color: context.appSurface,
       clipBehavior: Clip.antiAlias,
+      margin: EdgeInsets.zero,
       child: Column(children: children),
     );
   }
@@ -446,6 +441,9 @@ class SettingsScreen extends ConsumerWidget {
     WidgetRef ref,
     SettingsState settings,
   ) {
+    final theme = Theme.of(context);
+    final isDarkActive = theme.brightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Row(
@@ -476,15 +474,28 @@ class SettingsScreen extends ConsumerWidget {
             underline: const SizedBox(),
             alignment: Alignment.centerRight,
             items: AppTheme.themes.entries.map((entry) {
+              final colors = AppTheme.getThemeColors(entry.key, isDarkActive);
+
               return DropdownMenuItem<String>(
                 value: entry.key,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    entry.value,
-                    style: const TextStyle(fontSize: 14),
-                    textAlign: TextAlign.end,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Theme color circle previews
+                    ...colors.map((color) {
+                      return Container(
+                        margin: const EdgeInsets.only(left: 4.0),
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                        ),
+                      );
+                    }),
+                    const SizedBox(width: 8),
+                    Text(entry.value, style: const TextStyle(fontSize: 14)),
+                  ],
                 ),
               );
             }).toList(),

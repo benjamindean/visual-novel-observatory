@@ -96,14 +96,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               height: 36,
                               width: 36,
                               decoration: BoxDecoration(
-                                color: context.colorScheme.primaryContainer
-                                    .withValues(alpha: 0.4),
+                                color: context.colorScheme.primaryContainer,
                                 borderRadius: BorderRadius.circular(18),
-                                border: Border.all(
-                                  color: context.colorScheme.primary.withValues(
-                                    alpha: 0.2,
-                                  ),
-                                ),
                               ),
                               child: IconButton(
                                 padding: EdgeInsets.zero,
@@ -144,14 +138,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           height: 36,
                           width: 36,
                           decoration: BoxDecoration(
-                            color: context.colorScheme.primaryContainer
-                                .withValues(alpha: 0.4),
+                            color: context.colorScheme.primaryContainer,
                             borderRadius: BorderRadius.circular(18),
-                            border: Border.all(
-                              color: context.colorScheme.primary.withValues(
-                                alpha: 0.2,
-                              ),
-                            ),
                           ),
                           child: IconButton(
                             padding: EdgeInsets.zero,

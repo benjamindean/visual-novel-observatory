@@ -64,11 +64,6 @@ class VnDetailScreen extends ConsumerWidget {
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(24),
-                                side: BorderSide(
-                                  color: context.appTextPrimary.withValues(
-                                    alpha: 0.08,
-                                  ),
-                                ),
                               ),
                               elevation: 0,
                             ),
@@ -138,11 +133,6 @@ class VnDetailScreen extends ConsumerWidget {
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(24),
-                                side: BorderSide(
-                                  color: context.appTextPrimary.withValues(
-                                    alpha: 0.08,
-                                  ),
-                                ),
                               ),
                               elevation: 0,
                             ),
@@ -306,9 +296,6 @@ class _ActionButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: context.appSurface,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: context.appTextPrimary.withValues(alpha: 0.08),
-          ),
         ),
         child: Icon(icon, color: context.appTextPrimary, size: 22),
       ),
@@ -363,7 +350,7 @@ void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                       width: 40.0,
                       height: 4.0,
                       decoration: BoxDecoration(
-                        color: context.appTextPrimary.withValues(alpha: 0.15),
+                        color: context.colorScheme.outlineVariant,
                         borderRadius: BorderRadius.circular(2.0),
                       ),
                     ),
@@ -562,9 +549,7 @@ void _showVoteDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                           width: 40.0,
                           height: 4.0,
                           decoration: BoxDecoration(
-                            color: context.appTextPrimary.withValues(
-                              alpha: 0.15,
-                            ),
+                            color: context.colorScheme.outlineVariant,
                             borderRadius: BorderRadius.circular(2.0),
                           ),
                         ),
@@ -652,11 +637,7 @@ void _showVoteDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                             : () {
                                 ref
                                     .read(userUlistProvider.notifier)
-                                    .updateVote(
-                                      vn.id,
-                                      selectedVote * 10,
-                                      vn: vn,
-                                    );
+                                    .updateVote(vn, selectedVote * 10);
                                 context.pop();
                               },
                         child: ulistState.isLoading
@@ -683,11 +664,7 @@ void _showVoteDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                         OutlinedButton(
                           style: OutlinedButton.styleFrom(
                             foregroundColor: context.colorScheme.error,
-                            side: BorderSide(
-                              color: context.colorScheme.error.withValues(
-                                alpha: 0.3,
-                              ),
-                            ),
+                            side: BorderSide(color: context.colorScheme.error),
                             padding: const EdgeInsets.symmetric(vertical: 14.0),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(24.0),
@@ -698,7 +675,7 @@ void _showVoteDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                               : () {
                                   ref
                                       .read(userUlistProvider.notifier)
-                                      .updateVote(vn.id, null, vn: vn);
+                                      .updateVote(vn, null);
                                   context.pop();
                                 },
                           child: const Text(
