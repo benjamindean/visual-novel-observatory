@@ -80,7 +80,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       backgroundColor: context.appBackground,
                       titleSpacing: 20,
                       title: Text(
-                        'Observatory',
+                        'All',
                         style: theme.textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           letterSpacing: -0.5,

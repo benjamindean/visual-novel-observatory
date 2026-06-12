@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 import 'theme/app_theme.dart';
 import 'settings/providers/settings_provider.dart';
+import 'core/storage/app_storage.dart';
 import 'core/navigation/router.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  await AppStorage.init();
 
   runApp(
     // ProviderScope is required for Riverpod state management

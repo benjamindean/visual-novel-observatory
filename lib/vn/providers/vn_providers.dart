@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../core/storage/app_storage.dart';
 import '../../core/api/vndb_client.dart';
 import '../models/visual_novel.dart';
 import '../models/vn_tag.dart';
@@ -143,9 +143,8 @@ class RecentlyOpenedSearchNotifier extends Notifier<List<VisualNovel>> {
 
   Future<void> loadVns() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-
-      final String? jsonStr = prefs.getString(_key);
+      final box = AppStorage.mainBox;
+      final String? jsonStr = box.get(_key) as String?;
 
       if (jsonStr != null) {
         final List<dynamic> jsonList = jsonDecode(jsonStr);
@@ -168,20 +167,19 @@ class RecentlyOpenedSearchNotifier extends Notifier<List<VisualNovel>> {
     state = list;
 
     try {
-      final prefs = await SharedPreferences.getInstance();
-
+      final box = AppStorage.mainBox;
       final String jsonStr = jsonEncode(list.map((e) => e.toJson()).toList());
 
-      await prefs.setString(_key, jsonStr);
+      await box.put(_key, jsonStr);
     } catch (_) {}
   }
 
   Future<void> clear() async {
     state = const [];
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final box = AppStorage.mainBox;
 
-      await prefs.remove(_key);
+      await box.delete(_key);
     } catch (_) {}
   }
 }
@@ -621,16 +619,12 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
 
   Future<void> loadCachedUserList() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final box = AppStorage.libraryBox;
+      final cachedEntries = box.values.toList();
 
-      final cachedEntries = prefs.getString('vndb_user_ulist_entries');
-
-      if (cachedEntries != null) {
-        final List<dynamic> decoded = jsonDecode(cachedEntries);
-
+      if (cachedEntries.isNotEmpty) {
         final Map<String, VnUlistEntry> entriesMap = {
-          for (final item in decoded)
-            VnUlistEntry.fromJson(item).id: VnUlistEntry.fromJson(item),
+          for (final entry in cachedEntries) entry.id: entry,
         };
 
         state = state.copyWith(entries: entriesMap);
@@ -673,10 +667,7 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
       final Map<String, VnUlistEntry> entriesMap = {
         for (final entry in list) entry.id: entry,
       };
-      final prefs = await SharedPreferences.getInstance();
-      final String jsonStr = jsonEncode(list.map((e) => e.toJson()).toList());
-
-      await prefs.setString('vndb_user_ulist_entries', jsonStr);
+      await _saveEntriesToCache(entriesMap);
 
       state = state.copyWith(entries: entriesMap, isLoading: false);
     } catch (e) {
@@ -702,13 +693,13 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
     final repository = ref.read(vnRepositoryProvider);
 
     try {
-      final prefs = await SharedPreferences.getInstance();
       final labels = await repository.getUserListLabels();
-      final String labelsJson = jsonEncode(
-        labels.map((e) => e.toJson()).toList(),
-      );
+      final labelsBox = AppStorage.labelsBox;
 
-      await prefs.setString('vndb_user_ulist_labels', labelsJson);
+      await labelsBox.clear();
+      await labelsBox.putAll({
+        for (final label in labels) label.id.toString(): label,
+      });
       ref.invalidate(ulistLabelsProvider);
 
       final list = <VnUlistEntry>[];
@@ -731,11 +722,7 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
       final Map<String, VnUlistEntry> entriesMap = {
         for (final entry in list) entry.id: entry,
       };
-      final String entriesJson = jsonEncode(
-        list.map((e) => e.toJson()).toList(),
-      );
-
-      await prefs.setString('vndb_user_ulist_entries', entriesJson);
+      await _saveEntriesToCache(entriesMap);
 
       await ref.read(localTagsProvider.notifier).fetchAndCacheAllTags();
 
@@ -750,14 +737,27 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
     }
   }
 
-  Future<void> updateVote(String vnId, int? voteScore) async {
+  Future<void> _saveEntriesToCache(Map<String, VnUlistEntry> entries) async {
+    try {
+      final box = AppStorage.libraryBox;
+
+      await box.clear();
+      await box.putAll({for (final entry in entries.values) entry.id: entry});
+    } catch (_) {}
+  }
+
+  Future<void> updateVote(
+    String vnId,
+    int? voteScore, {
+    VisualNovel? vn,
+  }) async {
     final oldEntries = state.entries;
 
     final currentEntry = oldEntries[vnId];
 
     final currentLabels = currentEntry?.labels ?? const [];
 
-    final currentVn = currentEntry?.vn;
+    final currentVn = vn ?? currentEntry?.vn;
 
     final newEntry = VnUlistEntry(
       id: vnId,
@@ -770,6 +770,7 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
 
     updatedEntries[vnId] = newEntry;
     state = state.copyWith(entries: updatedEntries);
+    await _saveEntriesToCache(updatedEntries);
 
     final repository = ref.read(vnRepositoryProvider);
 
@@ -784,17 +785,22 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
         entries: oldEntries,
         errorMessage: () => e.toString(),
       );
+      await _saveEntriesToCache(oldEntries);
     }
   }
 
-  Future<void> updateLabels(String vnId, List<int> labels) async {
+  Future<void> updateLabels(
+    String vnId,
+    List<int> labels, {
+    VisualNovel? vn,
+  }) async {
     final oldEntries = state.entries;
 
     final currentEntry = oldEntries[vnId];
 
     final currentVote = currentEntry?.vote;
 
-    final currentVn = currentEntry?.vn;
+    final currentVn = vn ?? currentEntry?.vn;
 
     final newEntry = VnUlistEntry(
       id: vnId,
@@ -807,6 +813,7 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
 
     updatedEntries[vnId] = newEntry;
     state = state.copyWith(entries: updatedEntries);
+    await _saveEntriesToCache(updatedEntries);
 
     final repository = ref.read(vnRepositoryProvider);
 
@@ -821,6 +828,7 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
         entries: oldEntries,
         errorMessage: () => e.toString(),
       );
+      await _saveEntriesToCache(oldEntries);
     }
   }
 }
@@ -853,27 +861,21 @@ final ulistLabelsProvider = FutureProvider<List<VndbLabel>>((ref) async {
   }
 
   try {
-    final prefs = await SharedPreferences.getInstance();
+    final box = AppStorage.labelsBox;
+    final cached = box.values.toList();
 
-    final cached = prefs.getString('vndb_user_ulist_labels');
-
-    if (cached != null) {
-      final List<dynamic> decoded = jsonDecode(cached);
-
-      return decoded
-          .map((e) => VndbLabel.fromJson(e as Map<String, dynamic>))
-          .toList();
+    if (cached.isNotEmpty) {
+      return cached;
     }
   } catch (_) {}
 
   final list = await repository.getUserListLabels();
 
   try {
-    final prefs = await SharedPreferences.getInstance();
+    final box = AppStorage.labelsBox;
 
-    final String jsonStr = jsonEncode(list.map((e) => e.toJson()).toList());
-
-    await prefs.setString('vndb_user_ulist_labels', jsonStr);
+    await box.clear();
+    await box.putAll({for (final label in list) label.id.toString(): label});
   } catch (_) {}
 
   return list;
@@ -919,9 +921,8 @@ class LocalTagsNotifier extends Notifier<LocalTagsState> {
     state = state.copyWith(isLoading: true, errorMessage: () => null);
 
     try {
-      final prefs = await SharedPreferences.getInstance();
-
-      final content = prefs.getString('vndb_tags_cache');
+      final box = AppStorage.mainBox;
+      final content = box.get('vndb_tags_cache') as String?;
 
       if (content != null) {
         final List<dynamic> jsonList = jsonDecode(content) as List;
@@ -980,13 +981,12 @@ class LocalTagsNotifier extends Notifier<LocalTagsState> {
         await Future.delayed(const Duration(milliseconds: 50));
       }
 
-      final prefs = await SharedPreferences.getInstance();
-
+      final box = AppStorage.mainBox;
       final String jsonStr = jsonEncode(
         allTags.map((e) => e.toJson()).toList(),
       );
 
-      await prefs.setString('vndb_tags_cache', jsonStr);
+      await box.put('vndb_tags_cache', jsonStr);
 
       state = state.copyWith(tags: allTags, isLoading: false, progress: 1.0);
     } catch (e) {

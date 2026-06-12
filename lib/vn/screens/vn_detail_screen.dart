@@ -448,7 +448,11 @@ void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
 
                                       ref
                                           .read(userUlistProvider.notifier)
-                                          .updateLabels(vn.id, newLabels);
+                                          .updateLabels(
+                                            vn.id,
+                                            newLabels,
+                                            vn: vn,
+                                          );
                                     },
                             );
                           },
@@ -481,7 +485,7 @@ void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: context.appAccentTeal,
-                        foregroundColor: Colors.black,
+                        foregroundColor: context.colorScheme.onPrimary,
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24.0),
@@ -633,7 +637,7 @@ void _showVoteDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: context.appAccentTeal,
-                          foregroundColor: Colors.black,
+                          foregroundColor: context.colorScheme.onPrimary,
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(24.0),
@@ -645,16 +649,20 @@ void _showVoteDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                             : () {
                                 ref
                                     .read(userUlistProvider.notifier)
-                                    .updateVote(vn.id, selectedVote * 10);
+                                    .updateVote(
+                                      vn.id,
+                                      selectedVote * 10,
+                                      vn: vn,
+                                    );
                                 context.pop();
                               },
                         child: ulistState.isLoading
-                            ? const SizedBox(
+                            ? SizedBox(
                                 width: 20,
                                 height: 20,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  color: Colors.black,
+                                  color: context.colorScheme.onPrimary,
                                 ),
                               )
                             : const Text(
@@ -687,7 +695,7 @@ void _showVoteDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                               : () {
                                   ref
                                       .read(userUlistProvider.notifier)
-                                      .updateVote(vn.id, null);
+                                      .updateVote(vn.id, null, vn: vn);
                                   context.pop();
                                 },
                           child: const Text(

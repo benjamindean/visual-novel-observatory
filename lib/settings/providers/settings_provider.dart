@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../core/storage/app_storage.dart';
 
 class SettingsState {
   final int spoilerLevel;
@@ -56,21 +56,17 @@ class SettingsNotifier extends Notifier<SettingsState> {
 
   @override
   SettingsState build() {
-    return SettingsState();
-  }
+    final box = AppStorage.mainBox;
 
-  Future<void> loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
+    final spoiler = box.get(_spoilerKey) as int? ?? 0;
+    final language = box.get(_languageKey) as String?;
+    final platform = box.get(_platformKey) as String?;
+    final explicit = box.get(_explicitKey) as bool? ?? false;
+    final theme = box.get(_themeKey) as String? ?? 'vndb';
+    final mode = box.get(_themeModeKey) as String? ?? 'system';
+    final isTrueBlack = box.get(_darkIsTrueBlackKey) as bool? ?? false;
 
-    final spoiler = prefs.getInt(_spoilerKey) ?? 0;
-    final language = prefs.getString(_languageKey);
-    final platform = prefs.getString(_platformKey);
-    final explicit = prefs.getBool(_explicitKey) ?? false;
-    final theme = prefs.getString(_themeKey) ?? 'vndb';
-    final mode = prefs.getString(_themeModeKey) ?? 'system';
-    final isTrueBlack = prefs.getBool(_darkIsTrueBlackKey) ?? false;
-
-    state = SettingsState(
+    return SettingsState(
       spoilerLevel: spoiler,
       defaultLanguage: language,
       defaultPlatform: platform,
@@ -81,65 +77,70 @@ class SettingsNotifier extends Notifier<SettingsState> {
     );
   }
 
-  Future<void> setThemeName(String name) async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<void> loadSettings() async {
+    // Kept as an empty future for backward-compatibility.
+    // Settings are loaded synchronously in build() now.
+  }
 
-    await prefs.setString(_themeKey, name);
+  Future<void> setThemeName(String name) async {
+    final box = AppStorage.mainBox;
+
+    await box.put(_themeKey, name);
 
     state = state.copyWith(themeName: name);
   }
 
   Future<void> setThemeMode(String mode) async {
-    final prefs = await SharedPreferences.getInstance();
+    final box = AppStorage.mainBox;
 
-    await prefs.setString(_themeModeKey, mode);
+    await box.put(_themeModeKey, mode);
 
     state = state.copyWith(themeMode: mode);
   }
 
   Future<void> setDarkIsTrueBlack(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
+    final box = AppStorage.mainBox;
 
-    await prefs.setBool(_darkIsTrueBlackKey, value);
+    await box.put(_darkIsTrueBlackKey, value);
 
     state = state.copyWith(darkIsTrueBlack: value);
   }
 
   Future<void> setSpoilerLevel(int level) async {
-    final prefs = await SharedPreferences.getInstance();
+    final box = AppStorage.mainBox;
 
-    await prefs.setInt(_spoilerKey, level);
+    await box.put(_spoilerKey, level);
 
     state = state.copyWith(spoilerLevel: level);
   }
 
   Future<void> setShowExplicitContent(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
+    final box = AppStorage.mainBox;
 
-    await prefs.setBool(_explicitKey, value);
+    await box.put(_explicitKey, value);
 
     state = state.copyWith(showExplicitContent: value);
   }
 
   Future<void> setDefaultLanguage(String? language) async {
-    final prefs = await SharedPreferences.getInstance();
+    final box = AppStorage.mainBox;
 
     if (language == null) {
-      await prefs.remove(_languageKey);
+      await box.delete(_languageKey);
     } else {
-      await prefs.setString(_languageKey, language);
+      await box.put(_languageKey, language);
     }
 
     state = state.copyWith(defaultLanguage: () => language);
   }
 
   Future<void> setDefaultPlatform(String? platform) async {
-    final prefs = await SharedPreferences.getInstance();
+    final box = AppStorage.mainBox;
 
     if (platform == null) {
-      await prefs.remove(_platformKey);
+      await box.delete(_platformKey);
     } else {
-      await prefs.setString(_platformKey, platform);
+      await box.put(_platformKey, platform);
     }
 
     state = state.copyWith(defaultPlatform: () => platform);

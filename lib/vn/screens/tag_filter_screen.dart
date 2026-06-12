@@ -310,61 +310,82 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                           },
                         ),
                 ),
-
-                // Search Input Bar
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 8.0),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8.0,
+                    vertical: 8.0,
+                  ),
+                  decoration: BoxDecoration(
+                    color: context.appSurface,
+                    border: Border(
+                      top: BorderSide(
+                        color: context.appTextPrimary.withValues(alpha: 0.08),
+                      ),
+                    ),
+                  ),
                   child: TextField(
                     controller: _searchController,
                     onChanged: _performSearch,
                     decoration: InputDecoration(
                       hintText:
                           'Search tags (e.g. Magic, Female Protagonist)...',
-                      prefixIcon: Icon(
-                        Icons.search_rounded,
-                        color: context.appTextMuted,
-                      ),
+                      prefixIcon: const Icon(Icons.search_rounded),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(
-                              icon: Icon(
-                                Icons.clear_rounded,
-                                color: context.appTextMuted,
-                              ),
+                              icon: const Icon(Icons.clear_rounded),
                               onPressed: () {
                                 _searchController.clear();
                                 _performSearch('');
                               },
                             )
                           : null,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
                     ),
                   ),
                 ),
-
-                // Save button
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 24.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.appAccentTeal,
-                      foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24.0),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 16.0,
+                  ),
+                  decoration: BoxDecoration(
+                    color: context.appSurface,
+                    border: Border(
+                      top: BorderSide(
+                        color: context.appTextPrimary.withValues(alpha: 0.08),
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.of(context).pop(_selectedTags);
-                    },
-                    child: const Text(
-                      'Save Tags',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                      ),
+                  ),
+                  child: SafeArea(
+                    top: false,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: context.appAccentTeal,
+                              foregroundColor: context.colorScheme.onPrimary,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 16.0,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24.0),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop(_selectedTags);
+                            },
+                            child: const Text(
+                              'Save Tags',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

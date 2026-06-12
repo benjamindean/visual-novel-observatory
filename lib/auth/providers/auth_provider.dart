@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../core/storage/app_storage.dart';
 import '../../core/api/vndb_client.dart';
 
 class AuthState {
@@ -53,19 +53,19 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   Future<void> loadCachedAuth() async {
-    final prefs = await SharedPreferences.getInstance();
+    final box = AppStorage.mainBox;
 
-    final cachedToken = prefs.getString(_tokenKey);
-    final cachedUsername = prefs.getString(_usernameKey);
-    final cachedUserId = prefs.getString(_userIdKey);
-    final cachedPermissions = prefs.getStringList(_permissionsKey);
+    final cachedToken = box.get(_tokenKey) as String?;
+    final cachedUsername = box.get(_usernameKey) as String?;
+    final cachedUserId = box.get(_userIdKey) as String?;
+    final cachedPermissions = box.get(_permissionsKey) as List<dynamic>?;
 
     if (cachedToken != null && cachedUsername != null && cachedUserId != null) {
       state = AuthState(
         token: cachedToken,
         username: cachedUsername,
         userId: cachedUserId,
-        permissions: cachedPermissions ?? const [],
+        permissions: cachedPermissions?.cast<String>() ?? const [],
       );
     }
   }
@@ -84,12 +84,12 @@ class AuthNotifier extends Notifier<AuthState> {
         authInfo['permissions'] as List? ?? [],
       );
 
-      final prefs = await SharedPreferences.getInstance();
+      final box = AppStorage.mainBox;
 
-      await prefs.setString(_tokenKey, token);
-      await prefs.setString(_usernameKey, username);
-      await prefs.setString(_userIdKey, userId);
-      await prefs.setStringList(_permissionsKey, permissions);
+      await box.put(_tokenKey, token);
+      await box.put(_usernameKey, username);
+      await box.put(_userIdKey, userId);
+      await box.put(_permissionsKey, permissions);
 
       state = AuthState(
         token: token,
@@ -110,12 +110,15 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
+    final box = AppStorage.mainBox;
 
-    await prefs.remove(_tokenKey);
-    await prefs.remove(_usernameKey);
-    await prefs.remove(_userIdKey);
-    await prefs.remove(_permissionsKey);
+    await box.delete(_tokenKey);
+    await box.delete(_usernameKey);
+    await box.delete(_userIdKey);
+    await box.delete(_permissionsKey);
+
+    await AppStorage.libraryBox.clear();
+    await AppStorage.labelsBox.clear();
 
     state = AuthState();
   }
