@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../providers/settings_provider.dart';
 import '../../theme/app_theme.dart';
+import '../../vn/widgets/vndb_source_note.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -481,13 +482,8 @@ class SettingsScreen extends ConsumerWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            'Powered by VNDB API v2 (Kana)',
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: context.appTextMuted,
-            ),
-          ),
+          const SizedBox(height: 12.0),
+          const VndbSourceNote(),
         ],
       ),
     );

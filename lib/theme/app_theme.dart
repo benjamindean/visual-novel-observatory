@@ -122,9 +122,12 @@ class AppTheme {
           bottomNavigationBarOpacity: 1.0,
         ),
       ).copyWith(
-        cardColor: (isCustomVndb && !darkIsTrueBlack)
-            ? const Color(0xFF20273F)
-            : null,
+        cardColor: const Color(0xFF20273F),
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          backgroundColor: Colors.transparent,
+        ),
       );
     } else {
       return FlexThemeData.light(
@@ -180,6 +183,12 @@ class AppTheme {
           inputDecoratorFocusedBorderWidth: 1.5,
           bottomNavigationBarElevation: 8,
           bottomNavigationBarOpacity: 1.0,
+        ),
+      ).copyWith(
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          backgroundColor: Colors.transparent,
         ),
       );
     }

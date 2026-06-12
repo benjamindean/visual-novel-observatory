@@ -10,6 +10,7 @@ import '../widgets/synopsis_section.dart';
 import '../widgets/tags_section.dart';
 import '../widgets/links_section.dart';
 import '../widgets/screenshots_section.dart';
+import '../widgets/vndb_source_note.dart';
 import '../../theme/app_theme.dart';
 import '../../auth/providers/auth_provider.dart';
 
@@ -20,7 +21,6 @@ class VnDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final ulistState = ref.watch(vnUlistProvider(vn.id));
     final authState = ref.watch(authProvider);
 
@@ -277,26 +277,7 @@ class VnDetailScreen extends ConsumerWidget {
                   LinksSection(extLinks: vn.extLinks),
 
                   const SizedBox(height: 40),
-                  Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          'All data is sourced from VNDB.',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: context.appTextMuted,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Visual Novel Observatory is not affiliated with VNDB.',
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: context.appTextMuted.withValues(alpha: 0.7),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  const Center(child: VndbSourceNote()),
                   const SizedBox(height: 48),
                 ],
               ),
@@ -367,11 +348,9 @@ void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
             ),
             clipBehavior: Clip.antiAlias,
             child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                20.0,
-                16.0,
-                20.0,
-                MediaQuery.of(context).padding.bottom + 24.0,
+              padding: EdgeInsets.only(
+                top: 16.0,
+                bottom: MediaQuery.of(context).padding.bottom,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -391,10 +370,13 @@ void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                   const SizedBox(height: 16.0),
 
                   // Title
-                  Text(
-                    'My Labels',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Text(
+                      'My Labels',
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16.0),
@@ -413,7 +395,10 @@ void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
 
                         if (filteredLabels.isEmpty) {
                           return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 32.0),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 32.0,
+                              horizontal: 20.0,
+                            ),
                             child: Text(
                               'No labels found.',
                               style: TextStyle(color: context.appTextMuted),
@@ -438,7 +423,9 @@ void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                             return CheckboxListTile(
                               activeColor: context.appAccentTeal,
                               checkColor: Colors.black,
-                              contentPadding: EdgeInsets.zero,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20.0,
+                              ),
                               title: Text(
                                 label.label,
                                 style: TextStyle(color: context.appTextPrimary),
@@ -474,7 +461,10 @@ void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                         ),
                       ),
                       error: (err, stack) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 24.0),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 24.0,
+                          horizontal: 20.0,
+                        ),
                         child: Text(
                           'Error: $err',
                           style: TextStyle(color: context.colorScheme.error),
@@ -483,25 +473,26 @@ void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24.0),
-
                   // Done Button (thumb-stretch aware)
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.appAccentTeal,
-                      foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: context.appAccentTeal,
+                        foregroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24.0),
+                        ),
+                        elevation: 0,
                       ),
-                      elevation: 0,
-                    ),
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text(
-                      'Done',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text(
+                        'Done',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
                       ),
                     ),
                   ),

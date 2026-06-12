@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../theme/app_theme.dart';
+import '../../vn/widgets/vndb_source_note.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -92,6 +93,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 24),
               ],
               _buildSubmitButton(context, authState),
+              const SizedBox(height: 40.0),
+              const VndbSourceNote(),
             ],
           ),
         ),
