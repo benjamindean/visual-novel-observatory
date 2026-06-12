@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../providers/settings_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../vn/widgets/vndb_source_note.dart';
+import '../../vn/providers/vn_providers.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -92,6 +94,11 @@ class SettingsScreen extends ConsumerWidget {
     ThemeData theme,
     AuthState auth,
   ) {
+    final ulistState = ref.watch(userUlistProvider);
+    final tagsState = ref.watch(localTagsProvider);
+
+    final isSyncing = ulistState.isLoading || tagsState.isLoading;
+
     return Container(
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
@@ -142,27 +149,138 @@ class SettingsScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 20),
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: context.colorScheme.error,
-              foregroundColor: context.colorScheme.onError,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: context.appAccentTeal,
+                    foregroundColor: context.colorScheme.onPrimary,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  onPressed: isSyncing
+                      ? null
+                      : () async {
+                          try {
+                            await ref
+                                .read(userUlistProvider.notifier)
+                                .syncUserListAndData();
+
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Data synced successfully!'),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Failed to sync: $e')),
+                              );
+                            }
+                          }
+                        },
+                  icon: isSyncing
+                      ? SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              context.colorScheme.onPrimary,
+                            ),
+                          ),
+                        )
+                      : const Icon(Icons.sync_rounded, size: 18),
+                  label: const Text(
+                    'Sync Data',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 12),
-            ),
-            onPressed: () {
-              ref.read(authProvider.notifier).logout();
-            },
-            icon: const Icon(Icons.logout_rounded, size: 18),
-            label: const Text(
-              'Disconnect Account',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: context.colorScheme.error,
+                    foregroundColor: context.colorScheme.onError,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  onPressed: () {
+                    _showDisconnectConfirmation(context, ref);
+                  },
+                  icon: const Icon(Icons.logout_rounded, size: 18),
+                  label: const Text(
+                    'Disconnect',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
+    );
+  }
+
+  void _showDisconnectConfirmation(BuildContext context, WidgetRef ref) {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: context.appSurface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            'Disconnect Account',
+            style: TextStyle(
+              color: context.appTextPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to disconnect your VNDB account? Your local data sync will be disabled.',
+            style: TextStyle(color: context.appTextSecondary),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: context.appTextSecondary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                ref.read(authProvider.notifier).logout();
+              },
+              child: Text(
+                'Disconnect',
+                style: TextStyle(
+                  color: context.colorScheme.error,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -206,7 +324,7 @@ class SettingsScreen extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
               onPressed: () {
-                Navigator.of(context).pushNamed('/login');
+                context.push('/login');
               },
               child: const Text(
                 'Connect VNDB Profile',

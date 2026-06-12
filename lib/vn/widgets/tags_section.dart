@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../models/vn_tag.dart';
 import 'tag_chip.dart';
 import '../../theme/app_theme.dart';
@@ -61,9 +62,9 @@ class _TagsSectionState extends ConsumerState<TagsSection> {
                       label: tag.name,
                       score: tag.rating,
                       onTap: () {
-                        Navigator.of(context).pushNamed(
+                        context.push(
                           '/tag-list',
-                          arguments: {'tagId': tag.id, 'tagName': tag.name},
+                          extra: {'tagId': tag.id, 'tagName': tag.name},
                         );
                       },
                     ),

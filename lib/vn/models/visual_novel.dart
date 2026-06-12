@@ -39,7 +39,15 @@ abstract class VisualNovel with _$VisualNovel {
       _$VisualNovelFromJson(_normalizeJson(json));
 
   static Map<String, dynamic> _normalizeJson(Map<String, dynamic> json) {
-    // Parse nested image object
+    final adjustedJson = Map<String, dynamic>.from(json);
+
+    // If it's already normalized (e.g. from local storage serialization),
+    // then imageUrl will already be present, and we don't need to normalize again.
+    if (json.containsKey('imageUrl')) {
+      return adjustedJson;
+    }
+
+    // Parse nested image object from VNDB API response
     String? imgUrl;
     List<int>? imgDims;
     double? imgSexual;
@@ -62,8 +70,6 @@ abstract class VisualNovel with _$VisualNovel {
     if (rawRating != null) {
       parsedRating = (rawRating as num).toDouble() / 10.0;
     }
-
-    final adjustedJson = Map<String, dynamic>.from(json);
 
     adjustedJson['imageUrl'] = imgUrl;
     adjustedJson['imageDims'] = imgDims;

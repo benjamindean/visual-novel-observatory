@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 import '../models/vn_screenshot.dart';
 import '../../settings/providers/settings_provider.dart';
 
@@ -157,7 +158,7 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
     const threshold = 120.0;
 
     if (_dragOffset.abs() > threshold) {
-      Navigator.of(context).pop();
+      context.pop();
     } else {
       setState(() {
         _dragOffset = 0.0;
@@ -335,7 +336,7 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
                       backgroundColor: Colors.black54,
                       child: IconButton(
                         icon: const Icon(Icons.close, color: Colors.white),
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () => context.pop(),
                       ),
                     ),
                     Container(

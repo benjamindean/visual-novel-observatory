@@ -69,8 +69,11 @@ class VnRepository {
     return list.map((e) => VndbLabel.fromJson(e)).toList();
   }
 
-  Future<VnUlistEntry?> getUserListEntry(String vnId) async {
-    final data = await _client.getUserListEntry(vnId);
+  Future<VnUlistEntry?> getUserListEntry({
+    required String user,
+    required String vnId,
+  }) async {
+    final data = await _client.getUserListEntry(user: user, vnId: vnId);
 
     if (data == null) {
       return null;
@@ -96,10 +99,15 @@ class VnRepository {
   }
 
   Future<Map<String, dynamic>> getUserList({
+    required String user,
     required int page,
     int resultsPerPage = 100,
   }) {
-    return _client.getUserList(page: page, resultsPerPage: resultsPerPage);
+    return _client.getUserList(
+      user: user,
+      page: page,
+      resultsPerPage: resultsPerPage,
+    );
   }
 
   Future<Map<String, dynamic>> getTagsPage({

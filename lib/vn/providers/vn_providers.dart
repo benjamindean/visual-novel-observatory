@@ -36,6 +36,161 @@ final searchQueryProvider = NotifierProvider<SearchQueryNotifier, String>(
   SearchQueryNotifier.new,
 );
 
+class SearchScreenQueryNotifier extends Notifier<String> {
+  @override
+  String build() => '';
+
+  void update(String value) => state = value;
+}
+
+final searchScreenQueryProvider =
+    NotifierProvider<SearchScreenQueryNotifier, String>(
+      SearchScreenQueryNotifier.new,
+    );
+
+class VnSearchNotifier extends Notifier<VnListState> {
+  Timer? _debounceTimer;
+
+  @override
+  VnListState build() {
+    ref.listen<String>(searchScreenQueryProvider, (previous, next) {
+      _debounceTimer?.cancel();
+      _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+        resetAndFetch();
+      });
+    });
+
+    ref.onDispose(() {
+      _debounceTimer?.cancel();
+    });
+
+    return VnListState.initial();
+  }
+
+  Future<void> fetchVns() async {
+    if (state.isLoading || state.isLoadMore || !state.hasMore) {
+      return;
+    }
+
+    final query = ref.read(searchScreenQueryProvider);
+
+    if (query.trim().isEmpty) {
+      return;
+    }
+
+    final isInitial = state.vns.isEmpty;
+
+    if (isInitial) {
+      state = state.copyWith(isLoading: true, errorMessage: null);
+    } else {
+      state = state.copyWith(isLoadMore: true);
+    }
+
+    final currentPage = state.page;
+
+    final repository = ref.read(vnRepositoryProvider);
+
+    final settings = ref.read(settingsProvider);
+
+    try {
+      final response = await repository.searchVisualNovels(
+        query: query,
+        page: currentPage,
+      );
+
+      final List<VisualNovel> allVns = response['vns'] as List<VisualNovel>;
+
+      final bool hasMore = response['hasMore'] as bool;
+
+      final List<VisualNovel> newVns = settings.showExplicitContent
+          ? allVns
+          : allVns.where((vn) => (vn.imageSexual ?? 0.0) <= 0.2).toList();
+
+      state = state.copyWith(
+        vns: isInitial ? newVns : [...state.vns, ...newVns],
+        isLoading: false,
+        isLoadMore: false,
+        hasMore: hasMore,
+        page: currentPage + 1,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        isLoadMore: false,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  Future<void> resetAndFetch() async {
+    state = VnListState.initial();
+    await fetchVns();
+  }
+}
+
+final vnSearchProvider = NotifierProvider<VnSearchNotifier, VnListState>(
+  VnSearchNotifier.new,
+);
+
+class RecentlyOpenedSearchNotifier extends Notifier<List<VisualNovel>> {
+  static const String _key = 'recently_opened_search_vns';
+
+  @override
+  List<VisualNovel> build() {
+    Future.microtask(() => loadVns());
+    return const [];
+  }
+
+  Future<void> loadVns() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      final String? jsonStr = prefs.getString(_key);
+
+      if (jsonStr != null) {
+        final List<dynamic> jsonList = jsonDecode(jsonStr);
+
+        state = jsonList
+            .map((e) => VisualNovel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
+    } catch (_) {}
+  }
+
+  Future<void> addVn(VisualNovel vn) async {
+    final list = List<VisualNovel>.from(state);
+
+    list.removeWhere((item) => item.id == vn.id);
+    list.insert(0, vn);
+    if (list.length > 20) {
+      list.removeLast();
+    }
+    state = list;
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      final String jsonStr = jsonEncode(list.map((e) => e.toJson()).toList());
+
+      await prefs.setString(_key, jsonStr);
+    } catch (_) {}
+  }
+
+  Future<void> clear() async {
+    state = const [];
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      await prefs.remove(_key);
+    } catch (_) {}
+  }
+}
+
+final recentlyOpenedSearchProvider =
+    NotifierProvider<RecentlyOpenedSearchNotifier, List<VisualNovel>>(
+      RecentlyOpenedSearchNotifier.new,
+    );
+
 class VnFilterState {
   final String? lang;
   final String? platform;
@@ -455,26 +610,55 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
     final auth = ref.watch(authProvider);
 
     if (auth.isAuthenticated) {
-      Future.microtask(() => fetchAllEntries());
+      Future.microtask(() async {
+        await loadCachedUserList();
+        fetchAllEntries();
+      });
     }
 
     return const UserUlistState();
   }
 
+  Future<void> loadCachedUserList() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      final cachedEntries = prefs.getString('vndb_user_ulist_entries');
+
+      if (cachedEntries != null) {
+        final List<dynamic> decoded = jsonDecode(cachedEntries);
+
+        final Map<String, VnUlistEntry> entriesMap = {
+          for (final item in decoded)
+            VnUlistEntry.fromJson(item).id: VnUlistEntry.fromJson(item),
+        };
+
+        state = state.copyWith(entries: entriesMap);
+      }
+    } catch (_) {}
+  }
+
   Future<void> fetchAllEntries() async {
     state = state.copyWith(isLoading: true, errorMessage: () => null);
 
+    final auth = ref.read(authProvider);
+
+    if (!auth.isAuthenticated) {
+      state = state.copyWith(isLoading: false);
+
+      return;
+    }
+
+    final userId = auth.userId!;
     final repository = ref.read(vnRepositoryProvider);
 
     try {
       final list = <VnUlistEntry>[];
-
       int page = 1;
-
       bool hasMore = true;
 
       while (hasMore) {
-        final data = await repository.getUserList(page: page);
+        final data = await repository.getUserList(user: userId, page: page);
 
         final results = data['results'] as List? ?? [];
 
@@ -489,6 +673,10 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
       final Map<String, VnUlistEntry> entriesMap = {
         for (final entry in list) entry.id: entry,
       };
+      final prefs = await SharedPreferences.getInstance();
+      final String jsonStr = jsonEncode(list.map((e) => e.toJson()).toList());
+
+      await prefs.setString('vndb_user_ulist_entries', jsonStr);
 
       state = state.copyWith(entries: entriesMap, isLoading: false);
     } catch (e) {
@@ -499,6 +687,69 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
     }
   }
 
+  Future<void> syncUserListAndData() async {
+    state = state.copyWith(isLoading: true, errorMessage: () => null);
+
+    final auth = ref.read(authProvider);
+
+    if (!auth.isAuthenticated) {
+      state = state.copyWith(isLoading: false);
+
+      return;
+    }
+
+    final userId = auth.userId!;
+    final repository = ref.read(vnRepositoryProvider);
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final labels = await repository.getUserListLabels();
+      final String labelsJson = jsonEncode(
+        labels.map((e) => e.toJson()).toList(),
+      );
+
+      await prefs.setString('vndb_user_ulist_labels', labelsJson);
+      ref.invalidate(ulistLabelsProvider);
+
+      final list = <VnUlistEntry>[];
+      int page = 1;
+      bool hasMore = true;
+
+      while (hasMore) {
+        final data = await repository.getUserList(user: userId, page: page);
+
+        final results = data['results'] as List? ?? [];
+
+        for (final item in results) {
+          list.add(VnUlistEntry.fromJson(item as Map<String, dynamic>));
+        }
+
+        hasMore = data['more'] as bool? ?? false;
+        page++;
+      }
+
+      final Map<String, VnUlistEntry> entriesMap = {
+        for (final entry in list) entry.id: entry,
+      };
+      final String entriesJson = jsonEncode(
+        list.map((e) => e.toJson()).toList(),
+      );
+
+      await prefs.setString('vndb_user_ulist_entries', entriesJson);
+
+      await ref.read(localTagsProvider.notifier).fetchAndCacheAllTags();
+
+      state = state.copyWith(entries: entriesMap, isLoading: false);
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: () => e.toString(),
+      );
+
+      rethrow;
+    }
+  }
+
   Future<void> updateVote(String vnId, int? voteScore) async {
     final oldEntries = state.entries;
 
@@ -506,10 +757,13 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
 
     final currentLabels = currentEntry?.labels ?? const [];
 
+    final currentVn = currentEntry?.vn;
+
     final newEntry = VnUlistEntry(
       id: vnId,
       vote: voteScore,
       labels: currentLabels,
+      vn: currentVn,
     );
 
     final updatedEntries = Map<String, VnUlistEntry>.from(oldEntries);
@@ -540,7 +794,14 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
 
     final currentVote = currentEntry?.vote;
 
-    final newEntry = VnUlistEntry(id: vnId, vote: currentVote, labels: labels);
+    final currentVn = currentEntry?.vn;
+
+    final newEntry = VnUlistEntry(
+      id: vnId,
+      vote: currentVote,
+      labels: labels,
+      vn: currentVn,
+    );
 
     final updatedEntries = Map<String, VnUlistEntry>.from(oldEntries);
 
@@ -591,7 +852,31 @@ final ulistLabelsProvider = FutureProvider<List<VndbLabel>>((ref) async {
     return const [];
   }
 
-  return repository.getUserListLabels();
+  try {
+    final prefs = await SharedPreferences.getInstance();
+
+    final cached = prefs.getString('vndb_user_ulist_labels');
+
+    if (cached != null) {
+      final List<dynamic> decoded = jsonDecode(cached);
+
+      return decoded
+          .map((e) => VndbLabel.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+  } catch (_) {}
+
+  final list = await repository.getUserListLabels();
+
+  try {
+    final prefs = await SharedPreferences.getInstance();
+
+    final String jsonStr = jsonEncode(list.map((e) => e.toJson()).toList());
+
+    await prefs.setString('vndb_user_ulist_labels', jsonStr);
+  } catch (_) {}
+
+  return list;
 });
 
 class LocalTagsState {

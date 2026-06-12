@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../providers/vn_providers.dart';
 import '../widgets/vn_card.dart';
 import '../../theme/app_theme.dart';
@@ -52,7 +53,7 @@ class _VnByTagScreenState extends ConsumerState<VnByTagScreen> {
             color: context.appTextPrimary,
             size: 18,
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
       ),
       body: SafeArea(
@@ -138,9 +139,7 @@ class _VnByTagScreenState extends ConsumerState<VnByTagScreen> {
                       return VnCard(
                         vn: vn,
                         onTap: () {
-                          Navigator.of(
-                            context,
-                          ).pushNamed('/detail', arguments: vn);
+                          context.push('/detail', extra: vn);
                         },
                       );
                     }, childCount: listState.vns.length),

@@ -15,6 +15,9 @@ _VnUlistEntry _$VnUlistEntryFromJson(Map<String, dynamic> json) =>
               ?.map((e) => (e as num).toInt())
               .toList() ??
           const [],
+      vn: json['vn'] == null
+          ? null
+          : VisualNovel.fromJson(json['vn'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$VnUlistEntryToJson(_VnUlistEntry instance) =>
@@ -22,4 +25,5 @@ Map<String, dynamic> _$VnUlistEntryToJson(_VnUlistEntry instance) =>
       'id': instance.id,
       'vote': instance.vote,
       'labels': instance.labels,
+      'vn': instance.vn,
     };

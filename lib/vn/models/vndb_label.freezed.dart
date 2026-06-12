@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$VndbLabel {
 
- int get id; String get label;
+ int get id; String? get label;
 /// Create a copy of VndbLabel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $VndbLabelCopyWith<$Res>  {
   factory $VndbLabelCopyWith(VndbLabel value, $Res Function(VndbLabel) _then) = _$VndbLabelCopyWithImpl;
 @useResult
 $Res call({
- int id, String label
+ int id, String? label
 });
 
 
@@ -65,11 +65,11 @@ class _$VndbLabelCopyWithImpl<$Res>
 
 /// Create a copy of VndbLabel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? label = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? label = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
-as String,
+as int,label: freezed == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -154,7 +154,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String label)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String? label)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VndbLabel() when $default != null:
 return $default(_that.id,_that.label);case _:
@@ -175,7 +175,7 @@ return $default(_that.id,_that.label);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String label)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String? label)  $default,) {final _that = this;
 switch (_that) {
 case _VndbLabel():
 return $default(_that.id,_that.label);case _:
@@ -195,7 +195,7 @@ return $default(_that.id,_that.label);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String label)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String? label)?  $default,) {final _that = this;
 switch (_that) {
 case _VndbLabel() when $default != null:
 return $default(_that.id,_that.label);case _:
@@ -210,11 +210,11 @@ return $default(_that.id,_that.label);case _:
 @JsonSerializable()
 
 class _VndbLabel implements VndbLabel {
-  const _VndbLabel({required this.id, required this.label});
+  const _VndbLabel({required this.id, this.label});
   factory _VndbLabel.fromJson(Map<String, dynamic> json) => _$VndbLabelFromJson(json);
 
 @override final  int id;
-@override final  String label;
+@override final  String? label;
 
 /// Create a copy of VndbLabel
 /// with the given fields replaced by the non-null parameter values.
@@ -249,7 +249,7 @@ abstract mixin class _$VndbLabelCopyWith<$Res> implements $VndbLabelCopyWith<$Re
   factory _$VndbLabelCopyWith(_VndbLabel value, $Res Function(_VndbLabel) _then) = __$VndbLabelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String label
+ int id, String? label
 });
 
 
@@ -266,11 +266,11 @@ class __$VndbLabelCopyWithImpl<$Res>
 
 /// Create a copy of VndbLabel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? label = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? label = freezed,}) {
   return _then(_VndbLabel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
-as String,
+as int,label: freezed == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

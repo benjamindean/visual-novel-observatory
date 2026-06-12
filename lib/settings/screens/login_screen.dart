@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:go_router/go_router.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../vn/widgets/vndb_source_note.dart';
@@ -48,10 +49,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         SnackBar(
           content: const Text('Successfully logged in!'),
           backgroundColor: context.appAccentTeal,
+          duration: const Duration(seconds: 2),
         ),
       );
 
-      Navigator.of(context).pop();
+      context.pop();
     }
   }
 

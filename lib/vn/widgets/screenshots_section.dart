@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 import '../models/vn_screenshot.dart';
 import '../../theme/app_theme.dart';
 import '../../settings/providers/settings_provider.dart';
@@ -49,9 +50,9 @@ class ScreenshotsSection extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(12),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pushNamed(
+                      context.push(
                         '/gallery',
-                        arguments: {
+                        extra: {
                           'screenshots': screenshots,
                           'initialIndex': index,
                         },

@@ -1,16 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:visual_novel_observatory/vn/models/visual_novel.dart';
 import 'theme/app_theme.dart';
-import 'vn/screens/home_screen.dart';
-import 'vn/screens/vn_detail_screen.dart';
-import 'vn/screens/vn_by_tag_screen.dart';
-import 'vn/screens/vn_gallery_screen.dart';
-import 'vn/models/vn_screenshot.dart';
-import 'settings/screens/settings_screen.dart';
-import 'settings/screens/login_screen.dart';
-
 import 'settings/providers/settings_provider.dart';
+import 'core/navigation/router.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +32,7 @@ class VisualNovelObservatoryApp extends ConsumerWidget {
         themeMode = ThemeMode.system;
     }
 
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Visual Novel Observatory',
       debugShowCheckedModeBanner: false,
       themeMode: themeMode,
@@ -50,48 +42,7 @@ class VisualNovelObservatoryApp extends ConsumerWidget {
         isDark: true,
         darkIsTrueBlack: settings.darkIsTrueBlack,
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const HomeScreen(),
-        '/settings': (context) => const SettingsScreen(),
-        '/login': (context) => const LoginScreen(),
-      },
-      onGenerateRoute: (settings) {
-        if (settings.name == '/detail') {
-          final vn = settings.arguments as VisualNovel;
-
-          return MaterialPageRoute(
-            builder: (context) => VnDetailScreen(vn: vn),
-            settings: settings,
-          );
-        }
-
-        if (settings.name == '/tag-list') {
-          final args = settings.arguments as Map<String, String>;
-
-          return MaterialPageRoute(
-            builder: (context) =>
-                VnByTagScreen(tagId: args['tagId']!, tagName: args['tagName']!),
-            settings: settings,
-          );
-        }
-
-        if (settings.name == '/gallery') {
-          final args = settings.arguments as Map<String, dynamic>;
-          final screenshots = args['screenshots'] as List<VnScreenshot>;
-          final initialIndex = args['initialIndex'] as int;
-
-          return MaterialPageRoute(
-            builder: (context) => VnGalleryScreen(
-              screenshots: screenshots,
-              initialIndex: initialIndex,
-            ),
-            settings: settings,
-          );
-        }
-
-        return null;
-      },
+      routerConfig: goRouter,
     );
   }
 }

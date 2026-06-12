@@ -207,7 +207,11 @@ class VndbClient {
   }
 
   /// Get user list entry for a specific visual novel
-  Future<Map<String, dynamic>?> getUserListEntry(String vnId) async {
+  /// Get user list entry for a specific visual novel
+  Future<Map<String, dynamic>?> getUserListEntry({
+    required String user,
+    required String vnId,
+  }) async {
     final uri = Uri.parse('$_baseUrl/ulist');
 
     final response = await _client.post(
@@ -217,6 +221,7 @@ class VndbClient {
         if (_token != null) 'Authorization': 'Token $_token',
       },
       body: jsonEncode({
+        'user': user,
         'filters': ['id', '=', vnId],
         'fields': 'id, vote, labels{id}',
       }),
@@ -278,6 +283,7 @@ class VndbClient {
 
   /// Get user list entries (paginated)
   Future<Map<String, dynamic>> getUserList({
+    required String user,
     required int page,
     int resultsPerPage = 100,
   }) async {
@@ -290,7 +296,9 @@ class VndbClient {
         if (_token != null) 'Authorization': 'Token $_token',
       },
       body: jsonEncode({
-        'fields': 'id, vote, labels{id}',
+        'user': user,
+        'fields':
+            'id, vote, labels{id}, vn{id, title, description, rating, votecount, released, platforms, languages, length, length_minutes, image{url, dims, sexual}}',
         'results': resultsPerPage,
         'page': page,
       }),

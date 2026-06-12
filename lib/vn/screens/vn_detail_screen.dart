@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:go_router/go_router.dart';
 import '../models/visual_novel.dart';
 import '../providers/vn_providers.dart';
 import '../widgets/detail_header.dart';
@@ -226,7 +227,7 @@ class VnDetailScreen extends ConsumerWidget {
                               elevation: 0,
                             ),
                             onPressed: () {
-                              Navigator.of(context).pushNamed('/login');
+                              context.push('/login');
                             },
                             icon: const Icon(Icons.login_rounded, size: 20),
                             label: const Text(
@@ -388,8 +389,9 @@ void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                         final filteredLabels = allLabels
                             .where(
                               (label) =>
-                                  label.label.toLowerCase() != 'no label' &&
-                                  label.label.toLowerCase() != 'voted',
+                                  label.label != null &&
+                                  label.label!.toLowerCase() != 'no label' &&
+                                  label.label!.toLowerCase() != 'voted',
                             )
                             .toList();
 
@@ -427,7 +429,7 @@ void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                                 horizontal: 20.0,
                               ),
                               title: Text(
-                                label.label,
+                                label.label ?? '',
                                 style: TextStyle(color: context.appTextPrimary),
                               ),
                               value: isSelected,
@@ -486,7 +488,7 @@ void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                         ),
                         elevation: 0,
                       ),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () => context.pop(),
                       child: const Text(
                         'Done',
                         style: TextStyle(
@@ -644,7 +646,7 @@ void _showVoteDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                                 ref
                                     .read(userUlistProvider.notifier)
                                     .updateVote(vn.id, selectedVote * 10);
-                                Navigator.of(context).pop();
+                                context.pop();
                               },
                         child: ulistState.isLoading
                             ? const SizedBox(
@@ -686,7 +688,7 @@ void _showVoteDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                                   ref
                                       .read(userUlistProvider.notifier)
                                       .updateVote(vn.id, null);
-                                  Navigator.of(context).pop();
+                                  context.pop();
                                 },
                           child: const Text(
                             'Clear Vote',
