@@ -7,8 +7,9 @@ import '../../settings/providers/settings_provider.dart';
 
 class TagsSection extends ConsumerStatefulWidget {
   final List<VnTag> tags;
+  final int initialLimit;
 
-  const TagsSection({super.key, required this.tags});
+  const TagsSection({super.key, required this.tags, this.initialLimit = 12});
 
   @override
   ConsumerState<TagsSection> createState() => _TagsSectionState();
@@ -22,13 +23,17 @@ class _TagsSectionState extends ConsumerState<TagsSection> {
     final theme = Theme.of(context);
     final settings = ref.watch(settingsProvider);
 
-    var displayTagsList = widget.tags;
+    var displayTagsList = List<VnTag>.from(widget.tags);
 
     if (!settings.showExplicitContent) {
       displayTagsList = displayTagsList
           .where((tag) => tag.category != 'ero')
           .toList();
     }
+
+    displayTagsList.sort(
+      (a, b) => (b.rating ?? 0.0).compareTo(a.rating ?? 0.0),
+    );
 
     if (displayTagsList.isEmpty) {
       return const SizedBox.shrink();
@@ -48,7 +53,9 @@ class _TagsSectionState extends ConsumerState<TagsSection> {
           spacing: 8,
           runSpacing: 8,
           children:
-              (_areTagsExpanded ? displayTagsList : displayTagsList.take(12))
+              (_areTagsExpanded
+                      ? displayTagsList
+                      : displayTagsList.take(widget.initialLimit))
                   .map(
                     (tag) => TagChip(
                       label: tag.name,
@@ -63,7 +70,7 @@ class _TagsSectionState extends ConsumerState<TagsSection> {
                   )
                   .toList(),
         ),
-        if (displayTagsList.length > 12) ...[
+        if (displayTagsList.length > widget.initialLimit) ...[
           const SizedBox(height: 12),
           Align(
             alignment: Alignment.centerLeft,

@@ -49,142 +49,138 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: Column(
         children: [
           Expanded(
-            child: SafeArea(
-              bottom: false,
-              child: RefreshIndicator(
-                onRefresh: () =>
-                    ref.read(vnListProvider.notifier).resetAndFetch(),
-                color: context.appAccentTeal,
-                backgroundColor: context.appSurface,
-                child: CustomScrollView(
-                  controller: _scrollController,
-                  slivers: [
-                    SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
-                      sliver: SliverToBoxAdapter(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Observatory',
-                              style: theme.textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: -0.5,
-                              ),
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.settings_outlined,
-                                color: context.appTextPrimary,
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pushNamed('/settings');
-                              },
-                            ),
-                          ],
-                        ),
+            child: RefreshIndicator(
+              onRefresh: () =>
+                  ref.read(vnListProvider.notifier).resetAndFetch(),
+              color: context.appAccentTeal,
+              backgroundColor: context.appSurface,
+              child: CustomScrollView(
+                controller: _scrollController,
+                slivers: [
+                  SliverAppBar(
+                    floating: true,
+                    snap: false,
+                    pinned: false,
+                    elevation: 0,
+                    scrolledUnderElevation: 0,
+                    backgroundColor: context.appBackground,
+                    titleSpacing: 20,
+                    title: Text(
+                      'Observatory',
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: -0.5,
                       ),
                     ),
+                    actions: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.settings_outlined,
+                          color: context.appTextPrimary,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('/settings');
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ),
 
-                    if (listState.isLoading)
-                      SliverFillRemaining(
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: context.appAccentTeal,
-                          ),
-                        ),
-                      )
-                    else if (listState.errorMessage != null &&
-                        listState.vns.isEmpty)
-                      SliverFillRemaining(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.error_outline,
-                                  size: 48,
-                                  color: Colors.redAccent,
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  'Error: ${listState.errorMessage}',
-                                  textAlign: TextAlign.center,
-                                  style: theme.textTheme.bodyMedium,
-                                ),
-                                const SizedBox(height: 16),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: context.appAccentTeal,
-                                  ),
-                                  onPressed: () => ref
-                                      .read(vnListProvider.notifier)
-                                      .resetAndFetch(),
-                                  child: const Text('Retry'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
-                    else if (listState.vns.isEmpty)
-                      SliverFillRemaining(
-                        child: Center(
-                          child: Text(
-                            'No visual novels found',
-                            style: TextStyle(color: context.appTextMuted),
-                          ),
-                        ),
-                      )
-                    else ...[
-                      SliverPadding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        sliver: SliverGrid(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 12,
-                                crossAxisSpacing: 12,
-                                childAspectRatio: 2 / 3,
-                              ),
-                          delegate: SliverChildBuilderDelegate((
-                            context,
-                            index,
-                          ) {
-                            final vn = listState.vns[index];
-
-                            return VnCard(
-                              vn: vn,
-                              onTap: () {
-                                Navigator.of(
-                                  context,
-                                ).pushNamed('/detail', arguments: vn);
-                              },
-                            );
-                          }, childCount: listState.vns.length),
+                  if (listState.isLoading)
+                    SliverFillRemaining(
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: context.appAccentTeal,
                         ),
                       ),
-                      if (listState.hasMore)
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 24.0),
-                            child: Center(
-                              child: SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.5,
-                                  color: context.appAccentTeal,
+                    )
+                  else if (listState.errorMessage != null &&
+                      listState.vns.isEmpty)
+                    SliverFillRemaining(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.error_outline,
+                                size: 48,
+                                color: Colors.redAccent,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'Error: ${listState.errorMessage}',
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.bodyMedium,
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: context.appAccentTeal,
                                 ),
+                                onPressed: () => ref
+                                    .read(vnListProvider.notifier)
+                                    .resetAndFetch(),
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  else if (listState.vns.isEmpty)
+                    SliverFillRemaining(
+                      child: Center(
+                        child: Text(
+                          'No visual novels found',
+                          style: TextStyle(color: context.appTextMuted),
+                        ),
+                      ),
+                    )
+                  else ...[
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      sliver: SliverGrid(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 12,
+                              crossAxisSpacing: 12,
+                              childAspectRatio: 2 / 3,
+                            ),
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          final vn = listState.vns[index];
+
+                          return VnCard(
+                            vn: vn,
+                            onTap: () {
+                              Navigator.of(
+                                context,
+                              ).pushNamed('/detail', arguments: vn);
+                            },
+                          );
+                        }, childCount: listState.vns.length),
+                      ),
+                    ),
+                    if (listState.hasMore)
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 24.0),
+                          child: Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                color: context.appAccentTeal,
                               ),
                             ),
                           ),
                         ),
-                    ],
+                      ),
                   ],
-                ),
+                ],
               ),
             ),
           ),

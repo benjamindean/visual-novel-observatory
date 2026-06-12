@@ -356,12 +356,17 @@ class _FilterSheetState extends ConsumerState<FilterSheet> {
               labelStyle: TextStyle(
                 color: isSelected
                     ? context.colorScheme.onPrimary
-                    : context.appTextSecondary,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    : context.appTextPrimary,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
               ),
-              side: BorderSide.none,
+              side: BorderSide(
+                color: isSelected
+                    ? Colors.transparent
+                    : context.appTextPrimary.withValues(alpha: 0.05),
+              ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
+                borderRadius: BorderRadius.circular(12.0),
               ),
             ),
           );

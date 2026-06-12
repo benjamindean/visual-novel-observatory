@@ -82,6 +82,7 @@ A predicate is a 3-element JSON array: `["field", "operator", value]`.
 - **Responsive Tokens**: Always use context extension color tokens (e.g. `context.appTextPrimary`, `context.appTextSecondary`, `context.appSurface`, etc.) rather than hardcoded colors (`Colors.white`, `Colors.white.withValues(...)`, `Colors.black`, `Colors.grey`, `Colors.redAccent`) to ensure full functionality in both Light Mode and Dark Mode.
 - **Borders & Dividers**: Implement adaptive borders and divider lines by wrapping `context.appTextPrimary` with a low opacity value, e.g. `context.appTextPrimary.withValues(alpha: 0.08)`.
 - **Overlay Buttons & Controls**: In buttons or tiles layered on top of primary/secondary colors, use contrasting theme foreground colors (e.g. `context.colorScheme.onPrimary`) rather than hardcoded black or white text.
+- **Material Ink Splashes**: Avoid using container background colors directly behind interactive widgets like `ListTile`, `CheckboxListTile`, or `InkWell` without a `Material` widget container. Ripple/ink splashes require a `Material` widget ancestor (using its `color` property) or wrapping the elements in `Material(color: Colors.transparent, child: ...)` to ensure splashes are visible and rendered correctly.
 
 ## Media Viewer & Panning lock
 - When implementing zoomed media views (e.g., custom pinch/pan gesture layouts), prevent conflict between horizontal/vertical scroll navigation and pan gestures:

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/vn_providers.dart';
-import '../models/vn_tag.dart';
 import 'filter_sheet.dart';
 import 'sort_menu.dart';
 import '../../theme/app_theme.dart';
@@ -44,129 +43,18 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
     final filters = ref.watch(vnFilterProvider);
     final settings = ref.watch(settingsProvider);
     final searchQuery = ref.watch(searchQueryProvider);
-    final activeChips = <Widget>[];
+    final hasActiveFilters =
+        filters.lang != settings.defaultLanguage ||
+        filters.platform != settings.defaultPlatform ||
+        filters.length != null ||
+        filters.devStatus != null ||
+        filters.minRating != 7.0 ||
+        filters.minVotes != 50 ||
+        filters.tags.isNotEmpty;
 
     if (_searchController.text != searchQuery) {
       _searchController.text = searchQuery;
     }
-
-    if (filters.lang != settings.defaultLanguage) {
-      final displayLang = filters.lang ?? 'All';
-
-      activeChips.add(
-        _buildActiveFilterChip(
-          context,
-          label: 'Lang: ${displayLang.toUpperCase()}',
-          onDeleted: () {
-            ref
-                .read(vnFilterProvider.notifier)
-                .update(filters.copyWith(lang: () => settings.defaultLanguage));
-          },
-        ),
-      );
-    }
-
-    if (filters.platform != settings.defaultPlatform) {
-      final displayPlatform = filters.platform ?? 'All';
-
-      activeChips.add(
-        _buildActiveFilterChip(
-          context,
-          label: 'Platform: ${displayPlatform.toUpperCase()}',
-          onDeleted: () {
-            ref
-                .read(vnFilterProvider.notifier)
-                .update(
-                  filters.copyWith(platform: () => settings.defaultPlatform),
-                );
-          },
-        ),
-      );
-    }
-
-    if (filters.length != null) {
-      final lengths = {
-        1: '< 2h',
-        2: '2-10h',
-        3: '10-30h',
-        4: '30-50h',
-        5: '> 50h',
-      };
-
-      activeChips.add(
-        _buildActiveFilterChip(
-          context,
-          label: 'Length: ${lengths[filters.length]}',
-          onDeleted: () {
-            ref
-                .read(vnFilterProvider.notifier)
-                .update(filters.copyWith(length: () => null));
-          },
-        ),
-      );
-    }
-
-    if (filters.devStatus != null) {
-      final statuses = {0: 'Finished', 1: 'In Dev', 2: 'Cancelled'};
-
-      activeChips.add(
-        _buildActiveFilterChip(
-          context,
-          label: 'Status: ${statuses[filters.devStatus]}',
-          onDeleted: () {
-            ref
-                .read(vnFilterProvider.notifier)
-                .update(filters.copyWith(devStatus: () => null));
-          },
-        ),
-      );
-    }
-
-    if (filters.minRating != 7.0) {
-      activeChips.add(
-        _buildActiveFilterChip(
-          context,
-          label: 'Rating >= ${filters.minRating.toStringAsFixed(1)}',
-          onDeleted: () {
-            ref
-                .read(vnFilterProvider.notifier)
-                .update(filters.copyWith(minRating: 7.0));
-          },
-        ),
-      );
-    }
-
-    if (filters.minVotes != 50) {
-      activeChips.add(
-        _buildActiveFilterChip(
-          context,
-          label: 'Votes >= ${filters.minVotes}',
-          onDeleted: () {
-            ref
-                .read(vnFilterProvider.notifier)
-                .update(filters.copyWith(minVotes: 50));
-          },
-        ),
-      );
-    }
-
-    for (final tag in filters.tags) {
-      activeChips.add(
-        _buildActiveFilterChip(
-          context,
-          label: 'Tag: ${tag.name}',
-          onDeleted: () {
-            final newTags = List<VnTag>.from(filters.tags)..remove(tag);
-
-            ref
-                .read(vnFilterProvider.notifier)
-                .update(filters.copyWith(tags: newTags));
-          },
-        ),
-      );
-    }
-
-    final hasActiveFilters = activeChips.isNotEmpty;
 
     return Container(
       decoration: BoxDecoration(
@@ -191,23 +79,6 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (activeChips.isNotEmpty)
-              Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Colors.white.withValues(alpha: 0.05),
-                      width: 1,
-                    ),
-                  ),
-                ),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(children: activeChips),
-                ),
-              ),
             Container(
               height: 64,
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -369,33 +240,6 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildActiveFilterChip(
-    BuildContext context, {
-    required String label,
-    required VoidCallback onDeleted,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0),
-      child: InputChip(
-        label: Text(label),
-        onDeleted: onDeleted,
-        deleteIcon: Icon(
-          Icons.close,
-          size: 14,
-          color: context.appTextPrimary.withValues(alpha: 0.7),
-        ),
-        backgroundColor: context.colorScheme.primaryContainer.withValues(
-          alpha: 0.3,
-        ),
-        labelStyle: TextStyle(color: context.appTextPrimary, fontSize: 12),
-        side: BorderSide(
-          color: context.colorScheme.primary.withValues(alpha: 0.25),
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );
   }

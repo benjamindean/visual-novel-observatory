@@ -32,26 +32,49 @@ class LinksSection extends StatelessWidget {
           spacing: 8,
           runSpacing: 8,
           children: uniqueLinks.map((link) {
-            return ActionChip(
-              avatar: Icon(
-                Icons.link_rounded,
-                size: 16,
-                color: context.appAccentTeal,
-              ),
-              label: Text(link.label),
-              onPressed: () async {
-                final uri = Uri.parse(link.url);
+            return Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () async {
+                  final uri = Uri.parse(link.url);
 
-                if (await canLaunchUrl(uri)) {
-                  await launchUrl(uri, mode: LaunchMode.externalApplication);
-                }
-              },
-              backgroundColor: context.appSurface,
-              side: BorderSide(
-                color: context.appTextPrimary.withValues(alpha: 0.08),
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                  if (await canLaunchUrl(uri)) {
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  }
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: context.appSurface,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: context.appTextPrimary.withValues(alpha: 0.05),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.link_rounded,
+                        size: 16,
+                        color: context.appAccentTeal,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        link.label,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: context.appTextPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             );
           }).toList(),

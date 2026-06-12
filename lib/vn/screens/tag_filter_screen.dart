@@ -144,39 +144,6 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Search Input Bar
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 8.0),
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: _performSearch,
-                    decoration: InputDecoration(
-                      hintText:
-                          'Search tags (e.g. Magic, Female Protagonist)...',
-                      prefixIcon: Icon(
-                        Icons.search_rounded,
-                        color: context.appTextMuted,
-                      ),
-                      suffixIcon: _searchController.text.isNotEmpty
-                          ? IconButton(
-                              icon: Icon(
-                                Icons.clear_rounded,
-                                color: context.appTextMuted,
-                              ),
-                              onPressed: () {
-                                _searchController.clear();
-                                _performSearch('');
-                              },
-                            )
-                          : null,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                    ),
-                  ),
-                ),
-
                 // Selected Tags wrap section
                 if (_selectedTags.isNotEmpty) ...[
                   Padding(
@@ -223,7 +190,7 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                               width: 0.5,
                             ),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           );
                         }).toList(),
@@ -343,6 +310,41 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                           },
                         ),
                 ),
+
+                // Search Input Bar
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 8.0),
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: _performSearch,
+                    decoration: InputDecoration(
+                      hintText:
+                          'Search tags (e.g. Magic, Female Protagonist)...',
+                      prefixIcon: Icon(
+                        Icons.search_rounded,
+                        color: context.appTextMuted,
+                      ),
+                      suffixIcon: _searchController.text.isNotEmpty
+                          ? IconButton(
+                              icon: Icon(
+                                Icons.clear_rounded,
+                                color: context.appTextMuted,
+                              ),
+                              onPressed: () {
+                                _searchController.clear();
+                                _performSearch('');
+                              },
+                            )
+                          : null,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Save button
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 24.0),
                   child: ElevatedButton(

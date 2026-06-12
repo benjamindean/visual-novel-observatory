@@ -141,10 +141,11 @@ class SettingsScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 20),
-          OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(
-              foregroundColor: context.colorScheme.error,
-              side: BorderSide(color: context.colorScheme.error),
+          ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: context.colorScheme.error,
+              foregroundColor: context.colorScheme.onError,
+              elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
               ),

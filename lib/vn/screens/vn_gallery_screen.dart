@@ -316,41 +316,48 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
               ),
             ),
           ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 8.0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.black54,
-                    child: IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Text(
-                      '${_currentIndex + 1} / ${widget.screenshots.length}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              top: false,
+              bottom: true,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 16.0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.black54,
+                      child: IconButton(
+                        icon: const Icon(Icons.close, color: Colors.white),
+                        onPressed: () => Navigator.of(context).pop(),
                       ),
                     ),
-                  ),
-                ],
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Text(
+                        '${_currentIndex + 1} / ${widget.screenshots.length}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
