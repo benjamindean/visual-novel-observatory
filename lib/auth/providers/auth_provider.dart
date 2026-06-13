@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/storage/app_storage.dart';
 import '../../core/api/vndb_client.dart';
+import '../../core/utils/error_utils.dart';
 
 class AuthState {
   final String? token;
@@ -102,7 +103,7 @@ class AuthNotifier extends Notifier<AuthState> {
     } catch (e) {
       state = state.copyWith(
         isValidating: false,
-        errorMessage: () => e.toString(),
+        errorMessage: () => cleanErrorMessage(e),
       );
 
       return false;

@@ -94,30 +94,40 @@ class MetadataRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildItem(
-            context,
-            Icons.calendar_today_rounded,
-            'RELEASE DATE',
-            formattedRelease,
+          _MetadataItem(
+            icon: Icons.calendar_today_rounded,
+            label: 'RELEASE DATE',
+            value: formattedRelease,
           ),
-          _buildItem(context, Icons.access_time_rounded, 'PLAYTIME', playtime),
-          _buildItem(
-            context,
-            Icons.business_rounded,
-            'DEVELOPER',
-            developerName,
+          _MetadataItem(
+            icon: Icons.access_time_rounded,
+            label: 'PLAYTIME',
+            value: playtime,
+          ),
+          _MetadataItem(
+            icon: Icons.business_rounded,
+            label: 'DEVELOPER',
+            value: developerName,
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildItem(
-    BuildContext context,
-    IconData icon,
-    String label,
-    String value,
-  ) {
+class _MetadataItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _MetadataItem({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Expanded(

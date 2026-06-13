@@ -5,12 +5,14 @@ class AppSearchInput extends StatefulWidget {
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
   final String hintText;
+  final FocusNode? focusNode;
 
   const AppSearchInput({
     super.key,
     required this.controller,
     required this.onChanged,
     required this.hintText,
+    this.focusNode,
   });
 
   @override
@@ -53,6 +55,7 @@ class _AppSearchInputState extends State<AppSearchInput> {
       child: TextField(
         controller: widget.controller,
         onChanged: widget.onChanged,
+        focusNode: widget.focusNode,
         style: TextStyle(color: colorScheme.onSurface),
         cursorColor: colorScheme.primary,
         decoration: InputDecoration(

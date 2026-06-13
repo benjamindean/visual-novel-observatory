@@ -10,11 +10,26 @@ import '../../../auth/providers/auth_provider.dart';
 import '../../../core/storage/app_storage.dart';
 import 'library_auth_placeholder.dart';
 
-class LibraryScreen extends ConsumerWidget {
+class LibraryScreen extends ConsumerStatefulWidget {
   const LibraryScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LibraryScreen> createState() => _LibraryScreenState();
+}
+
+class _LibraryScreenState extends ConsumerState<LibraryScreen> {
+  final ScrollController _outerScrollController = ScrollController();
+  final GlobalKey<NestedScrollViewState> _nestedScrollViewKey =
+      GlobalKey<NestedScrollViewState>();
+
+  @override
+  void dispose() {
+    _outerScrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final theme = Theme.of(context);
 
@@ -51,6 +66,41 @@ class LibraryScreen extends ConsumerWidget {
       }
     }
 
+    if (activeLabels.isNotEmpty) {
+      final currentSelectedId = ref.read(activeLibraryTabIdProvider);
+
+      if (currentSelectedId == null) {
+        final initialLabelId = activeLabels[initialIndex].id;
+
+        Future.microtask(() {
+          ref.read(activeLibraryTabIdProvider.notifier).update(initialLabelId);
+        });
+      }
+    }
+
+    ref.listen<int>(libraryDoubleTapProvider, (previous, next) {
+      if (next > 0) {
+        if (_outerScrollController.hasClients) {
+          _outerScrollController.animateTo(
+            0.0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        }
+
+        final innerController =
+            _nestedScrollViewKey.currentState?.innerController;
+
+        if (innerController != null && innerController.hasClients) {
+          innerController.animateTo(
+            0.0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        }
+      }
+    });
+
     return DefaultTabController(
       key: ValueKey(activeLabels.length),
       length: activeLabels.isEmpty ? 1 : activeLabels.length,
@@ -75,11 +125,18 @@ class LibraryScreen extends ConsumerWidget {
                         backgroundColor: context.appBackground,
                         titleSpacing: 20,
                         centerTitle: false,
-                        title: Text(
-                          'Library',
-                          style: theme.textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: -0.5,
+                        title: GestureDetector(
+                          onDoubleTap: () {
+                            ref
+                                .read(libraryDoubleTapProvider.notifier)
+                                .increment();
+                          },
+                          child: Text(
+                            'Library',
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: -0.5,
+                            ),
                           ),
                         ),
                         actions: const [
@@ -101,6 +158,8 @@ class LibraryScreen extends ConsumerWidget {
                 }
 
                 return NestedScrollView(
+                  key: _nestedScrollViewKey,
+                  controller: _outerScrollController,
                   floatHeaderSlivers: true,
                   headerSliverBuilder: (context, innerBoxIsScrolled) {
                     return [
@@ -113,11 +172,18 @@ class LibraryScreen extends ConsumerWidget {
                         backgroundColor: context.appBackground,
                         titleSpacing: 20,
                         centerTitle: false,
-                        title: Text(
-                          'Library',
-                          style: theme.textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: -0.5,
+                        title: GestureDetector(
+                          onDoubleTap: () {
+                            ref
+                                .read(libraryDoubleTapProvider.notifier)
+                                .increment();
+                          },
+                          child: Text(
+                            'Library',
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: -0.5,
+                            ),
                           ),
                         ),
                         actions: const [
@@ -135,7 +201,7 @@ class LibraryScreen extends ConsumerWidget {
                           .map((entry) => entry.vn!)
                           .toList();
 
-                      if (ulistState.isLoading && ulistState.entries.isEmpty) {
+                      if (ulistState.isLoading) {
                         return Center(
                           child: CircularProgressIndicator(
                             color: context.appAccentTeal,
@@ -143,67 +209,94 @@ class LibraryScreen extends ConsumerWidget {
                         );
                       }
 
-                      if (vns.isEmpty) {
-                        return Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(24.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.folder_open_rounded,
-                                  size: 64,
-                                  color: context.appTextMuted,
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  'Empty List',
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: context.appTextPrimary,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'No visual novels in "${label.label ?? ''}"',
-                                  textAlign: TextAlign.center,
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: context.appTextMuted,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }
-
                       return RefreshIndicator(
+                        key: ValueKey('refresh_${label.id}'),
                         onRefresh: () => ref
                             .read(userUlistProvider.notifier)
                             .fetchAllEntries(),
                         color: context.appAccentTeal,
                         backgroundColor: context.appSurface,
-                        child: GridView.builder(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 12,
-                                crossAxisSpacing: 12,
-                                childAspectRatio: 2 / 3,
-                              ),
-                          itemCount: vns.length,
-                          itemBuilder: (context, index) {
-                            final vn = vns[index];
+                        child: vns.isEmpty
+                            ? CustomScrollView(
+                                key: PageStorageKey(
+                                  'library_empty_scroll_${label.id}',
+                                ),
+                                physics: const AlwaysScrollableScrollPhysics(
+                                  parent: BouncingScrollPhysics(),
+                                ),
+                                slivers: [
+                                  SliverFillRemaining(
+                                    hasScrollBody: false,
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(24.0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.folder_open_rounded,
+                                              size: 64,
+                                              color: context.appTextMuted,
+                                            ),
+                                            const SizedBox(height: 16),
+                                            Text(
+                                              'Empty List',
+                                              style: theme.textTheme.titleMedium
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    color:
+                                                        context.appTextPrimary,
+                                                  ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              'No visual novels in "${label.label ?? ''}"',
+                                              textAlign: TextAlign.center,
+                                              style: theme.textTheme.bodyMedium
+                                                  ?.copyWith(
+                                                    color: context.appTextMuted,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : GridView.builder(
+                                key: PageStorageKey(
+                                  'library_grid_${label.id}',
+                                ),
+                                physics: const AlwaysScrollableScrollPhysics(
+                                  parent: BouncingScrollPhysics(),
+                                ),
+                                padding: const EdgeInsets.fromLTRB(
+                                  16,
+                                  0,
+                                  16,
+                                  16,
+                                ),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      mainAxisSpacing: 12,
+                                      crossAxisSpacing: 12,
+                                      childAspectRatio: 2 / 3,
+                                    ),
+                                itemCount: vns.length,
+                                itemBuilder: (context, index) {
+                                  final vn = vns[index];
 
-                            return VnCard(
-                              vn: vn,
-                              onTap: () {
-                                context.push('/detail', extra: vn);
-                              },
-                            );
-                          },
-                        ),
+                                  return VnCard(
+                                    vn: vn,
+                                    onTap: () {
+                                      context.push('/detail', extra: vn);
+                                    },
+                                  );
+                                },
+                              ),
                       );
                     }).toList(),
                   ),
@@ -221,11 +314,16 @@ class LibraryScreen extends ConsumerWidget {
                     backgroundColor: context.appBackground,
                     titleSpacing: 20,
                     centerTitle: false,
-                    title: Text(
-                      'Library',
-                      style: theme.textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: -0.5,
+                    title: GestureDetector(
+                      onDoubleTap: () {
+                        ref.read(libraryDoubleTapProvider.notifier).increment();
+                      },
+                      child: Text(
+                        'Library',
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: -0.5,
+                        ),
                       ),
                     ),
                     actions: const [
@@ -255,11 +353,16 @@ class LibraryScreen extends ConsumerWidget {
                     backgroundColor: context.appBackground,
                     titleSpacing: 20,
                     centerTitle: false,
-                    title: Text(
-                      'Library',
-                      style: theme.textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: -0.5,
+                    title: GestureDetector(
+                      onDoubleTap: () {
+                        ref.read(libraryDoubleTapProvider.notifier).increment();
+                      },
+                      child: Text(
+                        'Library',
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: -0.5,
+                        ),
                       ),
                     ),
                     actions: const [
@@ -288,8 +391,7 @@ class LibraryScreen extends ConsumerWidget {
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: context.appAccentTeal,
-                                  foregroundColor:
-                                      context.colorScheme.onPrimary,
+                                  foregroundColor: context.colorScheme.primary,
                                 ),
                                 onPressed: () =>
                                     ref.invalidate(ulistLabelsProvider),
@@ -393,7 +495,7 @@ class LibraryScreen extends ConsumerWidget {
   }
 }
 
-class TabChangeListener extends StatefulWidget {
+class TabChangeListener extends ConsumerStatefulWidget {
   final List<VndbLabel> activeLabels;
   final Widget child;
 
@@ -404,10 +506,10 @@ class TabChangeListener extends StatefulWidget {
   });
 
   @override
-  State<TabChangeListener> createState() => _TabChangeListenerState();
+  ConsumerState<TabChangeListener> createState() => _TabChangeListenerState();
 }
 
-class _TabChangeListenerState extends State<TabChangeListener> {
+class _TabChangeListenerState extends ConsumerState<TabChangeListener> {
   TabController? _controller;
 
   @override
@@ -436,6 +538,7 @@ class _TabChangeListenerState extends State<TabChangeListener> {
         final labelId = widget.activeLabels[index].id;
 
         AppStorage.mainBox.put('settings_last_library_label_id', labelId);
+        ref.read(activeLibraryTabIdProvider.notifier).update(labelId);
       }
     }
   }

@@ -95,9 +95,6 @@ class _VnByTagScreenState extends ConsumerState<VnByTagScreen> {
                           ),
                           const SizedBox(height: 16),
                           ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: context.appAccentTeal,
-                            ),
                             onPressed: () => ref
                                 .read(
                                   vnListByTagProvider(widget.tagId).notifier,

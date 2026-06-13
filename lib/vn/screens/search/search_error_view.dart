@@ -31,10 +31,6 @@ class SearchErrorView extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.appAccentTeal,
-                foregroundColor: context.colorScheme.onPrimary,
-              ),
               onPressed: () =>
                   ref.read(vnSearchProvider.notifier).resetAndFetch(),
               child: const Text('Retry'),

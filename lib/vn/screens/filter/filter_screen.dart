@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../providers/vn_providers.dart';
 import '../../models/vn_tag.dart';
-import '../tag_filter/tag_filter_screen.dart';
 import '../../../theme/app_theme.dart';
 import '../../../settings/providers/settings_provider.dart';
+import 'filter_section_header.dart';
+import 'filter_chip_row.dart';
+import 'filter_tags_tile.dart';
 
 class FilterScreen extends ConsumerStatefulWidget {
   const FilterScreen({super.key});
@@ -128,10 +130,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
             children: [
               const SizedBox(height: 16.0),
               // Sort Section
-              _buildSectionHeader(context, 'Sort By'),
-              _buildChipRow<String>(
-                context,
-                items: {
+              const FilterSectionHeader(title: 'Sort By'),
+              FilterChipRow<String>(
+                items: const {
                   'rating': 'Rating',
                   'votecount': 'Votes',
                   'released': 'Release Date',
@@ -149,10 +150,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
               ),
               const SizedBox(height: 20.0),
 
-              _buildSectionHeader(context, 'Sort Direction'),
-              _buildChipRow<bool>(
-                context,
-                items: {true: 'Descending', false: 'Ascending'},
+              const FilterSectionHeader(title: 'Sort Direction'),
+              FilterChipRow<bool>(
+                items: const {true: 'Descending', false: 'Ascending'},
                 selectedValue: _selectedSortDescending,
                 onSelected: (val) {
                   if (val != null) {
@@ -171,10 +171,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
               const SizedBox(height: 20.0),
 
               // Language Section
-              _buildSectionHeader(context, 'Language'),
-              _buildChipRow<String>(
-                context,
-                items: {
+              const FilterSectionHeader(title: 'Language'),
+              FilterChipRow<String>(
+                items: const {
                   'en': 'English',
                   'ja': 'Japanese',
                   'zh': 'Chinese',
@@ -191,10 +190,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
               const SizedBox(height: 20.0),
 
               // Platform Section
-              _buildSectionHeader(context, 'Platform'),
-              _buildChipRow<String>(
-                context,
-                items: {
+              const FilterSectionHeader(title: 'Platform'),
+              FilterChipRow<String>(
+                items: const {
                   'win': 'Windows',
                   'swi': 'Switch',
                   'ps4': 'PS4',
@@ -211,10 +209,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
               const SizedBox(height: 20.0),
 
               // Length Section
-              _buildSectionHeader(context, 'Play Time'),
-              _buildChipRow<int>(
-                context,
-                items: {
+              const FilterSectionHeader(title: 'Play Time'),
+              FilterChipRow<int>(
+                items: const {
                   1: 'Very Short (<2h)',
                   2: 'Short (2-10h)',
                   3: 'Medium (10-30h)',
@@ -231,10 +228,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
               const SizedBox(height: 20.0),
 
               // Dev Status Section
-              _buildSectionHeader(context, 'Development Status'),
-              _buildChipRow<int>(
-                context,
-                items: {0: 'Finished', 1: 'In Dev', 2: 'Cancelled'},
+              const FilterSectionHeader(title: 'Development Status'),
+              FilterChipRow<int>(
+                items: const {0: 'Finished', 1: 'In Dev', 2: 'Cancelled'},
                 selectedValue: _selectedDevStatus,
                 onSelected: (val) {
                   setState(() {
@@ -245,8 +241,15 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
               const SizedBox(height: 20.0),
 
               // Tags Section
-              _buildSectionHeader(context, 'Tags'),
-              _buildTagsTile(context),
+              const FilterSectionHeader(title: 'Tags'),
+              FilterTagsTile(
+                selectedTags: _selectedTags,
+                onTagsChanged: (tags) {
+                  setState(() {
+                    _selectedTags = tags;
+                  });
+                },
+              ),
               const SizedBox(height: 24.0),
 
               // Rating Slider
@@ -338,137 +341,6 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(BuildContext context, String title) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Text(
-        title,
-        style: theme.textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildChipRow<T>(
-    BuildContext context, {
-    required Map<T, String> items,
-    required T? selectedValue,
-    required ValueChanged<T?> onSelected,
-  }) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      physics: const BouncingScrollPhysics(),
-      child: Row(
-        children: items.entries.map((entry) {
-          final isSelected = entry.key == selectedValue;
-
-          return Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: ChoiceChip(
-              label: Text(entry.value),
-              selected: isSelected,
-              onSelected: (selected) {
-                onSelected(selected ? entry.key : null);
-              },
-              backgroundColor: context.appSurface,
-              selectedColor: context.appAccentTeal,
-              checkmarkColor: context.colorScheme.onPrimary,
-              labelStyle: TextStyle(
-                color: isSelected
-                    ? context.colorScheme.onPrimary
-                    : context.appTextPrimary,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-              side: BorderSide.none,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  Widget _buildTagsTile(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.of(context)
-            .push<List<VnTag>>(
-              MaterialPageRoute(
-                builder: (context) =>
-                    TagFilterScreen(initialTags: _selectedTags),
-              ),
-            )
-            .then((result) {
-              if (result != null) {
-                setState(() {
-                  _selectedTags = result;
-                });
-              }
-            });
-      },
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: context.appSurface,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (_selectedTags.isEmpty)
-                    Text(
-                      'Select Tags...',
-                      style: TextStyle(
-                        color: context.appTextSecondary,
-                        fontSize: 14,
-                      ),
-                    )
-                  else
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 6,
-                      children: _selectedTags.map((tag) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5,
-                          ),
-                          decoration: BoxDecoration(
-                            color: context.colorScheme.primaryContainer,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Text(
-                            tag.name,
-                            style: TextStyle(
-                              color: context.appAccentTeal,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 8),
-            Icon(Icons.chevron_right_rounded, color: context.appTextMuted),
-          ],
         ),
       ),
     );

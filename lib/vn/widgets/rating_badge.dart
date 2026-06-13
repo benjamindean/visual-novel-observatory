@@ -22,7 +22,7 @@ class RatingBadge extends StatelessWidget {
         const SizedBox(width: 4),
         Text(
           rating.toStringAsFixed(1),
-          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+          style: context.theme.textTheme.labelLarge?.copyWith(
             color: context.appAccentAmber,
             fontSize: fontSize,
             fontWeight: FontWeight.bold,

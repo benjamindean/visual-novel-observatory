@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
 import '../../../auth/providers/auth_provider.dart';
 import '../../../theme/app_theme.dart';
 import '../../../vn/widgets/vndb_source_note.dart';
+import 'login_header_icon.dart';
+import 'login_instructions_card.dart';
+import 'login_token_input.dart';
+import 'login_error_banner.dart';
+import 'login_submit_button.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -15,20 +19,11 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _tokenController = TextEditingController();
-  bool _obscureToken = true;
 
   @override
   void dispose() {
     _tokenController.dispose();
     super.dispose();
-  }
-
-  Future<void> _launchTokenUrl() async {
-    final url = Uri.parse('https://vndb.org/u/tokens');
-
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    }
   }
 
   void _handleLogin() async {
@@ -76,7 +71,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 16),
-              _buildHeaderIcon(context),
+              const LoginHeaderIcon(),
               const SizedBox(height: 24),
               Text(
                 'Observatory syncs with your VNDB account via a secure API token.',
@@ -86,226 +81,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-              _buildInstructionsCard(context, theme),
+              const LoginInstructionsCard(),
               const SizedBox(height: 32),
-              _buildTokenInputField(context, theme),
+              LoginTokenInput(controller: _tokenController),
               const SizedBox(height: 24),
               if (authState.errorMessage != null) ...[
-                _buildErrorBanner(theme, authState.errorMessage!),
+                LoginErrorBanner(message: authState.errorMessage!),
                 const SizedBox(height: 24),
               ],
-              _buildSubmitButton(context, authState),
+              LoginSubmitButton(
+                isValidating: authState.isValidating,
+                onPressed: _handleLogin,
+              ),
               const SizedBox(height: 40.0),
               const VndbSourceNote(),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeaderIcon(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 80,
-        height: 80,
-        decoration: BoxDecoration(
-          color: context.colorScheme.primaryContainer,
-          shape: BoxShape.circle,
-        ),
-        child: Icon(
-          Icons.vpn_key_rounded,
-          size: 40,
-          color: context.appAccentTeal,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInstructionsCard(BuildContext context, ThemeData theme) {
-    return Card(
-      color: context.appSurface,
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'How to get your token:',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            _buildStepRow(context, '1', 'Go to the VNDB token creation page.'),
-            const SizedBox(height: 12),
-            _buildStepRow(
-              context,
-              '2',
-              'Create a token named "Observatory" with at least listread (listwrite is required to modify list entries).',
-            ),
-            const SizedBox(height: 12),
-            _buildStepRow(
-              context,
-              '3',
-              'Copy the generated token string and paste it below.',
-            ),
-            const SizedBox(height: 20),
-            Center(
-              child: TextButton.icon(
-                onPressed: _launchTokenUrl,
-                icon: Icon(
-                  Icons.open_in_new_rounded,
-                  size: 18,
-                  color: context.appAccentTeal,
-                ),
-                label: Text(
-                  'Open VNDB Token Page',
-                  style: TextStyle(
-                    color: context.appAccentTeal,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStepRow(BuildContext context, String stepNumber, String text) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 24,
-          height: 24,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: context.appSearchField,
-            shape: BoxShape.circle,
-          ),
-          child: Text(
-            stepNumber,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: context.appAccentTeal,
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 14,
-              color: context.appTextSecondary,
-              height: 1.4,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTokenInputField(BuildContext context, ThemeData theme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'VNDB API Token',
-          style: theme.textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: context.appTextPrimary,
-          ),
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          controller: _tokenController,
-          obscureText: _obscureToken,
-          autocorrect: false,
-          enableSuggestions: false,
-          style: TextStyle(
-            color: context.appTextPrimary,
-            fontFamily: 'monospace',
-          ),
-          decoration: InputDecoration(
-            hintText: 'xxxx-xxxxx-xxxxx-xxxx...',
-            suffixIcon: IconButton(
-              icon: Icon(
-                _obscureToken
-                    ? Icons.visibility_off_rounded
-                    : Icons.visibility_rounded,
-              ),
-              onPressed: () {
-                setState(() {
-                  _obscureToken = !_obscureToken;
-                });
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildErrorBanner(ThemeData theme, String message) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: context.colorScheme.errorContainer,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            Icons.error_outline_rounded,
-            color: context.colorScheme.error,
-            size: 20,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              message,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: context.colorScheme.error,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSubmitButton(BuildContext context, AuthState authState) {
-    return SizedBox(
-      height: 54,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: context.appAccentTeal,
-          foregroundColor: context.colorScheme.onPrimary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(27),
-          ),
-          elevation: 2,
-        ),
-        onPressed: authState.isValidating ? null : _handleLogin,
-        child: authState.isValidating
-            ? SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.5,
-                  color: context.colorScheme.onPrimary,
-                ),
-              )
-            : const Text(
-                'Verify & Connect',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
       ),
     );
   }

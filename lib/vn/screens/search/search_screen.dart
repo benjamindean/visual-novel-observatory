@@ -21,6 +21,7 @@ class SearchScreen extends ConsumerStatefulWidget {
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final FocusNode _searchFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -37,6 +38,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   void dispose() {
     _searchController.dispose();
     _scrollController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -57,6 +59,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     if (_searchController.text != query) {
       _searchController.text = query;
     }
+
+    ref.listen<int>(searchDoubleTapProvider, (previous, next) {
+      if (next > 0) {
+        _searchFocusNode.requestFocus();
+      }
+    });
 
     Widget buildBody() {
       // 1. Loading State (when no vns are loaded yet)
@@ -99,11 +107,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         backgroundColor: context.appBackground,
         elevation: 0,
         scrolledUnderElevation: 0,
-        title: Text(
-          'Search',
-          style: theme.textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            letterSpacing: -0.5,
+        title: GestureDetector(
+          onDoubleTap: () {
+            ref.read(searchDoubleTapProvider.notifier).increment();
+          },
+          child: Text(
+            'Search',
+            style: theme.textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              letterSpacing: -0.5,
+            ),
           ),
         ),
         actions: const [
@@ -123,6 +136,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
                 child: AppSearchInput(
                   controller: _searchController,
+                  focusNode: _searchFocusNode,
                   onChanged: (val) {
                     ref.read(searchScreenQueryProvider.notifier).update(val);
                   },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../vn/models/visual_novel.dart';
 import '../../vn/models/vn_screenshot.dart';
@@ -11,19 +12,30 @@ import '../../vn/screens/vn_gallery/vn_gallery_screen.dart';
 import '../../settings/screens/settings/settings_screen.dart';
 import '../../settings/screens/login/login_screen.dart';
 import '../../vn/screens/filter/filter_screen.dart';
+import '../../vn/providers/vn_providers.dart';
 
-class ScaffoldWithNavBar extends StatelessWidget {
+class ScaffoldWithNavBar extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
 
   const ScaffoldWithNavBar({super.key, required this.navigationShell});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: NavigationBar(
         selectedIndex: navigationShell.currentIndex,
         onDestinationSelected: (index) {
+          if (index == navigationShell.currentIndex) {
+            if (index == 0) {
+              ref.read(homeDoubleTapProvider.notifier).increment();
+            } else if (index == 1) {
+              ref.read(searchDoubleTapProvider.notifier).increment();
+            } else if (index == 2) {
+              ref.read(libraryDoubleTapProvider.notifier).increment();
+            }
+          }
+
           navigationShell.goBranch(
             index,
             initialLocation: index == navigationShell.currentIndex,

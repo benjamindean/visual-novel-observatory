@@ -6,6 +6,7 @@ import '../../models/visual_novel.dart';
 import '../../providers/vn_providers.dart';
 import '../../widgets/detail_header.dart';
 import '../../widgets/metadata_row.dart';
+import '../../widgets/connect_vndb_button.dart';
 import '../../widgets/platforms_section.dart';
 import '../../widgets/synopsis_section.dart';
 import '../../widgets/tags_section.dart';
@@ -24,6 +25,9 @@ class VnDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ulistState = ref.watch(vnUlistProvider(vn.id));
     final authState = ref.watch(authProvider);
+    final activeLabelsCount =
+        ulistState.entry?.labels.where((id) => id != 0 && id != 7).length ?? 0;
+    final size = MediaQuery.of(context).size;
 
     ref.listen<VnUlistState>(vnUlistProvider(vn.id), (previous, next) {
       if (next.errorMessage != null &&
@@ -38,14 +42,27 @@ class VnDetailScreen extends ConsumerWidget {
     });
 
     return Scaffold(
-      body: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header (Hero Poster + Title overlay)
-            DetailHeader(vn: vn),
-            Padding(
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          SliverAppBar(
+            expandedHeight: size.height * 0.6,
+            collapsedHeight: size.height * 0.6,
+            toolbarHeight: size.height * 0.6,
+            stretch: true,
+            pinned: false,
+            automaticallyImplyLeading: false,
+            backgroundColor: context.appBackground,
+            flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.none,
+              stretchModes: const [
+                StretchMode.zoomBackground,
+              ],
+              background: DetailHeader(vn: vn),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,7 +108,7 @@ class VnDetailScreen extends ConsumerWidget {
                                 const SizedBox(width: 8),
                                 Text(
                                   ulistState.entry != null &&
-                                          ulistState.entry!.labels.isNotEmpty
+                                          activeLabelsCount > 0
                                       ? 'Labels'
                                       : 'My Labels',
                                   style: const TextStyle(
@@ -100,7 +117,7 @@ class VnDetailScreen extends ConsumerWidget {
                                   ),
                                 ),
                                 if (ulistState.entry != null &&
-                                    ulistState.entry!.labels.isNotEmpty) ...[
+                                    activeLabelsCount > 0) ...[
                                   const SizedBox(width: 8),
                                   Container(
                                     width: 20,
@@ -111,7 +128,7 @@ class VnDetailScreen extends ConsumerWidget {
                                     ),
                                     alignment: Alignment.center,
                                     child: Text(
-                                      '${ulistState.entry!.labels.length}',
+                                      '$activeLabelsCount',
                                       style: TextStyle(
                                         color: context.colorScheme.onPrimary,
                                         fontSize: 11,
@@ -205,29 +222,8 @@ class VnDetailScreen extends ConsumerWidget {
                   else
                     Row(
                       children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: context.appAccentTeal,
-                              foregroundColor: context.colorScheme.onPrimary,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(24),
-                              ),
-                              elevation: 0,
-                            ),
-                            onPressed: () {
-                              context.push('/login');
-                            },
-                            icon: const Icon(Icons.login_rounded, size: 20),
-                            label: const Text(
-                              'Connect VNDB',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
+                        const Expanded(
+                          child: ConnectVndbButton(),
                         ),
                         const SizedBox(width: 12),
                         _ActionButton(
@@ -273,8 +269,8 @@ class VnDetailScreen extends ConsumerWidget {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

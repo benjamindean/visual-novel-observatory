@@ -47,7 +47,11 @@ class PlatformsSection extends StatelessWidget {
                 platformMeta[platformCode.toLowerCase()] ??
                 (platformCode.toUpperCase(), Icons.gamepad_rounded);
 
-            return AppChip(label: meta.$1, leadingIcon: meta.$2);
+            return AppChip(
+              label: meta.$1,
+              leadingIcon: meta.$2,
+              onTap: () {},
+            );
           }).toList(),
         ),
       ],

@@ -198,10 +198,15 @@ class DetailHeader extends ConsumerWidget {
                       visible: vn.votecount != null && vn.votecount! > 0,
                       child: Row(
                         children: [
-                          const SizedBox(width: 8),
+                          const SizedBox(
+                            width: 8,
+                          ),
                           Text(
                             'from ${vn.votecount} votes',
-                            style: theme.textTheme.labelSmall,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              height: 1,
+                              color: theme.colorScheme.outline,
+                            ),
                           ),
                         ],
                       ),
