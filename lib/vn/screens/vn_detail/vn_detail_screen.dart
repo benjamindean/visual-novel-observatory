@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:go_router/go_router.dart';
@@ -422,6 +423,8 @@ void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                               onChanged: ulistState.isLoading
                                   ? null
                                   : (checked) {
+                                      HapticFeedback.selectionClick();
+
                                       final newLabels = List<int>.from(
                                         selectedLabels,
                                       );
@@ -610,6 +613,8 @@ void _showVoteDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                         activeColor: context.appAccentTeal,
                         inactiveColor: context.appSurface,
                         onChanged: (val) {
+                          HapticFeedback.selectionClick();
+
                           setState(() {
                             tempVote = val.round();
                           });
@@ -631,6 +636,8 @@ void _showVoteDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                         onPressed: ulistState.isLoading
                             ? null
                             : () {
+                                HapticFeedback.lightImpact();
+
                                 ref
                                     .read(userUlistProvider.notifier)
                                     .updateVote(vn, selectedVote * 10);
@@ -669,6 +676,8 @@ void _showVoteDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
                           onPressed: ulistState.isLoading
                               ? null
                               : () {
+                                  HapticFeedback.lightImpact();
+
                                   ref
                                       .read(userUlistProvider.notifier)
                                       .updateVote(vn, null);

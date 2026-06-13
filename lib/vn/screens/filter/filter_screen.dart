@@ -7,6 +7,7 @@ import '../../../theme/app_theme.dart';
 import '../../../settings/providers/settings_provider.dart';
 import 'filter_section_header.dart';
 import 'filter_chip_row.dart';
+import 'filter_sort_row.dart';
 import 'filter_tags_tile.dart';
 
 class FilterScreen extends ConsumerStatefulWidget {
@@ -131,35 +132,20 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
               const SizedBox(height: 16.0),
               // Sort Section
               const FilterSectionHeader(title: 'Sort By'),
-              FilterChipRow<String>(
+              FilterSortRow(
                 items: const {
                   'rating': 'Rating',
                   'votecount': 'Votes',
                   'released': 'Release Date',
                   'title': 'Title',
                 },
-                selectedValue: _selectedSortField,
-                onSelected: (val) {
-                  if (val != null) {
-                    setState(() {
-                      _selectedSortField = val;
-                      _selectedSortDescending = val != 'title' && val != 'id';
-                    });
-                  }
-                },
-              ),
-              const SizedBox(height: 20.0),
-
-              const FilterSectionHeader(title: 'Sort Direction'),
-              FilterChipRow<bool>(
-                items: const {true: 'Descending', false: 'Ascending'},
-                selectedValue: _selectedSortDescending,
-                onSelected: (val) {
-                  if (val != null) {
-                    setState(() {
-                      _selectedSortDescending = val;
-                    });
-                  }
+                selectedField: _selectedSortField,
+                isDescending: _selectedSortDescending,
+                onChanged: (field, descending) {
+                  setState(() {
+                    _selectedSortField = field;
+                    _selectedSortDescending = descending;
+                  });
                 },
               ),
               const SizedBox(height: 20.0),
