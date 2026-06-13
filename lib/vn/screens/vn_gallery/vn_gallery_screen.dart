@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import '../../models/vn_screenshot.dart';
+import '../../widgets/image_placeholder.dart';
+import '../../widgets/image_error_widget.dart';
 import '../../../settings/providers/settings_provider.dart';
 import '../../../theme/app_theme.dart';
 
@@ -233,6 +235,12 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
                                   CachedNetworkImage(
                                     imageUrl: screenshot.url,
                                     fit: BoxFit.contain,
+                                    fadeInDuration: const Duration(
+                                      milliseconds: 200,
+                                    ),
+                                    fadeOutDuration: const Duration(
+                                      milliseconds: 200,
+                                    ),
                                     imageBuilder: (context, imageProvider) {
                                       final image = Image(
                                         image: imageProvider,
@@ -252,16 +260,16 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
                                             )
                                           : image;
                                     },
-                                    placeholder: (context, url) => Center(
-                                      child: CircularProgressIndicator(
-                                        color: context.appTextPrimary,
-                                      ),
-                                    ),
-                                    errorWidget: (context, url, error) => Icon(
-                                      Icons.broken_image,
-                                      size: 64,
-                                      color: context.appTextMuted,
-                                    ),
+                                    placeholder: (context, url) =>
+                                        const ImagePlaceholder(
+                                          iconSize: 64,
+                                          backgroundColor: Colors.transparent,
+                                        ),
+                                    errorWidget: (context, url, error) =>
+                                        const ImageErrorWidget(
+                                          iconSize: 64,
+                                          backgroundColor: Colors.transparent,
+                                        ),
                                   ),
                                   if (shouldBlur)
                                     Positioned.fill(

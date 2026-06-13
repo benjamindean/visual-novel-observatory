@@ -14,7 +14,7 @@ class AppInfoSection extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'Observatory v1.0.0',
+            'Observatory',
             style: theme.textTheme.bodyMedium?.copyWith(
               color: context.appTextMuted,
               fontWeight: FontWeight.bold,

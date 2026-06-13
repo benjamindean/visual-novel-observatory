@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/visual_novel.dart';
 import 'rating_badge.dart';
+import 'image_placeholder.dart';
+import 'image_error_widget.dart';
 import '../../theme/app_theme.dart';
 import '../../settings/providers/settings_provider.dart';
 
@@ -48,6 +50,8 @@ class DetailHeader extends ConsumerWidget {
                           child: CachedNetworkImage(
                             imageUrl: vn.imageUrl!,
                             fit: BoxFit.cover,
+                            fadeInDuration: const Duration(milliseconds: 200),
+                            fadeOutDuration: const Duration(milliseconds: 200),
                             imageBuilder: (context, imageProvider) {
                               final image = Image(
                                 image: imageProvider,
@@ -65,24 +69,14 @@ class DetailHeader extends ConsumerWidget {
                                     )
                                   : image;
                             },
-                            placeholder: (context, url) => Container(
-                              color: context.appSurface,
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  color: context.appAccentTeal,
+                            placeholder: (context, url) =>
+                                const ImagePlaceholder(
+                                  iconSize: 64,
                                 ),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => Container(
-                              color: context.appSurface,
-                              child: Center(
-                                child: Icon(
-                                  Icons.broken_image,
-                                  size: 64,
-                                  color: context.appTextMuted,
+                            errorWidget: (context, url, error) =>
+                                const ImageErrorWidget(
+                                  iconSize: 64,
                                 ),
-                              ),
-                            ),
                           ),
                         ),
                         if (shouldBlur)
@@ -121,15 +115,8 @@ class DetailHeader extends ConsumerWidget {
                     ),
                   ),
                 )
-              : Container(
-                  color: context.appSurface,
-                  child: Center(
-                    child: Icon(
-                      Icons.image,
-                      size: 64,
-                      color: context.appTextMuted,
-                    ),
-                  ),
+              : const ImagePlaceholder(
+                  iconSize: 64,
                 ),
         ),
 

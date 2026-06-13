@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/visual_novel.dart';
 import 'rating_badge.dart';
+import 'image_placeholder.dart';
+import 'image_error_widget.dart';
 import '../../theme/app_theme.dart';
 import '../../settings/providers/settings_provider.dart';
 
@@ -38,6 +40,8 @@ class VnCard extends ConsumerWidget {
                         fit: BoxFit.cover,
                         memCacheWidth: 300,
                         memCacheHeight: 450,
+                        fadeInDuration: const Duration(milliseconds: 200),
+                        fadeOutDuration: const Duration(milliseconds: 200),
                         imageBuilder: (context, imageProvider) {
                           final image = Image(
                             image: imageProvider,
@@ -55,35 +59,15 @@ class VnCard extends ConsumerWidget {
                                 )
                               : image;
                         },
-                        placeholder: (context, url) => Container(
-                          color: context.appSearchField,
-                          child: Center(
-                            child: SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: context.appAccentTeal,
-                              ),
-                            ),
-                          ),
+                        placeholder: (context, url) => ImagePlaceholder(
+                          backgroundColor: context.appSearchField,
                         ),
-                        errorWidget: (context, url, error) => Container(
-                          color: context.appSearchField,
-                          child: Icon(
-                            Icons.broken_image_rounded,
-                            color: context.appTextMuted,
-                            size: 32,
-                          ),
+                        errorWidget: (context, url, error) => ImageErrorWidget(
+                          backgroundColor: context.appSearchField,
                         ),
                       )
-                    : Container(
-                        color: context.appSearchField,
-                        child: Icon(
-                          Icons.image_rounded,
-                          color: context.appTextMuted,
-                          size: 32,
-                        ),
+                    : ImagePlaceholder(
+                        backgroundColor: context.appSearchField,
                       ),
               ),
               // Explicit content blur

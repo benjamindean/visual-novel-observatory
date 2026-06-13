@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import '../models/vn_screenshot.dart';
+import 'image_placeholder.dart';
+import 'image_error_widget.dart';
 import '../../theme/app_theme.dart';
 import '../../settings/providers/settings_provider.dart';
 
@@ -67,6 +69,8 @@ class ScreenshotsSection extends ConsumerWidget {
                           height: 150,
                           memCacheWidth: 240,
                           memCacheHeight: 150,
+                          fadeInDuration: const Duration(milliseconds: 200),
+                          fadeOutDuration: const Duration(milliseconds: 200),
                           imageBuilder: (context, imageProvider) {
                             final image = Image(
                               image: imageProvider,
@@ -86,25 +90,15 @@ class ScreenshotsSection extends ConsumerWidget {
                                   )
                                 : image;
                           },
-                          placeholder: (context, url) => Container(
-                            color: context.appSurface,
+                          placeholder: (context, url) => const ImagePlaceholder(
                             width: 240,
                             height: 150,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                color: context.appAccentTeal,
+                          ),
+                          errorWidget: (context, url, error) =>
+                              const ImageErrorWidget(
+                                width: 240,
+                                height: 150,
                               ),
-                            ),
-                          ),
-                          errorWidget: (context, url, error) => Container(
-                            color: context.appSurface,
-                            width: 240,
-                            height: 150,
-                            child: Icon(
-                              Icons.broken_image,
-                              color: context.appTextMuted,
-                            ),
-                          ),
                         ),
                         if (shouldBlur)
                           Positioned.fill(
