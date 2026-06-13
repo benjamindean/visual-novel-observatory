@@ -31,12 +31,30 @@ class VnCard extends ConsumerWidget {
           aspectRatio: 2 / 3,
           child: Stack(
             children: [
-              // Cover art thumbnail
               Positioned.fill(
                 child: vn.imageUrl != null
                     ? CachedNetworkImage(
                         imageUrl: vn.imageUrl!,
                         fit: BoxFit.cover,
+                        memCacheWidth: 300,
+                        memCacheHeight: 450,
+                        imageBuilder: (context, imageProvider) {
+                          final image = Image(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          );
+
+                          return shouldBlur
+                              ? ImageFiltered(
+                                  imageFilter: ImageFilter.blur(
+                                    sigmaX: 12,
+                                    sigmaY: 12,
+                                    tileMode: TileMode.clamp,
+                                  ),
+                                  child: image,
+                                )
+                              : image;
+                        },
                         placeholder: (context, url) => Container(
                           color: context.appSearchField,
                           child: Center(
@@ -71,18 +89,13 @@ class VnCard extends ConsumerWidget {
               // Explicit content blur
               if (shouldBlur)
                 Positioned.fill(
-                  child: ClipRect(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                      child: Container(
-                        color: Colors.black54,
-                        alignment: Alignment.center,
-                        child: const Icon(
-                          Icons.visibility_off_rounded,
-                          color: Colors.white,
-                          size: 28,
-                        ),
-                      ),
+                  child: Container(
+                    color: context.appBackground.withValues(alpha: 0.65),
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.visibility_off_rounded,
+                      color: context.appTextPrimary,
+                      size: 28,
                     ),
                   ),
                 ),

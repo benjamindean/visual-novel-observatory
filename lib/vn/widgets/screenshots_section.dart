@@ -65,6 +65,27 @@ class ScreenshotsSection extends ConsumerWidget {
                           fit: BoxFit.cover,
                           width: 240,
                           height: 150,
+                          memCacheWidth: 240,
+                          memCacheHeight: 150,
+                          imageBuilder: (context, imageProvider) {
+                            final image = Image(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                              width: 240,
+                              height: 150,
+                            );
+
+                            return shouldBlur
+                                ? ImageFiltered(
+                                    imageFilter: ImageFilter.blur(
+                                      sigmaX: 10,
+                                      sigmaY: 10,
+                                      tileMode: TileMode.clamp,
+                                    ),
+                                    child: image,
+                                  )
+                                : image;
+                          },
                           placeholder: (context, url) => Container(
                             color: context.appSurface,
                             width: 240,
@@ -87,21 +108,15 @@ class ScreenshotsSection extends ConsumerWidget {
                         ),
                         if (shouldBlur)
                           Positioned.fill(
-                            child: ClipRect(
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(
-                                  sigmaX: 10,
-                                  sigmaY: 10,
-                                ),
-                                child: Container(
-                                  color: Colors.black54,
-                                  alignment: Alignment.center,
-                                  child: const Icon(
-                                    Icons.visibility_off_rounded,
-                                    color: Colors.white,
-                                    size: 24,
-                                  ),
-                                ),
+                            child: Container(
+                              color: context.appBackground.withValues(
+                                alpha: 0.65,
+                              ),
+                              alignment: Alignment.center,
+                              child: Icon(
+                                Icons.visibility_off_rounded,
+                                color: context.appTextPrimary,
+                                size: 24,
                               ),
                             ),
                           ),

@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import '../models/vn_screenshot.dart';
 import '../../settings/providers/settings_provider.dart';
+import '../../theme/app_theme.dart';
 
 class VnGalleryScreen extends ConsumerStatefulWidget {
   final List<VnScreenshot> screenshots;
@@ -173,194 +174,228 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
     final dragRatio = (_dragOffset.abs() / 300.0).clamp(0.0, 1.0);
     final bgOpacity = (1.0 - dragRatio).clamp(0.0, 1.0);
 
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(0, 0, 0, bgOpacity),
-      body: Stack(
-        children: [
-          GestureDetector(
-            onVerticalDragUpdate: _wasZoomed ? null : _onVerticalDragUpdate,
-            onVerticalDragEnd: _wasZoomed ? null : _onVerticalDragEnd,
-            child: AnimatedContainer(
-              duration: _isDragging
-                  ? Duration.zero
-                  : const Duration(milliseconds: 250),
-              curve: Curves.easeOutCubic,
-              transform: Matrix4.translationValues(0.0, _dragOffset, 0.0),
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: widget.screenshots.length,
-                physics: _wasZoomed
-                    ? const NeverScrollableScrollPhysics()
-                    : const BouncingScrollPhysics(),
-                onPageChanged: (index) {
-                  final oldIndex = _currentIndex;
+    return Theme(
+      data: Theme.of(context).copyWith(brightness: Brightness.dark),
+      child: Builder(
+        builder: (context) {
+          return Scaffold(
+            backgroundColor: Color.fromRGBO(0, 0, 0, bgOpacity),
+            body: Stack(
+              children: [
+                GestureDetector(
+                  onVerticalDragUpdate: _wasZoomed
+                      ? null
+                      : _onVerticalDragUpdate,
+                  onVerticalDragEnd: _wasZoomed ? null : _onVerticalDragEnd,
+                  child: AnimatedContainer(
+                    duration: _isDragging
+                        ? Duration.zero
+                        : const Duration(milliseconds: 250),
+                    curve: Curves.easeOutCubic,
+                    transform: Matrix4.translationValues(0.0, _dragOffset, 0.0),
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemCount: widget.screenshots.length,
+                      physics: _wasZoomed
+                          ? const NeverScrollableScrollPhysics()
+                          : const BouncingScrollPhysics(),
+                      onPageChanged: (index) {
+                        final oldIndex = _currentIndex;
 
-                  setState(() {
-                    _currentIndex = index;
-                    _updateActiveController();
-                  });
+                        setState(() {
+                          _currentIndex = index;
+                          _updateActiveController();
+                        });
 
-                  _resetZoom(oldIndex);
-                },
-                itemBuilder: (context, index) {
-                  final screenshot = widget.screenshots[index];
-                  final isRevealed = _revealedIndices.contains(index);
-                  final shouldBlur =
-                      !settings.showExplicitContent &&
-                      screenshot.sexual != null &&
-                      screenshot.sexual! > 0.2 &&
-                      !isRevealed;
+                        _resetZoom(oldIndex);
+                      },
+                      itemBuilder: (context, index) {
+                        final screenshot = widget.screenshots[index];
+                        final isRevealed = _revealedIndices.contains(index);
+                        final shouldBlur =
+                            !settings.showExplicitContent &&
+                            screenshot.sexual != null &&
+                            screenshot.sexual! > 0.2 &&
+                            !isRevealed;
 
-                  return GestureDetector(
-                    onDoubleTapDown: (details) =>
-                        _handleDoubleTap(index, details),
-                    onDoubleTap: () {},
-                    child: InteractiveViewer(
-                      transformationController: _getController(index),
-                      clipBehavior: Clip.none,
-                      minScale: 1.0,
-                      maxScale: 4.0,
-                      child: Center(
-                        child: Stack(
-                          children: [
-                            CachedNetworkImage(
-                              imageUrl: screenshot.url,
-                              fit: BoxFit.contain,
-                              placeholder: (context, url) => const Center(
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => const Icon(
-                                Icons.broken_image,
-                                size: 64,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            if (shouldBlur)
-                              Positioned.fill(
-                                child: ClipRect(
-                                  child: BackdropFilter(
-                                    filter: ImageFilter.blur(
-                                      sigmaX: 20,
-                                      sigmaY: 20,
-                                    ),
-                                    child: Container(
-                                      color: Colors.black54,
-                                      alignment: Alignment.center,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          const Icon(
-                                            Icons.visibility_off_rounded,
-                                            color: Colors.white70,
-                                            size: 48,
-                                          ),
-                                          const SizedBox(height: 12),
-                                          const Text(
-                                            'Sensitive Content Hidden',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 16),
-                                          ElevatedButton.icon(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.white10,
-                                              foregroundColor: Colors.white,
-                                              side: const BorderSide(
-                                                color: Colors.white30,
+                        return GestureDetector(
+                          onDoubleTapDown: (details) =>
+                              _handleDoubleTap(index, details),
+                          onDoubleTap: () {},
+                          child: InteractiveViewer(
+                            transformationController: _getController(index),
+                            clipBehavior: Clip.none,
+                            minScale: 1.0,
+                            maxScale: 4.0,
+                            child: Center(
+                              child: Stack(
+                                children: [
+                                  CachedNetworkImage(
+                                    imageUrl: screenshot.url,
+                                    fit: BoxFit.contain,
+                                    imageBuilder: (context, imageProvider) {
+                                      final image = Image(
+                                        image: imageProvider,
+                                        fit: BoxFit.contain,
+                                      );
+
+                                      return shouldBlur
+                                          ? ClipRect(
+                                              child: ImageFiltered(
+                                                imageFilter: ImageFilter.blur(
+                                                  sigmaX: 20,
+                                                  sigmaY: 20,
+                                                  tileMode: TileMode.clamp,
+                                                ),
+                                                child: image,
                                               ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                              ),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 16,
-                                                    vertical: 10,
-                                                  ),
-                                            ),
-                                            onPressed: () {
-                                              setState(() {
-                                                _revealedIndices.add(index);
-                                              });
-                                            },
-                                            icon: const Icon(
-                                              Icons.visibility_rounded,
-                                              size: 16,
-                                            ),
-                                            label: const Text(
-                                              'Reveal Image',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                            )
+                                          : image;
+                                    },
+                                    placeholder: (context, url) => Center(
+                                      child: CircularProgressIndicator(
+                                        color: context.appTextPrimary,
                                       ),
                                     ),
+                                    errorWidget: (context, url, error) => Icon(
+                                      Icons.broken_image,
+                                      size: 64,
+                                      color: context.appTextMuted,
+                                    ),
                                   ),
-                                ),
+                                  if (shouldBlur)
+                                    Positioned.fill(
+                                      child: Container(
+                                        color: context.appBackground.withValues(
+                                          alpha: 0.65,
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.visibility_off_rounded,
+                                              color: context.appTextPrimary
+                                                  .withValues(alpha: 0.7),
+                                              size: 48,
+                                            ),
+                                            const SizedBox(height: 12),
+                                            Text(
+                                              'Sensitive Content Hidden',
+                                              style: TextStyle(
+                                                color: context.appTextPrimary,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 16),
+                                            ElevatedButton.icon(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: context
+                                                    .appTextPrimary
+                                                    .withValues(alpha: 0.1),
+                                                foregroundColor:
+                                                    context.appTextPrimary,
+                                                side: BorderSide(
+                                                  color: context.appTextPrimary
+                                                      .withValues(alpha: 0.3),
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 16,
+                                                      vertical: 10,
+                                                    ),
+                                              ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  _revealedIndices.add(index);
+                                                });
+                                              },
+                                              icon: const Icon(
+                                                Icons.visibility_rounded,
+                                                size: 16,
+                                              ),
+                                              label: const Text(
+                                                'Reveal Image',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
-                          ],
-                        ),
-                      ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: SafeArea(
-              top: false,
-              bottom: true,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 16.0,
+                  ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.black54,
-                      child: IconButton(
-                        icon: const Icon(Icons.close, color: Colors.white),
-                        onPressed: () => context.pop(),
-                      ),
-                    ),
-                    Container(
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: SafeArea(
+                    top: false,
+                    bottom: true,
+                    child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
+                        horizontal: 16.0,
+                        vertical: 16.0,
                       ),
-                      decoration: BoxDecoration(
-                        color: Colors.black54,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Text(
-                        '${_currentIndex + 1} / ${widget.screenshots.length}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: context.appBackground.withValues(
+                              alpha: 0.65,
+                            ),
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: context.appTextPrimary,
+                              ),
+                              onPressed: () => context.pop(),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: context.appBackground.withValues(
+                                alpha: 0.65,
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Text(
+                              '${_currentIndex + 1} / ${widget.screenshots.length}',
+                              style: TextStyle(
+                                color: context.appTextPrimary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

@@ -1,5 +1,5 @@
 name: visual_novel_observatory
-description: A premium mobile client for VNDB.org built with Flutter.
+description: A mobile client for VNDB.org built with Flutter.
 version: 1.0.0+1
 
 environment:

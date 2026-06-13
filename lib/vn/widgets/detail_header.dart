@@ -41,64 +41,84 @@ class DetailHeader extends ConsumerWidget {
                     );
                   },
                   blendMode: BlendMode.dstIn,
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: CachedNetworkImage(
-                          imageUrl: vn.imageUrl!,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                            color: context.appSurface,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                color: context.appAccentTeal,
-                              ),
-                            ),
-                          ),
-                          errorWidget: (context, url, error) => Container(
-                            color: context.appSurface,
-                            child: Center(
-                              child: Icon(
-                                Icons.broken_image,
-                                size: 64,
-                                color: context.appTextMuted,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (shouldBlur)
+                  child: ClipRect(
+                    child: Stack(
+                      children: [
                         Positioned.fill(
-                          child: ClipRect(
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                              child: Container(
-                                color: Colors.black54,
-                                alignment: Alignment.center,
-                                child: const Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.visibility_off_rounded,
-                                      color: Colors.white70,
-                                      size: 40,
-                                    ),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      'Sensitive Image Hidden',
-                                      style: TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
+                          child: CachedNetworkImage(
+                            imageUrl: vn.imageUrl!,
+                            fit: BoxFit.cover,
+                            imageBuilder: (context, imageProvider) {
+                              final image = Image(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              );
+
+                              return shouldBlur
+                                  ? ImageFiltered(
+                                      imageFilter: ImageFilter.blur(
+                                        sigmaX: 15,
+                                        sigmaY: 15,
+                                        tileMode: TileMode.clamp,
                                       ),
-                                    ),
-                                  ],
+                                      child: image,
+                                    )
+                                  : image;
+                            },
+                            placeholder: (context, url) => Container(
+                              color: context.appSurface,
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: context.appAccentTeal,
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              color: context.appSurface,
+                              child: Center(
+                                child: Icon(
+                                  Icons.broken_image,
+                                  size: 64,
+                                  color: context.appTextMuted,
                                 ),
                               ),
                             ),
                           ),
                         ),
-                    ],
+                        if (shouldBlur)
+                          Positioned.fill(
+                            child: Container(
+                              color: context.appBackground.withValues(
+                                alpha: 0.65,
+                              ),
+                              alignment: Alignment.center,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.visibility_off_rounded,
+                                    color: context.appTextPrimary.withValues(
+                                      alpha: 0.7,
+                                    ),
+                                    size: 40,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Sensitive Image Hidden',
+                                    style: TextStyle(
+                                      color: context.appTextPrimary.withValues(
+                                        alpha: 0.7,
+                                      ),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 )
               : Container(
