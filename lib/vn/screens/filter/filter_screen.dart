@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../providers/vn_providers.dart';
-import '../models/vn_tag.dart';
-import 'tag_filter_screen.dart';
-import '../../theme/app_theme.dart';
-import '../../settings/providers/settings_provider.dart';
+import '../../providers/vn_providers.dart';
+import '../../models/vn_tag.dart';
+import '../tag_filter/tag_filter_screen.dart';
+import '../../../theme/app_theme.dart';
+import '../../../settings/providers/settings_provider.dart';
 
 class FilterScreen extends ConsumerStatefulWidget {
   const FilterScreen({super.key});

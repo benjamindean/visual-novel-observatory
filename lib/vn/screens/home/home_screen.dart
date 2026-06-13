@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../providers/vn_providers.dart';
-import '../widgets/vn_card.dart';
-import '../../theme/app_theme.dart';
-import '../../auth/providers/auth_provider.dart';
-import '../../settings/providers/settings_provider.dart';
+import '../../providers/vn_providers.dart';
+import '../../widgets/vn_card.dart';
+import '../../../theme/app_theme.dart';
+import '../../../auth/providers/auth_provider.dart';
+import '../../../settings/providers/settings_provider.dart';
+
+import '../../widgets/app_settings_button.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -131,26 +133,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ],
                         ),
                         const SizedBox(width: 8),
-                        Container(
-                          height: 36,
-                          width: 36,
-                          decoration: BoxDecoration(
-                            color: context.colorScheme.primaryContainer,
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: IconButton(
-                            padding: EdgeInsets.zero,
-                            icon: Icon(
-                              Icons.settings_outlined,
-                              size: 18,
-                              color: context.appTextPrimary,
-                            ),
-                            onPressed: () {
-                              context.push('/settings');
-                            },
-                            tooltip: 'Settings',
-                          ),
-                        ),
+                        const AppSettingsButton(),
                         const SizedBox(width: 20),
                       ],
                     ),

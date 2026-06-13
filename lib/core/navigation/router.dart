@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../vn/models/visual_novel.dart';
 import '../../vn/models/vn_screenshot.dart';
-import '../../vn/screens/home_screen.dart';
-import '../../vn/screens/search_screen.dart';
-import '../../vn/screens/library_screen.dart';
-import '../../vn/screens/vn_detail_screen.dart';
-import '../../vn/screens/vn_by_tag_screen.dart';
-import '../../vn/screens/vn_gallery_screen.dart';
-import '../../settings/screens/settings_screen.dart';
-import '../../settings/screens/login_screen.dart';
-import '../../vn/screens/filter_screen.dart';
+import '../../vn/screens/home/home_screen.dart';
+import '../../vn/screens/search/search_screen.dart';
+import '../../vn/screens/library/library_screen.dart';
+import '../../vn/screens/vn_detail/vn_detail_screen.dart';
+import '../../vn/screens/vn_by_tag/vn_by_tag_screen.dart';
+import '../../vn/screens/vn_gallery/vn_gallery_screen.dart';
+import '../../settings/screens/settings/settings_screen.dart';
+import '../../settings/screens/login/login_screen.dart';
+import '../../vn/screens/filter/filter_screen.dart';
 
 class ScaffoldWithNavBar extends StatelessWidget {
   final StatefulNavigationShell navigationShell;

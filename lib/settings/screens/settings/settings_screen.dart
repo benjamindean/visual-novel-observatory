@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../auth/providers/auth_provider.dart';
-import '../providers/settings_provider.dart';
-import '../../theme/app_theme.dart';
-import '../../vn/widgets/vndb_source_note.dart';
-import '../../vn/providers/vn_providers.dart';
+import '../../../auth/providers/auth_provider.dart';
+import '../../providers/settings_provider.dart';
+import '../../../theme/app_theme.dart';
+import '../../../vn/widgets/vndb_source_note.dart';
+import '../../../vn/providers/vn_providers.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});

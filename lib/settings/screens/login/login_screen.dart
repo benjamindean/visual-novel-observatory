@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
-import '../../auth/providers/auth_provider.dart';
-import '../../theme/app_theme.dart';
-import '../../vn/widgets/vndb_source_note.dart';
+import '../../../auth/providers/auth_provider.dart';
+import '../../../theme/app_theme.dart';
+import '../../../vn/widgets/vndb_source_note.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});

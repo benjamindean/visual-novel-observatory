@@ -1,0 +1,80 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../models/visual_novel.dart';
+import '../../providers/vn_providers.dart';
+import '../../widgets/vn_card.dart';
+import '../../../theme/app_theme.dart';
+
+class SearchRecentList extends ConsumerWidget {
+  final List<VisualNovel> recentVns;
+
+  const SearchRecentList({
+    super.key,
+    required this.recentVns,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
+    return CustomScrollView(
+      physics: const BouncingScrollPhysics(),
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 12.0, 16.0, 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Recent Searches',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    ref.read(recentlyOpenedSearchProvider.notifier).clear();
+                  },
+                  child: Text(
+                    'Clear All',
+                    style: TextStyle(color: context.appAccentTeal),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          sliver: SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              childAspectRatio: 2 / 3,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final vn = recentVns[index];
+
+                return VnCard(
+                  vn: vn,
+                  onTap: () {
+                    context.push('/detail', extra: vn);
+                  },
+                );
+              },
+              childCount: recentVns.length,
+            ),
+          ),
+        ),
+        // Padding to ensure grid items scroll past the floating bottom bar
+        const SliverToBoxAdapter(
+          child: SizedBox(height: 90),
+        ),
+      ],
+    );
+  }
+}

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/vn_tag.dart';
-import '../providers/vn_providers.dart';
-import '../widgets/app_search_input.dart';
-import '../../theme/app_theme.dart';
-import '../../settings/providers/settings_provider.dart';
+import '../../models/vn_tag.dart';
+import '../../providers/vn_providers.dart';
+import '../../widgets/app_search_input.dart';
+import '../../../theme/app_theme.dart';
+import '../../../settings/providers/settings_provider.dart';
+import 'tag_filter_caching_placeholder.dart';
 
 class TagFilterScreen extends ConsumerStatefulWidget {
   final List<VnTag> initialTags;
@@ -138,36 +139,7 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
               ),
             ),
       body: localTagsState.isLoading && localTagsState.tags.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(color: context.appAccentTeal),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Caching tags database locally...\n${(localTagsState.progress * 100).toStringAsFixed(0)}%',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: context.appTextSecondary,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'This only happens once. Subsequent tag searches will be instant.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: context.appTextMuted,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
+          ? TagFilterCachingPlaceholder(progress: localTagsState.progress)
           : Stack(
               children: [
                 Column(

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
-import '../models/vn_screenshot.dart';
-import '../../settings/providers/settings_provider.dart';
-import '../../theme/app_theme.dart';
+import '../../models/vn_screenshot.dart';
+import '../../../settings/providers/settings_provider.dart';
+import '../../../theme/app_theme.dart';
 
 class VnGalleryScreen extends ConsumerStatefulWidget {
   final List<VnScreenshot> screenshots;
