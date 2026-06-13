@@ -93,7 +93,10 @@ final goRouter = GoRouter(
       path: '/filters',
       builder: (context, state) => const FilterScreen(),
     ),
-    GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+    GoRoute(
+      path: '/login',
+      builder: (context, state) => const LoginScreen(),
+    ),
     GoRoute(
       path: '/detail',
       builder: (context, state) {
