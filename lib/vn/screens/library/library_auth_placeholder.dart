@@ -46,15 +46,16 @@ class LibraryAuthPlaceholder extends StatelessWidget {
                         size: 64,
                         color: context.appTextMuted,
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 16),
                       Text(
                         'Your Library',
                         textAlign: TextAlign.center,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
+                          color: context.appTextSecondary,
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 8),
                       Text(
                         'Connect your VNDB profile to sync your visual novel list, votes, and playing status.',
                         textAlign: TextAlign.center,

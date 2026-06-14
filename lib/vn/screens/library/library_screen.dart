@@ -245,8 +245,8 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                               style: theme.textTheme.titleMedium
                                                   ?.copyWith(
                                                     fontWeight: FontWeight.bold,
-                                                    color:
-                                                        context.appTextPrimary,
+                                                    color: context
+                                                        .appTextSecondary,
                                                   ),
                                             ),
                                             const SizedBox(height: 8),

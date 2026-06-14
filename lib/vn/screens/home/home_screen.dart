@@ -42,6 +42,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  bool _areListsEqual(List a, List b) {
+    if (a.length != b.length) {
+      return false;
+    }
+
+    for (int i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final listState = ref.watch(vnListProvider);
@@ -49,11 +63,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final settings = ref.watch(settingsProvider);
     final theme = Theme.of(context);
 
+    final defaultLangList = settings.defaultLanguage != null
+        ? [settings.defaultLanguage!]
+        : const <String>[];
+    final defaultPlatformList = settings.defaultPlatform != null
+        ? [settings.defaultPlatform!]
+        : const <String>[];
+
+    final bool langChanged = !_areListsEqual(filters.lang, defaultLangList);
+    final bool platformChanged = !_areListsEqual(
+      filters.platform,
+      defaultPlatformList,
+    );
+
     final hasActiveFilters =
-        filters.lang != settings.defaultLanguage ||
-        filters.platform != settings.defaultPlatform ||
-        filters.length != null ||
-        filters.devStatus != null ||
+        langChanged ||
+        platformChanged ||
+        filters.length.isNotEmpty ||
+        filters.devStatus.isNotEmpty ||
         filters.minRating != 7.0 ||
         filters.minVotes != 50 ||
         filters.tags.isNotEmpty;
@@ -90,7 +117,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ref.read(homeDoubleTapProvider.notifier).increment();
                       },
                       child: Text(
-                        'All',
+                        'Home',
                         style: theme.textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           letterSpacing: -0.5,
@@ -190,9 +217,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   else if (listState.vns.isEmpty)
                     SliverFillRemaining(
                       child: Center(
-                        child: Text(
-                          'No visual novels found',
-                          style: TextStyle(color: context.appTextMuted),
+                        child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.explore_off_outlined,
+                                size: 64,
+                                color: context.appTextMuted,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'No Visual Novels Found',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: context.appTextSecondary,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Try adjusting your filters or search terms.',
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: context.appTextMuted,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     )

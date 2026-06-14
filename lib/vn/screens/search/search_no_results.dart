@@ -24,12 +24,15 @@ class SearchNoResults extends StatelessWidget {
               'No results found',
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
+                color: context.appTextSecondary,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Try searching for something else.',
-              style: TextStyle(color: context.appTextMuted),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: context.appTextMuted,
+              ),
             ),
           ],
         ),

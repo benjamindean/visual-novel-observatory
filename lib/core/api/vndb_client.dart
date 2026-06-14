@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import '../../vn/models/visual_novel.dart';
 
 class VndbClient {
@@ -12,6 +13,30 @@ class VndbClient {
       'Content-Type': 'application/json',
       if (_token != null) 'Authorization': 'Token $_token',
     };
+
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          debugPrint('--> ${options.method} ${options.uri}');
+
+          return handler.next(options);
+        },
+        onResponse: (response, handler) {
+          debugPrint(
+            '<-- [${response.statusCode}] ${response.requestOptions.method} ${response.requestOptions.uri}',
+          );
+
+          return handler.next(response);
+        },
+        onError: (dioError, handler) {
+          debugPrint(
+            '<-- ERROR: ${dioError.message} for ${dioError.requestOptions.method} ${dioError.requestOptions.uri}',
+          );
+
+          return handler.next(dioError);
+        },
+      ),
+    );
   }
 
   // Selected fields for listing and detail screens

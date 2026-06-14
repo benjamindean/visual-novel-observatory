@@ -14,20 +14,20 @@ final searchQueryProvider = NotifierProvider<SearchQueryNotifier, String>(
 );
 
 class VnFilterState {
-  final String? lang;
-  final String? platform;
-  final int? length;
-  final int? devStatus;
+  final List<String> lang;
+  final List<String> platform;
+  final List<int> length;
+  final List<int> devStatus;
   final double minRating; // 0.0 to 10.0
   final int minVotes;
   final bool showExplicitContent;
   final List<VnTag> tags;
 
   VnFilterState({
-    this.lang,
-    this.platform,
-    this.length,
-    this.devStatus,
+    this.lang = const [],
+    this.platform = const [],
+    this.length = const [],
+    this.devStatus = const [],
     this.minRating = 7.0,
     this.minVotes = 50,
     this.showExplicitContent = false,
@@ -35,20 +35,20 @@ class VnFilterState {
   });
 
   VnFilterState copyWith({
-    String? Function()? lang,
-    String? Function()? platform,
-    int? Function()? length,
-    int? Function()? devStatus,
+    List<String>? lang,
+    List<String>? platform,
+    List<int>? length,
+    List<int>? devStatus,
     double? minRating,
     int? minVotes,
     bool? showExplicitContent,
     List<VnTag>? tags,
   }) {
     return VnFilterState(
-      lang: lang != null ? lang() : this.lang,
-      platform: platform != null ? platform() : this.platform,
-      length: length != null ? length() : this.length,
-      devStatus: devStatus != null ? devStatus() : this.devStatus,
+      lang: lang ?? this.lang,
+      platform: platform ?? this.platform,
+      length: length ?? this.length,
+      devStatus: devStatus ?? this.devStatus,
       minRating: minRating ?? this.minRating,
       minVotes: minVotes ?? this.minVotes,
       showExplicitContent: showExplicitContent ?? this.showExplicitContent,
@@ -57,10 +57,10 @@ class VnFilterState {
   }
 
   bool get isEmpty =>
-      lang == null &&
-      platform == null &&
-      length == null &&
-      devStatus == null &&
+      lang.isEmpty &&
+      platform.isEmpty &&
+      length.isEmpty &&
+      devStatus.isEmpty &&
       minRating == 7.0 &&
       minVotes == 50 &&
       !showExplicitContent &&
@@ -69,20 +69,48 @@ class VnFilterState {
   List<dynamic> buildApiFilters() {
     final filters = <dynamic>[];
 
-    if (lang != null) {
-      filters.add(['lang', '=', lang]);
+    if (lang.isNotEmpty) {
+      if (lang.length == 1) {
+        filters.add(['lang', '=', lang.first]);
+      } else {
+        filters.add([
+          'or',
+          ...lang.map((l) => ['lang', '=', l]),
+        ]);
+      }
     }
 
-    if (platform != null) {
-      filters.add(['platform', '=', platform]);
+    if (platform.isNotEmpty) {
+      if (platform.length == 1) {
+        filters.add(['platform', '=', platform.first]);
+      } else {
+        filters.add([
+          'or',
+          ...platform.map((p) => ['platform', '=', p]),
+        ]);
+      }
     }
 
-    if (length != null) {
-      filters.add(['length', '=', length]);
+    if (length.isNotEmpty) {
+      if (length.length == 1) {
+        filters.add(['length', '=', length.first]);
+      } else {
+        filters.add([
+          'or',
+          ...length.map((l) => ['length', '=', l]),
+        ]);
+      }
     }
 
-    if (devStatus != null) {
-      filters.add(['devstatus', '=', devStatus]);
+    if (devStatus.isNotEmpty) {
+      if (devStatus.length == 1) {
+        filters.add(['devstatus', '=', devStatus.first]);
+      } else {
+        filters.add([
+          'or',
+          ...devStatus.map((d) => ['devstatus', '=', d]),
+        ]);
+      }
     }
 
     // Always apply rating and votecount if set (or let it be dynamic)
@@ -103,8 +131,12 @@ class VnFilterNotifier extends Notifier<VnFilterState> {
     final settings = ref.watch(settingsProvider);
 
     return VnFilterState(
-      lang: settings.defaultLanguage,
-      platform: settings.defaultPlatform,
+      lang: settings.defaultLanguage != null
+          ? [settings.defaultLanguage!]
+          : const [],
+      platform: settings.defaultPlatform != null
+          ? [settings.defaultPlatform!]
+          : const [],
       showExplicitContent: settings.showExplicitContent,
     );
   }

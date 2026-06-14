@@ -34,8 +34,55 @@ class SearchRecentList extends ConsumerWidget {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {
-                    ref.read(recentlyOpenedSearchProvider.notifier).clear();
+                  onPressed: () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        backgroundColor: context.appSurface,
+                        title: Text(
+                          'Clear Recent Searches?',
+                          style: TextStyle(
+                            color: context.appTextPrimary,
+                          ),
+                        ),
+                        content: Text(
+                          'Are you sure you want to clear your search history?',
+                          style: TextStyle(
+                            color: context.appTextSecondary,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(
+                              context,
+                              false,
+                            ),
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                color: context.appTextMuted,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(
+                              context,
+                              true,
+                            ),
+                            child: Text(
+                              'Clear',
+                              style: TextStyle(
+                                color: context.colorScheme.error,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+
+                    if (confirm == true) {
+                      ref.read(recentlyOpenedSearchProvider.notifier).clear();
+                    }
                   },
                   child: Text(
                     'Clear All',

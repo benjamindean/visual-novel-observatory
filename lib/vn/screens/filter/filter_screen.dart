@@ -18,10 +18,10 @@ class FilterScreen extends ConsumerStatefulWidget {
 }
 
 class _FilterScreenState extends ConsumerState<FilterScreen> {
-  String? _selectedLang;
-  String? _selectedPlatform;
-  int? _selectedLength;
-  int? _selectedDevStatus;
+  List<String> _selectedLangs = [];
+  List<String> _selectedPlatforms = [];
+  List<int> _selectedLengths = [];
+  List<int> _selectedDevStatuses = [];
   double _minRating = 7.0;
   int _minVotes = 50;
   List<VnTag> _selectedTags = [];
@@ -37,10 +37,10 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
     final currentSort = ref.read(vnSortProvider);
     final tags = currentFilters.tags;
 
-    _selectedLang = currentFilters.lang;
-    _selectedPlatform = currentFilters.platform;
-    _selectedLength = currentFilters.length;
-    _selectedDevStatus = currentFilters.devStatus;
+    _selectedLangs = List<String>.from(currentFilters.lang);
+    _selectedPlatforms = List<String>.from(currentFilters.platform);
+    _selectedLengths = List<int>.from(currentFilters.length);
+    _selectedDevStatuses = List<int>.from(currentFilters.devStatus);
     _minRating = currentFilters.minRating;
     _minVotes = currentFilters.minVotes;
     _selectedSortField = currentSort.field;
@@ -57,13 +57,17 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
     final settings = ref.read(settingsProvider);
 
     setState(() {
-      _selectedLang = settings.defaultLanguage;
-      _selectedPlatform = settings.defaultPlatform;
-      _selectedLength = null;
-      _selectedDevStatus = null;
+      _selectedLangs = settings.defaultLanguage != null
+          ? [settings.defaultLanguage!]
+          : const [];
+      _selectedPlatforms = settings.defaultPlatform != null
+          ? [settings.defaultPlatform!]
+          : const [];
+      _selectedLengths = const [];
+      _selectedDevStatuses = const [];
       _minRating = 7.0;
       _minVotes = 50;
-      _selectedTags = [];
+      _selectedTags = const [];
       _selectedSortField = 'rating';
       _selectedSortDescending = true;
     });
@@ -79,10 +83,10 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
         .read(vnFilterProvider.notifier)
         .update(
           VnFilterState(
-            lang: _selectedLang,
-            platform: _selectedPlatform,
-            length: _selectedLength,
-            devStatus: _selectedDevStatus,
+            lang: _selectedLangs,
+            platform: _selectedPlatforms,
+            length: _selectedLengths,
+            devStatus: _selectedDevStatuses,
             minRating: _minRating,
             minVotes: _minVotes,
             showExplicitContent: showExplicit,
@@ -166,10 +170,10 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                   'es': 'Spanish',
                   'ko': 'Korean',
                 },
-                selectedValue: _selectedLang,
-                onSelected: (val) {
+                selectedValues: _selectedLangs,
+                onSelected: (vals) {
                   setState(() {
-                    _selectedLang = val;
+                    _selectedLangs = vals;
                   });
                 },
               ),
@@ -185,10 +189,10 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                   'and': 'Android',
                   'ios': 'iOS',
                 },
-                selectedValue: _selectedPlatform,
-                onSelected: (val) {
+                selectedValues: _selectedPlatforms,
+                onSelected: (vals) {
                   setState(() {
-                    _selectedPlatform = val;
+                    _selectedPlatforms = vals;
                   });
                 },
               ),
@@ -204,10 +208,10 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                   4: 'Long (30-50h)',
                   5: 'Very Long (>50h)',
                 },
-                selectedValue: _selectedLength,
-                onSelected: (val) {
+                selectedValues: _selectedLengths,
+                onSelected: (vals) {
                   setState(() {
-                    _selectedLength = val;
+                    _selectedLengths = vals;
                   });
                 },
               ),
@@ -217,10 +221,10 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
               const FilterSectionHeader(title: 'Development Status'),
               FilterChipRow<int>(
                 items: const {0: 'Finished', 1: 'In Dev', 2: 'Cancelled'},
-                selectedValue: _selectedDevStatus,
-                onSelected: (val) {
+                selectedValues: _selectedDevStatuses,
+                onSelected: (vals) {
                   setState(() {
-                    _selectedDevStatus = val;
+                    _selectedDevStatuses = vals;
                   });
                 },
               ),

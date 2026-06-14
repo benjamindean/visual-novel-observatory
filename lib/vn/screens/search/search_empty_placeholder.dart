@@ -24,6 +24,7 @@ class SearchEmptyPlaceholder extends StatelessWidget {
               'Search Visual Novels',
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
+                color: context.appTextSecondary,
               ),
             ),
             const SizedBox(height: 8),

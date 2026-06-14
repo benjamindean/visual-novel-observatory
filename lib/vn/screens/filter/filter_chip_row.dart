@@ -3,13 +3,13 @@ import '../../../theme/app_theme.dart';
 
 class FilterChipRow<T> extends StatelessWidget {
   final Map<T, String> items;
-  final T? selectedValue;
-  final ValueChanged<T?> onSelected;
+  final List<T> selectedValues;
+  final ValueChanged<List<T>> onSelected;
 
   const FilterChipRow({
     super.key,
     required this.items,
-    required this.selectedValue,
+    required this.selectedValues,
     required this.onSelected,
   });
 
@@ -20,7 +20,7 @@ class FilterChipRow<T> extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       child: Row(
         children: items.entries.map((entry) {
-          final isSelected = entry.key == selectedValue;
+          final isSelected = selectedValues.contains(entry.key);
 
           return Padding(
             padding: const EdgeInsets.only(right: 8.0),
@@ -28,7 +28,15 @@ class FilterChipRow<T> extends StatelessWidget {
               label: Text(entry.value),
               selected: isSelected,
               onSelected: (selected) {
-                onSelected(selected ? entry.key : null);
+                final newValues = List<T>.from(selectedValues);
+
+                if (selected) {
+                  newValues.add(entry.key);
+                } else {
+                  newValues.remove(entry.key);
+                }
+
+                onSelected(newValues);
               },
               backgroundColor: context.appSurface,
               selectedColor: context.appAccentTeal,

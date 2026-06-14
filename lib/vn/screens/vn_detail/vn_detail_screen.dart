@@ -262,7 +262,10 @@ class VnDetailScreen extends ConsumerWidget {
                   if (vn.tags.isNotEmpty) const SizedBox(height: 24),
 
                   // External Links Section
-                  LinksSection(extLinks: vn.extLinks),
+                  LinksSection(
+                    vnId: vn.id,
+                    extLinks: vn.extLinks,
+                  ),
 
                   const SizedBox(height: 40),
                   const Center(child: VndbSourceNote()),
@@ -314,186 +317,218 @@ const Map<int, String> _ratingDescriptions = {
 };
 
 void _showLabelsDialog(BuildContext context, WidgetRef ref, VisualNovel vn) {
+  List<int>? tempLabels;
+
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (context) {
-      return Consumer(
-        builder: (context, ref, child) {
-          final labelsAsync = ref.watch(ulistLabelsProvider);
-          final ulistState = ref.watch(vnUlistProvider(vn.id));
-          final theme = Theme.of(context);
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return Consumer(
+            builder: (context, ref, child) {
+              final labelsAsync = ref.watch(ulistLabelsProvider);
+              final ulistState = ref.watch(vnUlistProvider(vn.id));
+              final theme = Theme.of(context);
 
-          return Material(
-            color: context.appBackground,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(24.0),
-              topRight: Radius.circular(24.0),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: Padding(
-              padding: EdgeInsets.only(
-                top: 16.0,
-                bottom: MediaQuery.of(context).padding.bottom,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Drag handle
-                  Center(
-                    child: Container(
-                      width: 40.0,
-                      height: 4.0,
-                      decoration: BoxDecoration(
-                        color: context.colorScheme.outlineVariant,
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                    ),
+              if (tempLabels == null) {
+                if (ulistState.entry != null) {
+                  tempLabels = List<int>.from(ulistState.entry!.labels);
+                } else if (!ulistState.isLoading) {
+                  tempLabels = <int>[];
+                }
+              }
+
+              final currentSelected = tempLabels ?? const <int>[];
+
+              return Material(
+                color: context.appBackground,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(24.0),
+                  topRight: Radius.circular(24.0),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: 16.0,
+                    bottom: MediaQuery.of(context).padding.bottom,
                   ),
-                  const SizedBox(height: 16.0),
-
-                  // Title
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Text(
-                      'My Labels',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-
-                  // Content list
-                  Flexible(
-                    child: labelsAsync.when(
-                      data: (allLabels) {
-                        final filteredLabels = allLabels
-                            .where(
-                              (l) => l.label != null && l.label!.isNotEmpty,
-                            )
-                            .where((l) => l.id != 0 && l.id != 7)
-                            .where(
-                              (l) =>
-                                  l.label!.toLowerCase() != 'no label' &&
-                                  l.label!.toLowerCase() != 'voted',
-                            )
-                            .toList();
-
-                        if (filteredLabels.isEmpty) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 32.0,
-                              horizontal: 20.0,
-                            ),
-                            child: Text(
-                              'No labels found.',
-                              style: TextStyle(color: context.appTextMuted),
-                              textAlign: TextAlign.center,
-                            ),
-                          );
-                        }
-
-                        final selectedLabels =
-                            ulistState.entry?.labels ?? const [];
-
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: filteredLabels.length,
-                          itemBuilder: (context, index) {
-                            final label = filteredLabels[index];
-                            final isSelected = selectedLabels.contains(
-                              label.id,
-                            );
-
-                            return CheckboxListTile(
-                              activeColor: context.appAccentTeal,
-                              checkColor: context.colorScheme.onPrimary,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 20.0,
-                              ),
-                              title: Text(
-                                label.label ?? '',
-                                style: TextStyle(color: context.appTextPrimary),
-                              ),
-                              value: isSelected,
-                              onChanged: ulistState.isLoading
-                                  ? null
-                                  : (checked) {
-                                      HapticFeedback.selectionClick();
-
-                                      final newLabels = List<int>.from(
-                                        selectedLabels,
-                                      );
-
-                                      if (checked == true) {
-                                        newLabels.add(label.id);
-                                      } else {
-                                        newLabels.remove(label.id);
-                                      }
-
-                                      ref
-                                          .read(userUlistProvider.notifier)
-                                          .updateLabels(
-                                            vn.id,
-                                            newLabels,
-                                            vn: vn,
-                                          );
-                                    },
-                            );
-                          },
-                        );
-                      },
-                      loading: () => Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 32.0),
-                          child: CircularProgressIndicator(
-                            color: context.appAccentTeal,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Drag handle
+                      Center(
+                        child: Container(
+                          width: 40.0,
+                          height: 4.0,
+                          decoration: BoxDecoration(
+                            color: context.colorScheme.outlineVariant,
+                            borderRadius: BorderRadius.circular(2.0),
                           ),
                         ),
                       ),
-                      error: (err, stack) => Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 24.0,
-                          horizontal: 20.0,
-                        ),
+                      const SizedBox(height: 16.0),
+
+                      // Title
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text(
-                          'Error: $err',
-                          style: TextStyle(color: context.colorScheme.error),
-                          textAlign: TextAlign.center,
+                          'My Labels',
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
+                      const SizedBox(height: 16.0),
+
+                      // Content list
+                      Flexible(
+                        child: labelsAsync.when(
+                          data: (allLabels) {
+                            final filteredLabels = allLabels
+                                .where(
+                                  (l) => l.label != null && l.label!.isNotEmpty,
+                                )
+                                .where((l) => l.id != 0 && l.id != 7)
+                                .where(
+                                  (l) =>
+                                      l.label!.toLowerCase() != 'no label' &&
+                                      l.label!.toLowerCase() != 'voted',
+                                )
+                                .toList();
+
+                            if (filteredLabels.isEmpty) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 32.0,
+                                  horizontal: 20.0,
+                                ),
+                                child: Text(
+                                  'No labels found.',
+                                  style: TextStyle(color: context.appTextMuted),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            }
+
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: filteredLabels.length,
+                              itemBuilder: (context, index) {
+                                final label = filteredLabels[index];
+                                final isSelected = currentSelected.contains(
+                                  label.id,
+                                );
+
+                                return CheckboxListTile(
+                                  activeColor: context.appAccentTeal,
+                                  checkColor: context.colorScheme.onPrimary,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0,
+                                  ),
+                                  title: Text(
+                                    label.label ?? '',
+                                    style: TextStyle(
+                                      color: context.appTextPrimary,
+                                    ),
+                                  ),
+                                  value: isSelected,
+                                  onChanged: ulistState.isLoading
+                                      ? null
+                                      : (checked) {
+                                          HapticFeedback.selectionClick();
+
+                                          setState(() {
+                                            tempLabels ??= <int>[];
+
+                                            if (checked == true) {
+                                              tempLabels!.add(label.id);
+                                            } else {
+                                              tempLabels!.remove(label.id);
+                                            }
+                                          });
+                                        },
+                                );
+                              },
+                            );
+                          },
+                          loading: () => Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 32.0,
+                              ),
+                              child: CircularProgressIndicator(
+                                color: context.appAccentTeal,
+                              ),
+                            ),
+                          ),
+                          error: (err, stack) => Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 24.0,
+                              horizontal: 20.0,
+                            ),
+                            child: Text(
+                              'Error: $err',
+                              style: TextStyle(
+                                color: context.colorScheme.error,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // Save Button (thumb-stretch aware)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: context.appAccentTeal,
+                            foregroundColor: context.colorScheme.onPrimary,
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24.0),
+                            ),
+                            elevation: 0,
+                          ),
+                          onPressed: () {
+                            if (tempLabels != null) {
+                              final originalLabels =
+                                  ulistState.entry?.labels ?? const <int>[];
+                              final bool hasChanged =
+                                  originalLabels.length != tempLabels!.length ||
+                                  !originalLabels.every(tempLabels!.contains);
+
+                              if (hasChanged) {
+                                ref
+                                    .read(userUlistProvider.notifier)
+                                    .updateLabels(
+                                      vn.id,
+                                      tempLabels!,
+                                      vn: vn,
+                                    );
+                              }
+                            }
+
+                            context.pop();
+                          },
+                          child: const Text(
+                            'Save',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  // Done Button (thumb-stretch aware)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: context.appAccentTeal,
-                        foregroundColor: context.colorScheme.onPrimary,
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24.0),
-                        ),
-                        elevation: 0,
-                      ),
-                      onPressed: () => context.pop(),
-                      child: const Text(
-                        'Done',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           );
         },
       );
