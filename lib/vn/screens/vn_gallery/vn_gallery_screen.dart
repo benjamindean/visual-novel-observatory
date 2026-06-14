@@ -194,7 +194,12 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
                         ? Duration.zero
                         : const Duration(milliseconds: 250),
                     curve: Curves.easeOutCubic,
-                    transform: Matrix4.translationValues(0.0, _dragOffset, 0.0),
+                    transformAlignment: Alignment.center,
+                    transform: Matrix4.translationValues(
+                      0.0,
+                      _dragOffset,
+                      0.0,
+                    ),
                     child: PageView.builder(
                       controller: _pageController,
                       itemCount: widget.screenshots.length,
@@ -311,7 +316,9 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
                                                 ),
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(20),
+                                                      BorderRadius.circular(
+                                                        20,
+                                                      ),
                                                 ),
                                                 padding:
                                                     const EdgeInsets.symmetric(

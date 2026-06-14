@@ -127,14 +127,29 @@ final goRouter = GoRouter(
     ),
     GoRoute(
       path: '/gallery',
-      builder: (context, state) {
+      pageBuilder: (context, state) {
         final args = state.extra as Map<String, dynamic>;
         final screenshots = args['screenshots'] as List<VnScreenshot>;
         final initialIndex = args['initialIndex'] as int;
 
-        return VnGalleryScreen(
-          screenshots: screenshots,
-          initialIndex: initialIndex,
+        return CustomTransitionPage<void>(
+          key: state.pageKey,
+          opaque: false,
+          barrierColor: Colors.transparent,
+          transitionsBuilder:
+              (
+                context,
+                animation,
+                secondaryAnimation,
+                child,
+              ) => FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+          child: VnGalleryScreen(
+            screenshots: screenshots,
+            initialIndex: initialIndex,
+          ),
         );
       },
     ),
