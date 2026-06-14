@@ -18,6 +18,7 @@ _VisualNovel _$VisualNovelFromJson(Map<String, dynamic> json) => _VisualNovel(
       ?.map((e) => (e as num).toInt())
       .toList(),
   imageSexual: (json['imageSexual'] as num?)?.toDouble(),
+  imageViolence: (json['imageViolence'] as num?)?.toDouble(),
   released: json['released'] as String?,
   length: (json['length'] as num?)?.toInt(),
   lengthMinutes: (json['length_minutes'] as num?)?.toInt(),
@@ -63,6 +64,7 @@ Map<String, dynamic> _$VisualNovelToJson(_VisualNovel instance) =>
       'imageUrl': instance.imageUrl,
       'imageDims': instance.imageDims,
       'imageSexual': instance.imageSexual,
+      'imageViolence': instance.imageViolence,
       'released': instance.released,
       'length': instance.length,
       'length_minutes': instance.lengthMinutes,

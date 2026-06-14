@@ -23,6 +23,7 @@ abstract class VisualNovel with _$VisualNovel {
     String? imageUrl,
     List<int>? imageDims,
     double? imageSexual,
+    double? imageViolence,
     String? released,
     int? length,
     @JsonKey(name: 'length_minutes') int? lengthMinutes,
@@ -51,11 +52,15 @@ abstract class VisualNovel with _$VisualNovel {
     String? imgUrl;
     List<int>? imgDims;
     double? imgSexual;
+    double? imgViolence;
+
     final imageJson = json['image'];
 
     if (imageJson != null && imageJson is Map<String, dynamic>) {
       imgUrl = imageJson['url'] as String?;
       imgSexual = (imageJson['sexual'] as num?)?.toDouble();
+      imgViolence = (imageJson['violence'] as num?)?.toDouble();
+
       final dimsList = imageJson['dims'] as List?;
 
       if (dimsList != null) {
@@ -65,6 +70,7 @@ abstract class VisualNovel with _$VisualNovel {
 
     // Normalise rating from 10-100 scale to 1-10 scale
     double? parsedRating;
+
     final rawRating = json['rating'];
 
     if (rawRating != null) {
@@ -74,6 +80,7 @@ abstract class VisualNovel with _$VisualNovel {
     adjustedJson['imageUrl'] = imgUrl;
     adjustedJson['imageDims'] = imgDims;
     adjustedJson['imageSexual'] = imgSexual;
+    adjustedJson['imageViolence'] = imgViolence;
     adjustedJson['rating'] = parsedRating;
 
     return adjustedJson;

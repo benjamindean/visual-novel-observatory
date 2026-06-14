@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$VnScreenshot {
 
- String get url; List<int> get dims; String? get thumbnail; double? get sexual;
+ String get url; List<int> get dims; String? get thumbnail; double? get sexual; double? get violence;
 /// Create a copy of VnScreenshot
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $VnScreenshotCopyWith<VnScreenshot> get copyWith => _$VnScreenshotCopyWithImpl<V
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnScreenshot&&(identical(other.url, url) || other.url == url)&&const DeepCollectionEquality().equals(other.dims, dims)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.sexual, sexual) || other.sexual == sexual));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnScreenshot&&(identical(other.url, url) || other.url == url)&&const DeepCollectionEquality().equals(other.dims, dims)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.sexual, sexual) || other.sexual == sexual)&&(identical(other.violence, violence) || other.violence == violence));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,url,const DeepCollectionEquality().hash(dims),thumbnail,sexual);
+int get hashCode => Object.hash(runtimeType,url,const DeepCollectionEquality().hash(dims),thumbnail,sexual,violence);
 
 @override
 String toString() {
-  return 'VnScreenshot(url: $url, dims: $dims, thumbnail: $thumbnail, sexual: $sexual)';
+  return 'VnScreenshot(url: $url, dims: $dims, thumbnail: $thumbnail, sexual: $sexual, violence: $violence)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $VnScreenshotCopyWith<$Res>  {
   factory $VnScreenshotCopyWith(VnScreenshot value, $Res Function(VnScreenshot) _then) = _$VnScreenshotCopyWithImpl;
 @useResult
 $Res call({
- String url, List<int> dims, String? thumbnail, double? sexual
+ String url, List<int> dims, String? thumbnail, double? sexual, double? violence
 });
 
 
@@ -65,12 +65,13 @@ class _$VnScreenshotCopyWithImpl<$Res>
 
 /// Create a copy of VnScreenshot
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? url = null,Object? dims = null,Object? thumbnail = freezed,Object? sexual = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? url = null,Object? dims = null,Object? thumbnail = freezed,Object? sexual = freezed,Object? violence = freezed,}) {
   return _then(_self.copyWith(
 url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
 as String,dims: null == dims ? _self.dims : dims // ignore: cast_nullable_to_non_nullable
 as List<int>,thumbnail: freezed == thumbnail ? _self.thumbnail : thumbnail // ignore: cast_nullable_to_non_nullable
 as String?,sexual: freezed == sexual ? _self.sexual : sexual // ignore: cast_nullable_to_non_nullable
+as double?,violence: freezed == violence ? _self.violence : violence // ignore: cast_nullable_to_non_nullable
 as double?,
   ));
 }
@@ -156,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String url,  List<int> dims,  String? thumbnail,  double? sexual)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String url,  List<int> dims,  String? thumbnail,  double? sexual,  double? violence)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VnScreenshot() when $default != null:
-return $default(_that.url,_that.dims,_that.thumbnail,_that.sexual);case _:
+return $default(_that.url,_that.dims,_that.thumbnail,_that.sexual,_that.violence);case _:
   return orElse();
 
 }
@@ -177,10 +178,10 @@ return $default(_that.url,_that.dims,_that.thumbnail,_that.sexual);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String url,  List<int> dims,  String? thumbnail,  double? sexual)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String url,  List<int> dims,  String? thumbnail,  double? sexual,  double? violence)  $default,) {final _that = this;
 switch (_that) {
 case _VnScreenshot():
-return $default(_that.url,_that.dims,_that.thumbnail,_that.sexual);case _:
+return $default(_that.url,_that.dims,_that.thumbnail,_that.sexual,_that.violence);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +198,10 @@ return $default(_that.url,_that.dims,_that.thumbnail,_that.sexual);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String url,  List<int> dims,  String? thumbnail,  double? sexual)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String url,  List<int> dims,  String? thumbnail,  double? sexual,  double? violence)?  $default,) {final _that = this;
 switch (_that) {
 case _VnScreenshot() when $default != null:
-return $default(_that.url,_that.dims,_that.thumbnail,_that.sexual);case _:
+return $default(_that.url,_that.dims,_that.thumbnail,_that.sexual,_that.violence);case _:
   return null;
 
 }
@@ -212,7 +213,7 @@ return $default(_that.url,_that.dims,_that.thumbnail,_that.sexual);case _:
 @JsonSerializable()
 
 class _VnScreenshot implements VnScreenshot {
-  const _VnScreenshot({this.url = '', final  List<int> dims = const [0, 0], this.thumbnail, this.sexual}): _dims = dims;
+  const _VnScreenshot({this.url = '', final  List<int> dims = const [0, 0], this.thumbnail, this.sexual, this.violence}): _dims = dims;
   factory _VnScreenshot.fromJson(Map<String, dynamic> json) => _$VnScreenshotFromJson(json);
 
 @override@JsonKey() final  String url;
@@ -225,6 +226,7 @@ class _VnScreenshot implements VnScreenshot {
 
 @override final  String? thumbnail;
 @override final  double? sexual;
+@override final  double? violence;
 
 /// Create a copy of VnScreenshot
 /// with the given fields replaced by the non-null parameter values.
@@ -239,16 +241,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnScreenshot&&(identical(other.url, url) || other.url == url)&&const DeepCollectionEquality().equals(other._dims, _dims)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.sexual, sexual) || other.sexual == sexual));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnScreenshot&&(identical(other.url, url) || other.url == url)&&const DeepCollectionEquality().equals(other._dims, _dims)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.sexual, sexual) || other.sexual == sexual)&&(identical(other.violence, violence) || other.violence == violence));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,url,const DeepCollectionEquality().hash(_dims),thumbnail,sexual);
+int get hashCode => Object.hash(runtimeType,url,const DeepCollectionEquality().hash(_dims),thumbnail,sexual,violence);
 
 @override
 String toString() {
-  return 'VnScreenshot(url: $url, dims: $dims, thumbnail: $thumbnail, sexual: $sexual)';
+  return 'VnScreenshot(url: $url, dims: $dims, thumbnail: $thumbnail, sexual: $sexual, violence: $violence)';
 }
 
 
@@ -259,7 +261,7 @@ abstract mixin class _$VnScreenshotCopyWith<$Res> implements $VnScreenshotCopyWi
   factory _$VnScreenshotCopyWith(_VnScreenshot value, $Res Function(_VnScreenshot) _then) = __$VnScreenshotCopyWithImpl;
 @override @useResult
 $Res call({
- String url, List<int> dims, String? thumbnail, double? sexual
+ String url, List<int> dims, String? thumbnail, double? sexual, double? violence
 });
 
 
@@ -276,12 +278,13 @@ class __$VnScreenshotCopyWithImpl<$Res>
 
 /// Create a copy of VnScreenshot
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? url = null,Object? dims = null,Object? thumbnail = freezed,Object? sexual = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? url = null,Object? dims = null,Object? thumbnail = freezed,Object? sexual = freezed,Object? violence = freezed,}) {
   return _then(_VnScreenshot(
 url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
 as String,dims: null == dims ? _self._dims : dims // ignore: cast_nullable_to_non_nullable
 as List<int>,thumbnail: freezed == thumbnail ? _self.thumbnail : thumbnail // ignore: cast_nullable_to_non_nullable
 as String?,sexual: freezed == sexual ? _self.sexual : sexual // ignore: cast_nullable_to_non_nullable
+as double?,violence: freezed == violence ? _self.violence : violence // ignore: cast_nullable_to_non_nullable
 as double?,
   ));
 }

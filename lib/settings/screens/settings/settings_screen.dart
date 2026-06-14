@@ -11,6 +11,7 @@ import 'true_black_tile.dart';
 import 'theme_tile.dart';
 import 'spoiler_tile.dart';
 import 'explicit_content_tile.dart';
+import 'violent_content_tile.dart';
 import 'app_info_section.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -64,6 +65,8 @@ class SettingsScreen extends ConsumerWidget {
                 SpoilerTile(),
                 Divider(height: 1),
                 ExplicitContentTile(),
+                Divider(height: 1),
+                ViolentContentTile(),
               ],
             ),
             const SizedBox(height: 32),

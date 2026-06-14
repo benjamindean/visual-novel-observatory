@@ -16,6 +16,7 @@ _VnScreenshot _$VnScreenshotFromJson(Map<String, dynamic> json) =>
           const [0, 0],
       thumbnail: json['thumbnail'] as String?,
       sexual: (json['sexual'] as num?)?.toDouble(),
+      violence: (json['violence'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$VnScreenshotToJson(_VnScreenshot instance) =>
@@ -24,4 +25,5 @@ Map<String, dynamic> _$VnScreenshotToJson(_VnScreenshot instance) =>
       'dims': instance.dims,
       'thumbnail': instance.thumbnail,
       'sexual': instance.sexual,
+      'violence': instance.violence,
     };

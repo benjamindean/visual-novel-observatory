@@ -42,7 +42,7 @@ class VndbClient {
   // Selected fields for listing and detail screens
   static const String _vnFields =
       'title, alttitle, aliases, extlinks{id,name,label,url}, description, rating, votecount, released, platforms, languages, length, length_minutes, '
-      'image{url,dims,thumbnail,sexual}, developers{id,name,original}, tags{id,name,spoiler,rating,category}, screenshots{url,dims,thumbnail,sexual}';
+      'image{url,dims,thumbnail,sexual,violence}, developers{id,name,original}, tags{id,name,spoiler,rating,category}, screenshots{url,dims,thumbnail,sexual,violence}';
 
   /// Helper to send generic POST query to VNDB /vn endpoint
   Future<Map<String, dynamic>> _postVnQuery(Map<String, dynamic> body) async {
@@ -319,7 +319,7 @@ class VndbClient {
           'user': user,
           'fields':
               'id, vote, labels{id}, vn{title, alttitle, aliases, extlinks{id,name,label,url}, description, rating, votecount, released, platforms, languages, length, length_minutes, '
-              'image{url,dims,thumbnail,sexual}, developers{id,name,original}, tags{id,name,spoiler,rating,category}, screenshots{url,dims,thumbnail,sexual}}',
+              'image{url,dims,thumbnail,sexual,violence}, developers{id,name,original}, tags{id,name,spoiler,rating,category}, screenshots{url,dims,thumbnail,sexual,violence}}',
           'results': resultsPerPage,
           'page': page,
         },

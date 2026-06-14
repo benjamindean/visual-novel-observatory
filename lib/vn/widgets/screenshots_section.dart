@@ -41,10 +41,14 @@ class ScreenshotsSection extends ConsumerWidget {
             itemCount: screenshots.length,
             itemBuilder: (context, index) {
               final screen = screenshots[index];
+
               final shouldBlur =
-                  !settings.showExplicitContent &&
-                  screen.sexual != null &&
-                  screen.sexual! > 0.2;
+                  (!settings.showExplicitContent &&
+                      screen.sexual != null &&
+                      screen.sexual! > 0.2) ||
+                  (!settings.showViolentContent &&
+                      screen.violence != null &&
+                      screen.violence! > 0.2);
 
               return Padding(
                 padding: const EdgeInsets.only(right: 12.0),

@@ -219,11 +219,16 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
                       itemBuilder: (context, index) {
                         final screenshot = widget.screenshots[index];
                         final isRevealed = _revealedIndices.contains(index);
+
                         final shouldBlur =
-                            !settings.showExplicitContent &&
-                            screenshot.sexual != null &&
-                            screenshot.sexual! > 0.2 &&
-                            !isRevealed;
+                            (!settings.showExplicitContent &&
+                                screenshot.sexual != null &&
+                                screenshot.sexual! > 0.2 &&
+                                !isRevealed) ||
+                            (!settings.showViolentContent &&
+                                screenshot.violence != null &&
+                                screenshot.violence! > 0.2 &&
+                                !isRevealed);
 
                         return GestureDetector(
                           onDoubleTapDown: (details) =>

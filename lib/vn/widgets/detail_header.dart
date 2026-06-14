@@ -19,10 +19,14 @@ class DetailHeader extends ConsumerWidget {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final settings = ref.watch(settingsProvider);
+
     final shouldBlur =
-        !settings.showExplicitContent &&
-        vn.imageSexual != null &&
-        vn.imageSexual! > 0.2;
+        (!settings.showExplicitContent &&
+            vn.imageSexual != null &&
+            vn.imageSexual! > 0.2) ||
+        (!settings.showViolentContent &&
+            vn.imageViolence != null &&
+            vn.imageViolence! > 0.2);
 
     return Stack(
       children: [

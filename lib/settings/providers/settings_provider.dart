@@ -6,6 +6,7 @@ class SettingsState {
   final String? defaultLanguage;
   final String? defaultPlatform;
   final bool showExplicitContent;
+  final bool showViolentContent;
   final String themeName;
   final String themeMode;
   final bool darkIsTrueBlack;
@@ -15,6 +16,7 @@ class SettingsState {
     this.defaultLanguage,
     this.defaultPlatform,
     this.showExplicitContent = false,
+    this.showViolentContent = false,
     this.themeName = 'vndb',
     this.themeMode = 'system',
     this.darkIsTrueBlack = false,
@@ -25,6 +27,7 @@ class SettingsState {
     String? Function()? defaultLanguage,
     String? Function()? defaultPlatform,
     bool? showExplicitContent,
+    bool? showViolentContent,
     String? themeName,
     String? themeMode,
     bool? darkIsTrueBlack,
@@ -38,6 +41,7 @@ class SettingsState {
           ? defaultPlatform()
           : this.defaultPlatform,
       showExplicitContent: showExplicitContent ?? this.showExplicitContent,
+      showViolentContent: showViolentContent ?? this.showViolentContent,
       themeName: themeName ?? this.themeName,
       themeMode: themeMode ?? this.themeMode,
       darkIsTrueBlack: darkIsTrueBlack ?? this.darkIsTrueBlack,
@@ -50,6 +54,7 @@ class SettingsNotifier extends Notifier<SettingsState> {
   static const String _languageKey = 'settings_default_language';
   static const String _platformKey = 'settings_default_platform';
   static const String _explicitKey = 'settings_show_explicit';
+  static const String _violentKey = 'settings_show_violent';
   static const String _themeKey = 'settings_theme_name';
   static const String _themeModeKey = 'settings_theme_mode';
   static const String _darkIsTrueBlackKey = 'settings_dark_is_true_black';
@@ -62,6 +67,7 @@ class SettingsNotifier extends Notifier<SettingsState> {
     final language = box.get(_languageKey) as String?;
     final platform = box.get(_platformKey) as String?;
     final explicit = box.get(_explicitKey) as bool? ?? false;
+    final violent = box.get(_violentKey) as bool? ?? false;
     final theme = box.get(_themeKey) as String? ?? 'vndb';
     final mode = box.get(_themeModeKey) as String? ?? 'system';
     final isTrueBlack = box.get(_darkIsTrueBlackKey) as bool? ?? false;
@@ -71,6 +77,7 @@ class SettingsNotifier extends Notifier<SettingsState> {
       defaultLanguage: language,
       defaultPlatform: platform,
       showExplicitContent: explicit,
+      showViolentContent: violent,
       themeName: theme,
       themeMode: mode,
       darkIsTrueBlack: isTrueBlack,
@@ -120,6 +127,14 @@ class SettingsNotifier extends Notifier<SettingsState> {
     await box.put(_explicitKey, value);
 
     state = state.copyWith(showExplicitContent: value);
+  }
+
+  Future<void> setShowViolentContent(bool value) async {
+    final box = AppStorage.mainBox;
+
+    await box.put(_violentKey, value);
+
+    state = state.copyWith(showViolentContent: value);
   }
 
   Future<void> setDefaultLanguage(String? language) async {

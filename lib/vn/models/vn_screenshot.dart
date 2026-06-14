@@ -10,6 +10,7 @@ abstract class VnScreenshot with _$VnScreenshot {
     @Default([0, 0]) List<int> dims,
     String? thumbnail,
     double? sexual,
+    double? violence,
   }) = _VnScreenshot;
 
   factory VnScreenshot.fromJson(Map<String, dynamic> json) =>
