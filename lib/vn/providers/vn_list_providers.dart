@@ -151,15 +151,6 @@ final vnListProvider = NotifierProvider<VnListNotifier, VnListState>(
   VnListNotifier.new,
 );
 
-final vnDetailsProvider = FutureProvider.family<VisualNovel, String>((
-  ref,
-  id,
-) async {
-  final repository = ref.watch(vnRepositoryProvider);
-
-  return repository.getVisualNovelDetails(id);
-});
-
 class VnListByTagNotifier extends Notifier<VnListState> {
   final String _tagId;
 

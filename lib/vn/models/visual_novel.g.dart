@@ -51,6 +51,13 @@ _VisualNovel _$VisualNovelFromJson(Map<String, dynamic> json) => _VisualNovel(
           ?.map((e) => VnExternalLink.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
+  voiceActors:
+      (json['va'] as List<dynamic>?)
+          ?.map(
+            (e) => VnVoiceActorAssociation.fromJson(e as Map<String, dynamic>),
+          )
+          .toList() ??
+      const [],
 );
 
 Map<String, dynamic> _$VisualNovelToJson(_VisualNovel instance) =>
@@ -75,4 +82,5 @@ Map<String, dynamic> _$VisualNovelToJson(_VisualNovel instance) =>
       'languages': instance.languages,
       'aliases': instance.aliases,
       'extlinks': instance.extLinks,
+      'va': instance.voiceActors,
     };

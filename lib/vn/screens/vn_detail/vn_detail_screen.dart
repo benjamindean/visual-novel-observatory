@@ -214,7 +214,9 @@ class VnDetailScreen extends ConsumerWidget {
                           icon: Icons.share_outlined,
                           onTap: () {
                             SharePlus.instance.share(
-                              ShareParams(text: 'https://vndb.org/${vn.id}'),
+                              ShareParams(
+                                text: 'https://vndb.org/${vn.id}',
+                              ),
                             );
                           },
                         ),
@@ -231,7 +233,9 @@ class VnDetailScreen extends ConsumerWidget {
                           icon: Icons.share_outlined,
                           onTap: () {
                             SharePlus.instance.share(
-                              ShareParams(text: 'https://vndb.org/${vn.id}'),
+                              ShareParams(
+                                text: 'https://vndb.org/${vn.id}',
+                              ),
                             );
                           },
                         ),
@@ -243,31 +247,35 @@ class VnDetailScreen extends ConsumerWidget {
                   MetadataRow(vn: vn),
                   const SizedBox(height: 20),
 
-                  // Platforms Section
-                  PlatformsSection(platforms: vn.platforms),
-                  const SizedBox(height: 24),
-
                   // Synopsis Section (Expandable description)
                   if (vn.description != null && vn.description!.isNotEmpty) ...[
                     SynopsisSection(description: vn.description!),
                     const SizedBox(height: 24),
                   ],
 
-                  // Screenshots (horizontal carousel)
-                  ScreenshotsSection(screenshots: vn.screenshots),
-                  if (vn.screenshots.isNotEmpty) const SizedBox(height: 24),
+                  // Platforms Section
+                  PlatformsSection(platforms: vn.platforms),
+                  const SizedBox(height: 24),
 
                   // Tags List
                   TagsSection(tags: vn.tags, initialLimit: 7),
                   if (vn.tags.isNotEmpty) const SizedBox(height: 24),
+
+                  // Screenshots (horizontal carousel)
+                  ScreenshotsSection(screenshots: vn.screenshots),
+                  if (vn.screenshots.isNotEmpty) const SizedBox(height: 24),
+
+                  // // Characters Section
+                  // CharactersSection(voiceActors: vn.voiceActors),
+                  // if (vn.voiceActors.isNotEmpty) const SizedBox(height: 24),
 
                   // External Links Section
                   LinksSection(
                     vnId: vn.id,
                     extLinks: vn.extLinks,
                   ),
+                  const SizedBox(height: 24),
 
-                  const SizedBox(height: 40),
                   const Center(child: VndbSourceNote()),
                   const SizedBox(height: 48),
                 ],

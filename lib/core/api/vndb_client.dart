@@ -39,10 +39,14 @@ class VndbClient {
     );
   }
 
-  // Selected fields for listing and detail screens
+  // Lightweight fields for list queries (home, search, library)
   static const String _vnFields =
       'title, alttitle, aliases, extlinks{id,name,label,url}, description, rating, votecount, released, platforms, languages, length, length_minutes, '
       'image{url,dims,thumbnail,sexual,violence}, developers{id,name,original}, tags{id,name,spoiler,rating,category}, screenshots{url,dims,thumbnail,sexual,violence}';
+
+  // Full fields for single-VN detail queries (includes va/characters)
+  // static const String _vnDetailFields =
+  //     '$_vnFields, va{character{id,name,original,description,gender,blood_type,birthday,height,weight,bust,waist,hips,cup,age,image{url,dims,sexual,violence},traits{id,name,spoiler}},staff{id,name,original},note}';
 
   /// Helper to send generic POST query to VNDB /vn endpoint
   Future<Map<String, dynamic>> _postVnQuery(Map<String, dynamic> body) async {
@@ -199,23 +203,6 @@ class VndbClient {
     return {'vns': vns, 'hasMore': hasMore};
   }
 
-  Future<VisualNovel> getVisualNovelDetails(String id) async {
-    final body = {
-      'filters': ['id', '=', id],
-      'fields': _vnFields,
-    };
-
-    final data = await _postVnQuery(body);
-
-    final results = data['results'] as List? ?? [];
-
-    if (results.isEmpty) {
-      throw Exception('Visual novel with ID $id not found.');
-    }
-
-    return VisualNovel.fromJson(results.first as Map<String, dynamic>);
-  }
-
   Future<List<Map<String, dynamic>>> getUserListLabels() async {
     try {
       final response = await _dio.get<Map<String, dynamic>>('/ulist_labels');
@@ -317,9 +304,7 @@ class VndbClient {
         '/ulist',
         data: {
           'user': user,
-          'fields':
-              'id, vote, labels{id}, vn{title, alttitle, aliases, extlinks{id,name,label,url}, description, rating, votecount, released, platforms, languages, length, length_minutes, '
-              'image{url,dims,thumbnail,sexual,violence}, developers{id,name,original}, tags{id,name,spoiler,rating,category}, screenshots{url,dims,thumbnail,sexual,violence}}',
+          'fields': 'id, vote, labels{id}, vn{$_vnFields}',
           'results': resultsPerPage,
           'page': page,
         },

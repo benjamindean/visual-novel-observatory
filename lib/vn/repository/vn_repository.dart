@@ -1,5 +1,4 @@
 import '../../core/api/vndb_client.dart';
-import '../models/visual_novel.dart';
 import '../models/vndb_label.dart';
 import '../models/vn_ulist_entry.dart';
 
@@ -56,10 +55,6 @@ class VnRepository {
       sort: sort,
       reverse: reverse,
     );
-  }
-
-  Future<VisualNovel> getVisualNovelDetails(String id) {
-    return _client.getVisualNovelDetails(id);
   }
 
   Future<List<VndbLabel>> getUserListLabels() async {

@@ -12,6 +12,8 @@ import '../../vn/screens/vn_gallery/vn_gallery_screen.dart';
 import '../../settings/screens/settings/settings_screen.dart';
 import '../../settings/screens/login/login_screen.dart';
 import '../../vn/screens/filter/filter_screen.dart';
+import '../../vn/models/vn_voice_actor.dart';
+import '../../vn/screens/vn_character/character_screen.dart';
 import '../../vn/providers/vn_providers.dart';
 
 class ScaffoldWithNavBar extends ConsumerWidget {
@@ -115,6 +117,14 @@ final goRouter = GoRouter(
         final vn = state.extra as VisualNovel;
 
         return VnDetailScreen(vn: vn);
+      },
+    ),
+    GoRoute(
+      path: '/character',
+      builder: (context, state) {
+        final association = state.extra as VnVoiceActorAssociation;
+
+        return CharacterScreen(association: association);
       },
     ),
     GoRoute(
