@@ -151,9 +151,11 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
       await labelsBox.putAll({
         for (final label in labels) label.id.toString(): label,
       });
+
       ref.invalidate(ulistLabelsProvider);
 
       final list = <VnUlistEntry>[];
+
       int page = 1;
       bool hasMore = true;
 
@@ -173,9 +175,14 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
       final Map<String, VnUlistEntry> entriesMap = {
         for (final entry in list) entry.id: entry,
       };
+
       await _saveEntriesToCache(entriesMap);
 
-      await ref.read(localTagsProvider.notifier).fetchAndCacheAllTags();
+      final tagsCache = AppStorage.mainBox.get('vndb_tags_cache') as String?;
+
+      if (tagsCache == null || tagsCache.isEmpty) {
+        await ref.read(localTagsProvider.notifier).fetchAndCacheAllTags();
+      }
 
       state = state.copyWith(entries: entriesMap, isLoading: false);
     } catch (e) {
