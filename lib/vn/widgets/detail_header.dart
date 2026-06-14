@@ -165,7 +165,7 @@ class DetailHeader extends ConsumerWidget {
                 Text(
                   vn.altTitle!,
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: context.appTextMuted,
+                    color: context.appTextSecondary,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
@@ -174,7 +174,7 @@ class DetailHeader extends ConsumerWidget {
                 Text(
                   'Aliases: ${vn.aliases.join(", ")}',
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: context.appTextMuted,
+                    color: context.appTextSecondary,
                   ),
                 ),
               ],

@@ -130,24 +130,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         children: [
                           Container(
                             height: 36,
-                            width: 36,
                             decoration: BoxDecoration(
-                              color: context.colorScheme.primaryContainer,
+                              color: hasActiveFilters
+                                  ? context.theme.colorScheme.secondary
+                                  : context.theme.colorScheme.primaryContainer,
                               borderRadius: BorderRadius.circular(18),
                             ),
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
+                            child: TextButton.icon(
+                              label: Text(
+                                'Filter',
+                                style: theme.textTheme.labelLarge?.copyWith(
+                                  color: hasActiveFilters
+                                      ? context.theme.colorScheme.onSecondary
+                                      : context
+                                            .theme
+                                            .colorScheme
+                                            .onPrimaryContainer,
+                                ),
+                              ),
                               icon: Icon(
                                 Icons.tune_rounded,
                                 size: 18,
                                 color: hasActiveFilters
-                                    ? context.appAccentAmber
-                                    : context.appTextPrimary,
+                                    ? context.theme.colorScheme.onSecondary
+                                    : context
+                                          .theme
+                                          .colorScheme
+                                          .onPrimaryContainer,
                               ),
                               onPressed: () {
                                 context.push('/filters');
                               },
-                              tooltip: 'Filters',
                             ),
                           ),
                           if (hasActiveFilters)

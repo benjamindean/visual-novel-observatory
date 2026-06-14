@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../models/vn_screenshot.dart';
 import '../../widgets/image_placeholder.dart';
 import '../../widgets/image_error_widget.dart';
@@ -405,6 +406,24 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
                               ),
+                            ),
+                          ),
+                          CircleAvatar(
+                            backgroundColor: context.appBackground.withValues(
+                              alpha: 0.65,
+                            ),
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.share_outlined,
+                                color: context.appTextPrimary,
+                              ),
+                              onPressed: () {
+                                SharePlus.instance.share(
+                                  ShareParams(
+                                    text: widget.screenshots[_currentIndex].url,
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ],

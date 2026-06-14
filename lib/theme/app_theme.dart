@@ -273,6 +273,6 @@ extension AppThemeContext on BuildContext {
   Color get appAccentTeal => colorScheme.primary;
   Color get appAccentAmber => colorScheme.secondary;
   Color get appTextPrimary => colorScheme.onSurface;
-  Color get appTextMuted => colorScheme.onSurfaceVariant;
+  Color get appTextMuted => colorScheme.onSurfaceVariant.withValues(alpha: 0.5);
   Color get appTextSecondary => colorScheme.onSurfaceVariant;
 }
