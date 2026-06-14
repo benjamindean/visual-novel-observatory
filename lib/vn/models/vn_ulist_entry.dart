@@ -31,13 +31,16 @@ abstract class VnUlistEntry with _$VnUlistEntry {
     }
 
     final rawLabels = json['labels'] as List? ?? [];
-    final normalizedLabels = rawLabels.map((e) {
-      if (e is Map) {
-        return e['id'] as int;
-      }
+    final normalizedLabels = rawLabels
+        .map((e) {
+          if (e is Map) {
+            return e['id'] as int;
+          }
 
-      return e as int;
-    }).toList();
+          return e as int;
+        })
+        .where((id) => id != 7)
+        .toList();
 
     adjustedJson['labels'] = normalizedLabels;
 

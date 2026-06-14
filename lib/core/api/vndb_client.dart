@@ -198,7 +198,10 @@ class VndbClient {
       if (response.statusCode == 200 && response.data != null) {
         final labels = response.data!['labels'] as List? ?? [];
 
-        return labels.map((e) => e as Map<String, dynamic>).toList();
+        return labels
+            .map((e) => e as Map<String, dynamic>)
+            .where((e) => e['id'] != 7)
+            .toList();
       } else {
         throw Exception(
           'Failed to get ulist labels: Code ${response.statusCode}\nBody: ${response.data}',
