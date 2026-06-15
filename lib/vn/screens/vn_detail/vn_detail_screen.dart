@@ -260,15 +260,25 @@ class VnDetailScreen extends ConsumerWidget {
                   // Tags List
                   TagsSection(tags: vn.tags, initialLimit: 7),
                   if (vn.tags.isNotEmpty) const SizedBox(height: 24),
-
-                  // Screenshots (horizontal carousel)
+                ],
+              ),
+            ),
+          ),
+          if (vn.screenshots.isNotEmpty)
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
                   ScreenshotsSection(screenshots: vn.screenshots),
-                  if (vn.screenshots.isNotEmpty) const SizedBox(height: 24),
-
-                  // // Characters Section
-                  // CharactersSection(voiceActors: vn.voiceActors),
-                  // if (vn.voiceActors.isNotEmpty) const SizedBox(height: 24),
-
+                  const SizedBox(height: 24),
+                ],
+              ),
+            ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   // External Links Section
                   LinksSection(
                     vnId: vn.id,

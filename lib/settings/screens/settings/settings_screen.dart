@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:visual_novel_observatory/vn/widgets/vndb_source_note.dart';
 import '../../../auth/providers/auth_provider.dart';
 import '../../../theme/app_theme.dart';
 import 'settings_section_header.dart';
@@ -12,7 +13,6 @@ import 'theme_tile.dart';
 import 'spoiler_tile.dart';
 import 'explicit_content_tile.dart';
 import 'violent_content_tile.dart';
-import 'app_info_section.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -70,7 +70,7 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 32),
-            const AppInfoSection(),
+            const Center(child: VndbSourceNote()),
           ],
         ),
       ),

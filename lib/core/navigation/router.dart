@@ -146,6 +146,8 @@ final goRouter = GoRouter(
           key: state.pageKey,
           opaque: false,
           barrierColor: Colors.transparent,
+          transitionDuration: const Duration(milliseconds: 150),
+          reverseTransitionDuration: const Duration(milliseconds: 150),
           transitionsBuilder:
               (
                 context,
