@@ -91,15 +91,22 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final settings = ref.watch(settingsProvider);
     final localTagsState = ref.watch(localTagsProvider);
     final initialTags = _searchController.text.isEmpty
         ? localTagsState.tags
         : _searchResults;
-    final displayTags = settings.showExplicitContent
+
+    final filteredTags = settings.showExplicitContent
         ? initialTags
         : initialTags.where((tag) => tag.category != 'ero').toList();
+
+    final selectedSet = _selectedTags.map((t) => t.id).toSet();
+
+    final displayTags = [
+      ...filteredTags.where((tag) => selectedSet.contains(tag.id)),
+      ...filteredTags.where((tag) => !selectedSet.contains(tag.id)),
+    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -128,12 +135,46 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                   onPressed: () {
                     Navigator.of(context).pop(_selectedTags);
                   },
-                  child: const Text(
-                    'Save Tags',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.0,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Save Tags',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      if (_selectedTags.isNotEmpty) ...[
+                        const SizedBox(
+                          width: 4.0,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 3.0,
+                          ),
+                          child: Container(
+                            width: 24.0,
+                            height: 24.0,
+                            decoration: BoxDecoration(
+                              color: context.colorScheme.onPrimary,
+                              shape: BoxShape.circle,
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              '${_selectedTags.length}',
+                              style: TextStyle(
+                                color: context.appAccentTeal,
+                                fontSize: 11.0,
+                                fontWeight: FontWeight.w900,
+                                height: 2.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               ),
@@ -145,54 +186,6 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Selected Tags wrap section
-                    if (_selectedTags.isNotEmpty) ...[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 8.0,
-                        ),
-                        child: Text(
-                          'SELECTED TAGS (${_selectedTags.length})',
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: context.appTextMuted,
-                            letterSpacing: 1.0,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        constraints: const BoxConstraints(maxHeight: 120),
-                        child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: _selectedTags.map((tag) {
-                              return InputChip(
-                                label: Text(tag.name),
-                                onDeleted: () => _toggleTag(tag),
-                                deleteIcon: Icon(
-                                  Icons.cancel_rounded,
-                                  size: 16,
-                                  color: context.appTextMuted,
-                                ),
-                                labelStyle: TextStyle(
-                                  color: context.appAccentTeal,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ],
-
                     // Search results
                     Expanded(
                       child: displayTags.isEmpty

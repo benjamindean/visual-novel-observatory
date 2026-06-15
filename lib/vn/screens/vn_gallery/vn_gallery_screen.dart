@@ -296,7 +296,9 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
                                             Icon(
                                               Icons.visibility_off_rounded,
                                               color: context.appTextPrimary
-                                                  .withValues(alpha: 0.7),
+                                                  .withValues(
+                                                    alpha: 0.7,
+                                                  ),
                                               size: 48,
                                             ),
                                             const SizedBox(height: 12),

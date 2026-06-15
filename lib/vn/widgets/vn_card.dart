@@ -81,7 +81,9 @@ class VnCard extends ConsumerWidget {
                     alignment: Alignment.center,
                     child: Icon(
                       Icons.visibility_off_rounded,
-                      color: context.appTextPrimary,
+                      color: context.appTextPrimary.withValues(
+                        alpha: 0.7,
+                      ),
                       size: 28,
                     ),
                   ),

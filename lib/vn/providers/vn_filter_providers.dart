@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/vn_tag.dart';
 import '../../settings/providers/settings_provider.dart';
+import '../../core/storage/app_storage.dart';
 
 class SearchQueryNotifier extends Notifier<String> {
   @override
@@ -66,69 +68,229 @@ class VnFilterState {
       !showExplicitContent &&
       tags.isEmpty;
 
+  Map<String, dynamic> toJson() {
+    return {
+      'lang': lang,
+      'platform': platform,
+      'length': length,
+      'devStatus': devStatus,
+      'minRating': minRating,
+      'minVotes': minVotes,
+      'showExplicitContent': showExplicitContent,
+      'tags': tags
+          .map(
+            (t) => t.toJson(),
+          )
+          .toList(),
+    };
+  }
+
+  factory VnFilterState.fromJson(Map<String, dynamic> json) {
+    return VnFilterState(
+      lang: List<String>.from(json['lang'] ?? const []),
+      platform: List<String>.from(json['platform'] ?? const []),
+      length: List<int>.from(json['length'] ?? const []),
+      devStatus: List<int>.from(json['devStatus'] ?? const []),
+      minRating: (json['minRating'] as num?)?.toDouble() ?? 7.0,
+      minVotes: json['minVotes'] as int? ?? 50,
+      showExplicitContent: json['showExplicitContent'] as bool? ?? false,
+      tags:
+          (json['tags'] as List?)
+              ?.map(
+                (t) => VnTag.fromJson(
+                  Map<String, dynamic>.from(t),
+                ),
+              )
+              .toList() ??
+          const [],
+    );
+  }
+
   List<dynamic> buildApiFilters() {
     final filters = <dynamic>[];
 
     if (lang.isNotEmpty) {
       if (lang.length == 1) {
-        filters.add(['lang', '=', lang.first]);
+        filters.add(
+          [
+            'lang',
+            '=',
+            lang.first,
+          ],
+        );
       } else {
-        filters.add([
-          'or',
-          ...lang.map((l) => ['lang', '=', l]),
-        ]);
+        filters.add(
+          [
+            'or',
+            ...lang.map(
+              (l) => [
+                'lang',
+                '=',
+                l,
+              ],
+            ),
+          ],
+        );
       }
     }
 
     if (platform.isNotEmpty) {
       if (platform.length == 1) {
-        filters.add(['platform', '=', platform.first]);
+        filters.add(
+          [
+            'platform',
+            '=',
+            platform.first,
+          ],
+        );
       } else {
-        filters.add([
-          'or',
-          ...platform.map((p) => ['platform', '=', p]),
-        ]);
+        filters.add(
+          [
+            'or',
+            ...platform.map(
+              (p) => [
+                'platform',
+                '=',
+                p,
+              ],
+            ),
+          ],
+        );
       }
     }
 
     if (length.isNotEmpty) {
       if (length.length == 1) {
-        filters.add(['length', '=', length.first]);
+        filters.add(
+          [
+            'length',
+            '=',
+            length.first,
+          ],
+        );
       } else {
-        filters.add([
-          'or',
-          ...length.map((l) => ['length', '=', l]),
-        ]);
+        filters.add(
+          [
+            'or',
+            ...length.map(
+              (l) => [
+                'length',
+                '=',
+                l,
+              ],
+            ),
+          ],
+        );
       }
     }
 
     if (devStatus.isNotEmpty) {
       if (devStatus.length == 1) {
-        filters.add(['devstatus', '=', devStatus.first]);
+        filters.add(
+          [
+            'devstatus',
+            '=',
+            devStatus.first,
+          ],
+        );
       } else {
-        filters.add([
-          'or',
-          ...devStatus.map((d) => ['devstatus', '=', d]),
-        ]);
+        filters.add(
+          [
+            'or',
+            ...devStatus.map(
+              (d) => [
+                'devstatus',
+                '=',
+                d,
+              ],
+            ),
+          ],
+        );
       }
     }
 
     // Always apply rating and votecount if set (or let it be dynamic)
-    filters.add(['rating', '>=', (minRating * 10).round()]);
-    filters.add(['votecount', '>=', minVotes]);
+    filters.add(
+      [
+        'rating',
+        '>=',
+        (minRating * 10).round(),
+      ],
+    );
+    filters.add(
+      [
+        'votecount',
+        '>=',
+        minVotes,
+      ],
+    );
 
     for (final tag in tags) {
-      filters.add(['tag', '=', tag.id]);
+      filters.add(
+        [
+          'tag',
+          '=',
+          tag.id,
+        ],
+      );
     }
 
     return filters;
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is VnFilterState &&
+        listEquals(other.lang, lang) &&
+        listEquals(other.platform, platform) &&
+        listEquals(other.length, length) &&
+        listEquals(other.devStatus, devStatus) &&
+        other.minRating == minRating &&
+        other.minVotes == minVotes &&
+        other.showExplicitContent == showExplicitContent &&
+        listEquals(other.tags, tags);
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      Object.hashAll(lang),
+      Object.hashAll(platform),
+      Object.hashAll(length),
+      Object.hashAll(devStatus),
+      minRating,
+      minVotes,
+      showExplicitContent,
+      Object.hashAll(tags),
+    );
+  }
 }
 
 class VnFilterNotifier extends Notifier<VnFilterState> {
+  static const String _filterKey = 'user_vn_filters';
+
   @override
   VnFilterState build() {
     final settings = ref.watch(settingsProvider);
+    final box = AppStorage.mainBox;
+    final savedFilterMap = box.get(_filterKey);
+
+    if (savedFilterMap != null) {
+      try {
+        final Map<String, dynamic> json = Map<String, dynamic>.from(
+          savedFilterMap as Map,
+        );
+        final cachedState = VnFilterState.fromJson(json);
+
+        return cachedState.copyWith(
+          showExplicitContent: settings.showExplicitContent,
+        );
+      } catch (e) {
+        // Fallback on error
+      }
+    }
 
     return VnFilterState(
       lang: settings.defaultLanguage != null
@@ -141,7 +303,12 @@ class VnFilterNotifier extends Notifier<VnFilterState> {
     );
   }
 
-  void update(VnFilterState value) => state = value;
+  Future<void> update(VnFilterState value) async {
+    state = value;
+    final box = AppStorage.mainBox;
+
+    await box.put(_filterKey, value.toJson());
+  }
 }
 
 final vnFilterProvider = NotifierProvider<VnFilterNotifier, VnFilterState>(
@@ -152,34 +319,106 @@ class VnSortState {
   final String field;
   final bool descending;
 
-  const VnSortState({required this.field, this.descending = true});
+  const VnSortState({
+    required this.field,
+    this.descending = true,
+  });
 
-  VnSortState copyWith({String? field, bool? descending}) {
+  Map<String, dynamic> toJson() {
+    return {
+      'field': field,
+      'descending': descending,
+    };
+  }
+
+  factory VnSortState.fromJson(Map<String, dynamic> json) {
+    return VnSortState(
+      field: json['field'] as String? ?? 'rating',
+      descending: json['descending'] as bool? ?? true,
+    );
+  }
+
+  VnSortState copyWith({
+    String? field,
+    bool? descending,
+  }) {
     return VnSortState(
       field: field ?? this.field,
       descending: descending ?? this.descending,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is VnSortState &&
+        other.field == field &&
+        other.descending == descending;
+  }
+
+  @override
+  int get hashCode => Object.hash(field, descending);
 }
 
 class VnSortNotifier extends Notifier<VnSortState> {
+  static const String _sortKey = 'user_vn_sort';
+
   @override
   VnSortState build() {
-    return const VnSortState(field: 'rating', descending: true);
+    final box = AppStorage.mainBox;
+    final savedSortMap = box.get(_sortKey);
+
+    if (savedSortMap != null) {
+      try {
+        final Map<String, dynamic> json = Map<String, dynamic>.from(
+          savedSortMap as Map,
+        );
+
+        return VnSortState.fromJson(json);
+      } catch (e) {
+        // Fallback on error
+      }
+    }
+
+    return const VnSortState(
+      field: 'rating',
+      descending: true,
+    );
+  }
+
+  Future<void> _saveSort(VnSortState sortState) async {
+    final box = AppStorage.mainBox;
+
+    await box.put(_sortKey, sortState.toJson());
   }
 
   void updateField(String field) {
     final bool defaultDesc = field != 'title' && field != 'id';
 
-    state = VnSortState(field: field, descending: defaultDesc);
+    state = VnSortState(
+      field: field,
+      descending: defaultDesc,
+    );
+    _saveSort(state);
   }
 
   void toggleDirection() {
-    state = state.copyWith(descending: !state.descending);
+    state = state.copyWith(
+      descending: !state.descending,
+    );
+    _saveSort(state);
   }
 
-  void updateSort({required String field, required bool descending}) {
-    state = VnSortState(field: field, descending: descending);
+  void updateSort({
+    required String field,
+    required bool descending,
+  }) {
+    state = VnSortState(
+      field: field,
+      descending: descending,
+    );
+    _saveSort(state);
   }
 }
 
