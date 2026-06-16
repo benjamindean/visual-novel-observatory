@@ -34,13 +34,16 @@ Styling & Formatting Rules
   - To avoid nesting or duplicating `Scaffold` widgets across multiple conditional/asynchronous build states, use a single `Scaffold` at the outer layer and employ a `Builder` widget to dynamically access controller contexts (e.g. looking up a `DefaultTabController` in the `bottomNavigationBar` slot) when needed.
   - **Screen Directory Isolation**: Keep everything related to a single screen (the screen file itself, its dedicated sub-widgets, placeholders) grouped in a screen-specific subdirectory (e.g., `lib/vn/screens/search/` for the search screen).
   - **Conditional Branch Extraction**: If a `build` method contains conditional logic (e.g., `if` condition checks, error states, auth checks) returning different layout states or large chunks of raw widget code, extract those conditional views into separate, focused widget files instead of returning or nesting them inline.
+  - **No In-file Sub-widgets**: Do not add new widgets in the same file with a private prefix name (e.g., `_VnDetailContent`). Always create a separate, dedicated file for any new sub-widget, placing it in a `widgets/` subfolder of the corresponding feature directory where appropriate.
 - **Performance**:
   - Always use `const` constructors for widgets where possible to minimize rebuild cycles.
   - Keep `build()` methods lightweight and free of heavy computations or database/API requests.
   - Split complex widgets into smaller, atomic widgets to localize state changes and avoid rebuilding large parts of the screen.
+  - Localize State Updates: Avoid watching providers that update frequently (e.g., search queries, active list states, or authentication states) at the screen root or full-page scaffold level. Instead, push `ref.watch` calls down into dedicated, focused child sub-widgets so that changes only rebuild the relevant, local widgets rather than the entire page layout. Use `ref.listen` on the root widget if you need to trigger callbacks (like text controller synchronization) without triggering a build cycle.
   - Use lazy loading (`ListView.builder`, `GridView.builder`) for any long or scrollable lists.
   - Run heavy CPU-bound computations in an **Isolate** to avoid blocking the main UI thread.
   - Always use `Profile` mode (`flutter run --profile`) when profiling performance or measuring frames.
+
 
 Codegen & Formatting Checks
 - Run the code generator to build models:

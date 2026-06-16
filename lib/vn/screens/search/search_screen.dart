@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/vn_providers.dart';
-import '../../models/visual_novel.dart';
+
 import '../../widgets/app_search_input.dart';
 import '../../widgets/app_settings_button.dart';
 import '../../../theme/app_theme.dart';
-import 'search_loading_view.dart';
-import 'search_error_view.dart';
-import 'search_empty_placeholder.dart';
-import 'search_recent_list.dart';
-import 'search_no_results.dart';
-import 'search_results_grid.dart';
+import 'widgets/search_body.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -52,18 +47,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final searchState = ref.watch(vnSearchProvider);
-    final recentVns = ref.watch(recentlyOpenedSearchProvider);
-    final query = ref.watch(searchScreenQueryProvider);
     final theme = Theme.of(context);
-
-    if (_searchController.text != query) {
-      _searchController.text = query;
-    }
 
     ref.listen<int>(searchDoubleTapProvider, (previous, next) {
       if (next > 0) {
         _searchFocusNode.requestFocus();
+      }
+    });
+
+    ref.listen<String>(searchScreenQueryProvider, (previous, next) {
+      if (_searchController.text != next) {
+        _searchController.text = next;
       }
     });
 
@@ -96,12 +90,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         top: false,
         child: Stack(
           children: [
-            _SearchBody(
-              searchState: searchState,
-              recentVns: recentVns,
-              query: query,
+            SearchBody(
               scrollController: _scrollController,
             ),
+
             // Floating organic bottom search bar (thumb-stretch aware)
             Align(
               alignment: Alignment.bottomCenter,
@@ -120,54 +112,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _SearchBody extends ConsumerWidget {
-  final VnListState searchState;
-  final List<VisualNovel> recentVns;
-  final String query;
-  final ScrollController scrollController;
-
-  const _SearchBody({
-    required this.searchState,
-    required this.recentVns,
-    required this.query,
-    required this.scrollController,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // 1. Loading State (when no vns are loaded yet)
-    if (searchState.isLoading && searchState.vns.isEmpty) {
-      return const SearchLoadingView();
-    }
-
-    // 2. Error State (when no vns are loaded yet)
-    if (searchState.errorMessage != null && searchState.vns.isEmpty) {
-      return SearchErrorView(errorMessage: searchState.errorMessage!);
-    }
-
-    // 3. Initial Empty State (when search query is empty)
-    if (query.trim().isEmpty) {
-      if (recentVns.isEmpty) {
-        return const SearchEmptyPlaceholder();
-      }
-
-      // Recent searches list
-      return SearchRecentList(recentVns: recentVns);
-    }
-
-    // 4. No Results Found State
-    if (searchState.vns.isEmpty) {
-      return const SearchNoResults();
-    }
-
-    // 5. Results State
-    return SearchResultsGrid(
-      searchState: searchState,
-      scrollController: scrollController,
     );
   }
 }

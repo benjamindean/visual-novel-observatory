@@ -6,6 +6,7 @@ import 'vn_developer.dart';
 import 'vn_screenshot.dart';
 import 'vn_external_link.dart';
 import 'vn_voice_actor.dart';
+import 'vn_relation.dart';
 
 part 'visual_novel.freezed.dart';
 part 'visual_novel.g.dart';
@@ -36,6 +37,7 @@ abstract class VisualNovel with _$VisualNovel {
     @Default([]) List<String> aliases,
     @JsonKey(name: 'extlinks') @Default([]) List<VnExternalLink> extLinks,
     @JsonKey(name: 'va') @Default([]) List<VnVoiceActorAssociation> voiceActors,
+    @Default([]) List<VnRelation> relations,
   }) = _VisualNovel;
 
   factory VisualNovel.fromJson(Map<String, dynamic> json) =>

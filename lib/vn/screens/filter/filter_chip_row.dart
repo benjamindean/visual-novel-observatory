@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../theme/app_theme.dart';
 
 class FilterChipRow<T> extends StatelessWidget {
   final Map<T, String> items;
   final List<T> selectedValues;
   final ValueChanged<List<T>> onSelected;
+  final Map<T, dynamic>? itemIcons;
 
   const FilterChipRow({
     super.key,
     required this.items,
     required this.selectedValues,
     required this.onSelected,
+    this.itemIcons,
   });
 
   @override
@@ -25,6 +28,15 @@ class FilterChipRow<T> extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: ChoiceChip(
+              avatar: itemIcons != null && itemIcons!.containsKey(entry.key)
+                  ? FaIcon(
+                      itemIcons![entry.key]!,
+                      size: 12,
+                      color: isSelected
+                          ? context.colorScheme.onPrimary
+                          : context.appTextPrimary,
+                    )
+                  : null,
               label: Text(entry.value),
               selected: isSelected,
               onSelected: (selected) {

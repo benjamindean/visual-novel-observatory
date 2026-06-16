@@ -3,6 +3,7 @@ import '../../theme/app_theme.dart';
 
 class AppChip extends StatelessWidget {
   final String label;
+  final Widget? leading;
   final IconData? leadingIcon;
   final Widget? trailing;
   final VoidCallback? onTap;
@@ -13,6 +14,7 @@ class AppChip extends StatelessWidget {
   const AppChip({
     super.key,
     required this.label,
+    this.leading,
     this.leadingIcon,
     this.trailing,
     this.onTap,
@@ -31,7 +33,10 @@ class AppChip extends StatelessWidget {
     final innerContent = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (leadingIcon != null) ...[
+        if (leading != null) ...[
+          leading!,
+          const SizedBox(width: 8),
+        ] else if (leadingIcon != null) ...[
           Icon(
             leadingIcon,
             size: 16,

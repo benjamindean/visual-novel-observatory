@@ -5,3 +5,4 @@ export 'vn_list_providers.dart';
 export 'vn_ulist_providers.dart';
 export 'vn_tags_providers.dart';
 export 'vn_ui_providers.dart';
+export 'vn_relations_providers.dart';

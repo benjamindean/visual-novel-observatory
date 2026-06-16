@@ -215,5 +215,7 @@ class VnListByTagNotifier extends Notifier<VnListState> {
   }
 }
 
-final vnListByTagProvider = NotifierProvider.autoDispose
-    .family<VnListByTagNotifier, VnListState, String>(VnListByTagNotifier.new);
+final vnListByTagProvider =
+    NotifierProvider.family<VnListByTagNotifier, VnListState, String>(
+      VnListByTagNotifier.new,
+    );

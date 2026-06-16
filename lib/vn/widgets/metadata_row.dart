@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/visual_novel.dart';
 import '../../theme/app_theme.dart';
+import 'metadata_item.dart';
 
 class MetadataRow extends StatelessWidget {
   final VisualNovel vn;
@@ -94,64 +95,20 @@ class MetadataRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _MetadataItem(
+          MetadataItem(
             icon: Icons.calendar_today_rounded,
             label: 'RELEASE DATE',
             value: formattedRelease,
           ),
-          _MetadataItem(
+          MetadataItem(
             icon: Icons.access_time_rounded,
             label: 'PLAYTIME',
             value: playtime,
           ),
-          _MetadataItem(
+          MetadataItem(
             icon: Icons.business_rounded,
             label: 'DEVELOPER',
             value: developerName,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MetadataItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-
-  const _MetadataItem({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Expanded(
-      child: Column(
-        children: [
-          Icon(icon, color: context.appTextMuted, size: 20),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            style: theme.textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: context.appTextPrimary,
-              fontWeight: FontWeight.bold,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

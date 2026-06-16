@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../providers/vn_providers.dart';
 import '../../models/vn_tag.dart';
 import '../../../theme/app_theme.dart';
@@ -188,6 +189,13 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                   'ps4': 'PS4',
                   'and': 'Android',
                   'ios': 'iOS',
+                },
+                itemIcons: const {
+                  'win': FontAwesomeIcons.windows,
+                  'swi': FontAwesomeIcons.gamepad,
+                  'ps4': FontAwesomeIcons.playstation,
+                  'and': FontAwesomeIcons.android,
+                  'ios': FontAwesomeIcons.apple,
                 },
                 selectedValues: _selectedPlatforms,
                 onSelected: (vals) {

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'app_chip.dart';
+import '../../theme/app_theme.dart';
 
 class PlatformsSection extends StatelessWidget {
   final List<String> platforms;
@@ -14,19 +16,19 @@ class PlatformsSection extends StatelessWidget {
 
     final theme = Theme.of(context);
 
-    final platformMeta = <String, (String, IconData)>{
-      'win': ('Windows', Icons.laptop_windows_rounded),
-      'swi': ('Nintendo Switch', Icons.sports_esports_rounded),
-      'ps4': ('PlayStation 4', Icons.gamepad_rounded),
-      'ps5': ('PlayStation 5', Icons.gamepad_rounded),
-      'ps3': ('PlayStation 3', Icons.gamepad_rounded),
-      'psv': ('PlayStation Vita', Icons.tablet_android_rounded),
-      'psp': ('PlayStation Portable', Icons.tablet_android_rounded),
-      'and': ('Android', Icons.android_rounded),
-      'ios': ('iOS', Icons.phone_iphone_rounded),
-      'mac': ('macOS', Icons.laptop_mac_rounded),
-      'lin': ('Linux', Icons.terminal_rounded),
-      'web': ('Web Browser', Icons.language_rounded),
+    final platformMeta = <String, (String, dynamic)>{
+      'win': ('Windows', FontAwesomeIcons.windows),
+      'swi': ('Nintendo Switch', FontAwesomeIcons.gamepad),
+      'ps4': ('PlayStation 4', FontAwesomeIcons.playstation),
+      'ps5': ('PlayStation 5', FontAwesomeIcons.playstation),
+      'ps3': ('PlayStation 3', FontAwesomeIcons.playstation),
+      'psv': ('PlayStation Vita', FontAwesomeIcons.playstation),
+      'psp': ('PlayStation Portable', FontAwesomeIcons.playstation),
+      'and': ('Android', FontAwesomeIcons.android),
+      'ios': ('iOS', FontAwesomeIcons.apple),
+      'mac': ('macOS', FontAwesomeIcons.apple),
+      'lin': ('Linux', FontAwesomeIcons.linux),
+      'web': ('Web Browser', FontAwesomeIcons.globe),
     };
 
     return Column(
@@ -45,11 +47,15 @@ class PlatformsSection extends StatelessWidget {
           children: platforms.map((platformCode) {
             final meta =
                 platformMeta[platformCode.toLowerCase()] ??
-                (platformCode.toUpperCase(), Icons.gamepad_rounded);
+                (platformCode.toUpperCase(), FontAwesomeIcons.gamepad);
 
             return AppChip(
               label: meta.$1,
-              leadingIcon: meta.$2,
+              leading: FaIcon(
+                meta.$2,
+                size: 14,
+                color: context.appAccentTeal,
+              ),
               onTap: () {},
             );
           }).toList(),

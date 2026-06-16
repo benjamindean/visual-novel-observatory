@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../theme/app_theme.dart';
+import 'widgets/login_step_row.dart';
 
 class LoginInstructionsCard extends StatelessWidget {
   const LoginInstructionsCard({super.key});
@@ -31,21 +32,22 @@ class LoginInstructionsCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const _LoginStepRow(
+            const LoginStepRow(
               stepNumber: '1',
               text: 'Go to the VNDB token creation page.',
             ),
             const SizedBox(height: 12),
-            const _LoginStepRow(
+            const LoginStepRow(
               stepNumber: '2',
               text:
                   'Create a token named "Observatory" with at least listread (listwrite is required to modify list entries).',
             ),
             const SizedBox(height: 12),
-            const _LoginStepRow(
+            const LoginStepRow(
               stepNumber: '3',
               text: 'Copy the generated token string and paste it below.',
             ),
+
             const SizedBox(height: 20),
             Center(
               child: TextButton.icon(
@@ -67,53 +69,6 @@ class LoginInstructionsCard extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _LoginStepRow extends StatelessWidget {
-  final String stepNumber;
-  final String text;
-
-  const _LoginStepRow({
-    required this.stepNumber,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 24,
-          height: 24,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: context.appSearchField,
-            shape: BoxShape.circle,
-          ),
-          child: Text(
-            stepNumber,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: context.appAccentTeal,
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 14,
-              color: context.appTextSecondary,
-              height: 1.4,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

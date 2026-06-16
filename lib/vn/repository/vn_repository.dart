@@ -1,21 +1,11 @@
 import '../../core/api/vndb_client.dart';
 import '../models/vndb_label.dart';
-import '../models/vn_ulist_entry.dart';
+import '../models/vn_relation.dart';
 
 class VnRepository {
   final VndbClient _client;
 
   VnRepository(this._client);
-
-  Future<Map<String, dynamic>> getPopularVisualNovels({
-    required int page,
-    int resultsPerPage = 15,
-  }) {
-    return _client.getPopularVisualNovels(
-      page: page,
-      resultsPerPage: resultsPerPage,
-    );
-  }
 
   Future<Map<String, dynamic>> searchVisualNovels({
     required String query,
@@ -63,19 +53,6 @@ class VnRepository {
     return list.map((e) => VndbLabel.fromJson(e)).toList();
   }
 
-  Future<VnUlistEntry?> getUserListEntry({
-    required String user,
-    required String vnId,
-  }) async {
-    final data = await _client.getUserListEntry(user: user, vnId: vnId);
-
-    if (data == null) {
-      return null;
-    }
-
-    return VnUlistEntry.fromJson(data);
-  }
-
   Future<void> updateUserListEntry({
     required String vnId,
     int? vote,
@@ -109,5 +86,11 @@ class VnRepository {
     int resultsPerPage = 100,
   }) {
     return _client.getTagsPage(page: page, resultsPerPage: resultsPerPage);
+  }
+
+  Future<List<VnRelation>> getRelations(String vnId) async {
+    final list = await _client.getRelations(vnId);
+
+    return list.map((e) => VnRelation.fromJson(e)).toList();
   }
 }

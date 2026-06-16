@@ -41,12 +41,13 @@ class VndbClient {
 
   // Lightweight fields for list queries (home, search, library)
   static const String _vnFields =
-      'title, alttitle, aliases, extlinks{id,name,label,url}, description, rating, votecount, released, platforms, languages, length, length_minutes, '
-      'image{url,dims,thumbnail,sexual,violence}, developers{id,name,original}, tags{id,name,spoiler,rating,category}, screenshots{url,dims,thumbnail,sexual,violence}';
-
-  // Full fields for single-VN detail queries (includes va/characters)
-  // static const String _vnDetailFields =
-  //     '$_vnFields, va{character{id,name,original,description,gender,blood_type,birthday,height,weight,bust,waist,hips,cup,age,image{url,dims,sexual,violence},traits{id,name,spoiler}},staff{id,name,original},note}';
+      'title,alttitle,aliases,description,rating,votecount,released,platforms,languages,length,length_minutes,'
+      'image{url,dims,thumbnail,sexual,violence},'
+      'extlinks{id,name,label,url},'
+      'developers{id,name,original},'
+      'tags{id,name,spoiler,rating,category},'
+      'screenshots{url,dims,thumbnail,sexual,violence},'
+      'relations{id,relation,relation_official,title,image{url,dims,sexual,violence}}';
 
   /// Helper to send generic POST query to VNDB /vn endpoint
   Future<Map<String, dynamic>> _postVnQuery(Map<String, dynamic> body) async {
@@ -87,36 +88,25 @@ class VndbClient {
     }
   }
 
-  /// Get popular visual novels (highest rated with substantial vote counts)
-  Future<Map<String, dynamic>> getPopularVisualNovels({
-    required int page,
-    int resultsPerPage = 15,
-  }) async {
+  /// Fetch relations for a given visual novel ID
+  Future<List<Map<String, dynamic>>> getRelations(String vnId) async {
     final body = {
-      'filters': [
-        'and',
-        ['rating', '>=', 70],
-        ['votecount', '>=', 50],
-      ],
-      'fields': _vnFields,
-      'sort': 'rating',
-      'reverse': true,
-      'results': resultsPerPage,
-      'page': page,
-      'count': true,
+      'filters': ['id', '=', vnId],
+      'fields':
+          'relations{id, relation, relation_official, title, alttitle, image{url,dims,sexual,violence}, rating, votecount, released, platforms, languages, length, length_minutes, description, screenshots{url,dims,thumbnail,sexual,violence}}',
     };
 
-    final data = await _postVnQuery(body);
+    final response = await _postVnQuery(body);
+    final results = response['results'] as List? ?? [];
 
-    final results = data['results'] as List? ?? [];
+    if (results.isEmpty) {
+      return const [];
+    }
 
-    final vns = results
-        .map((e) => VisualNovel.fromJson(e as Map<String, dynamic>))
-        .toList();
+    final vnData = results.first as Map<String, dynamic>;
+    final relationsList = vnData['relations'] as List? ?? [];
 
-    final hasMore = data['more'] as bool? ?? false;
-
-    return {'vns': vns, 'hasMore': hasMore};
+    return relationsList.map((e) => e as Map<String, dynamic>).toList();
   }
 
   /// Search visual novels by text query
@@ -222,40 +212,6 @@ class VndbClient {
     } on DioException catch (e) {
       throw Exception(
         'Failed to get ulist labels: ${e.message}\nBody: ${e.response?.data}',
-      );
-    }
-  }
-
-  Future<Map<String, dynamic>?> getUserListEntry({
-    required String user,
-    required String vnId,
-  }) async {
-    try {
-      final response = await _dio.post<Map<String, dynamic>>(
-        '/ulist',
-        data: {
-          'user': user,
-          'filters': ['id', '=', vnId],
-          'fields': 'id, vote, labels{id}',
-        },
-      );
-
-      if (response.statusCode == 200 && response.data != null) {
-        final results = response.data!['results'] as List? ?? [];
-
-        if (results.isNotEmpty) {
-          return results.first as Map<String, dynamic>;
-        }
-
-        return null;
-      } else {
-        throw Exception(
-          'Failed to query ulist entry: Code ${response.statusCode}\nBody: ${response.data}',
-        );
-      }
-    } on DioException catch (e) {
-      throw Exception(
-        'Failed to query ulist entry: ${e.message}\nBody: ${e.response?.data}',
       );
     }
   }
