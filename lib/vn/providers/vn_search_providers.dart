@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/storage/app_storage.dart';
 import '../models/visual_novel.dart';
-import '../../settings/providers/settings_provider.dart';
 import 'vn_core_providers.dart';
 import 'vn_list_providers.dart';
 import '../../core/utils/error_utils.dart';
@@ -60,7 +59,6 @@ class VnSearchNotifier extends Notifier<VnListState> {
 
     final currentPage = state.page;
     final repository = ref.read(vnRepositoryProvider);
-    final settings = ref.read(settingsProvider);
 
     try {
       final response = await repository.searchVisualNovels(
@@ -71,12 +69,8 @@ class VnSearchNotifier extends Notifier<VnListState> {
       final List<VisualNovel> allVns = response['vns'] as List<VisualNovel>;
       final bool hasMore = response['hasMore'] as bool;
 
-      final List<VisualNovel> newVns = settings.showExplicitContent
-          ? allVns
-          : allVns.where((vn) => (vn.imageSexual ?? 0.0) <= 0.2).toList();
-
       state = state.copyWith(
-        vns: isInitial ? newVns : [...state.vns, ...newVns],
+        vns: isInitial ? allVns : [...state.vns, ...allVns],
         isLoading: false,
         isLoadMore: false,
         hasMore: hasMore,

@@ -17,7 +17,14 @@ class ScreenshotsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final settings = ref.watch(settingsProvider);
+    final contentSettings = ref.watch(
+      settingsProvider.select(
+        (settings) => (
+          showExplicitContent: settings.showExplicitContent,
+          showViolentContent: settings.showViolentContent,
+        ),
+      ),
+    );
 
     if (screenshots.isEmpty) {
       return const SizedBox.shrink();
@@ -47,10 +54,10 @@ class ScreenshotsSection extends ConsumerWidget {
               final screen = screenshots[index];
 
               final shouldBlur =
-                  (!settings.showExplicitContent &&
+                  (!contentSettings.showExplicitContent &&
                       screen.sexual != null &&
                       screen.sexual! > 0.2) ||
-                  (!settings.showViolentContent &&
+                  (!contentSettings.showViolentContent &&
                       screen.violence != null &&
                       screen.violence! > 0.2);
 

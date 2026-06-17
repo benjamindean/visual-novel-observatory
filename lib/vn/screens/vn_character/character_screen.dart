@@ -18,15 +18,23 @@ class CharacterScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final settings = ref.watch(settingsProvider);
+    final contentSettings = ref.watch(
+      settingsProvider.select(
+        (settings) => (
+          showExplicitContent: settings.showExplicitContent,
+          showViolentContent: settings.showViolentContent,
+          spoilerLevel: settings.spoilerLevel,
+        ),
+      ),
+    );
     final char = association.character;
     final staff = association.staff;
 
     final shouldBlur =
-        (!settings.showExplicitContent &&
+        (!contentSettings.showExplicitContent &&
             char.imageSexual != null &&
             char.imageSexual! > 0.2) ||
-        (!settings.showViolentContent &&
+        (!contentSettings.showViolentContent &&
             char.imageViolence != null &&
             char.imageViolence! > 0.2);
 
@@ -56,7 +64,7 @@ class CharacterScreen extends ConsumerWidget {
     }
 
     final activeTraits = char.traits
-        .where((t) => t.spoiler <= settings.spoilerLevel)
+        .where((t) => t.spoiler <= contentSettings.spoilerLevel)
         .toList();
 
     return Scaffold(

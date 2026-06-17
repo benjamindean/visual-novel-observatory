@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/vn_tag.dart';
-import '../../settings/providers/settings_provider.dart';
 import '../../core/storage/app_storage.dart';
 
 class SearchQueryNotifier extends Notifier<String> {
@@ -22,7 +21,6 @@ class VnFilterState {
   final List<int> devStatus;
   final double minRating; // 0.0 to 10.0
   final int minVotes;
-  final bool showExplicitContent;
   final List<VnTag> tags;
 
   VnFilterState({
@@ -32,7 +30,6 @@ class VnFilterState {
     this.devStatus = const [],
     this.minRating = 7.0,
     this.minVotes = 50,
-    this.showExplicitContent = false,
     this.tags = const [],
   });
 
@@ -43,7 +40,6 @@ class VnFilterState {
     List<int>? devStatus,
     double? minRating,
     int? minVotes,
-    bool? showExplicitContent,
     List<VnTag>? tags,
   }) {
     return VnFilterState(
@@ -53,7 +49,6 @@ class VnFilterState {
       devStatus: devStatus ?? this.devStatus,
       minRating: minRating ?? this.minRating,
       minVotes: minVotes ?? this.minVotes,
-      showExplicitContent: showExplicitContent ?? this.showExplicitContent,
       tags: tags ?? this.tags,
     );
   }
@@ -65,7 +60,6 @@ class VnFilterState {
       devStatus.isEmpty &&
       minRating == 7.0 &&
       minVotes == 50 &&
-      !showExplicitContent &&
       tags.isEmpty;
 
   Map<String, dynamic> toJson() {
@@ -76,7 +70,6 @@ class VnFilterState {
       'devStatus': devStatus,
       'minRating': minRating,
       'minVotes': minVotes,
-      'showExplicitContent': showExplicitContent,
       'tags': tags
           .map(
             (t) => t.toJson(),
@@ -93,7 +86,6 @@ class VnFilterState {
       devStatus: List<int>.from(json['devStatus'] ?? const []),
       minRating: (json['minRating'] as num?)?.toDouble() ?? 7.0,
       minVotes: json['minVotes'] as int? ?? 50,
-      showExplicitContent: json['showExplicitContent'] as bool? ?? false,
       tags:
           (json['tags'] as List?)
               ?.map(
@@ -249,7 +241,6 @@ class VnFilterState {
         listEquals(other.devStatus, devStatus) &&
         other.minRating == minRating &&
         other.minVotes == minVotes &&
-        other.showExplicitContent == showExplicitContent &&
         listEquals(other.tags, tags);
   }
 
@@ -262,7 +253,6 @@ class VnFilterState {
       Object.hashAll(devStatus),
       minRating,
       minVotes,
-      showExplicitContent,
       Object.hashAll(tags),
     );
   }
@@ -273,7 +263,6 @@ class VnFilterNotifier extends Notifier<VnFilterState> {
 
   @override
   VnFilterState build() {
-    final settings = ref.watch(settingsProvider);
     final box = AppStorage.mainBox;
     final savedFilterMap = box.get(_filterKey);
 
@@ -282,25 +271,14 @@ class VnFilterNotifier extends Notifier<VnFilterState> {
         final Map<String, dynamic> json = Map<String, dynamic>.from(
           savedFilterMap as Map,
         );
-        final cachedState = VnFilterState.fromJson(json);
 
-        return cachedState.copyWith(
-          showExplicitContent: settings.showExplicitContent,
-        );
+        return VnFilterState.fromJson(json);
       } catch (e) {
         // Fallback on error
       }
     }
 
-    return VnFilterState(
-      lang: settings.defaultLanguage != null
-          ? [settings.defaultLanguage!]
-          : const [],
-      platform: settings.defaultPlatform != null
-          ? [settings.defaultPlatform!]
-          : const [],
-      showExplicitContent: settings.showExplicitContent,
-    );
+    return VnFilterState();
   }
 
   Future<void> update(VnFilterState value) async {
@@ -314,6 +292,18 @@ class VnFilterNotifier extends Notifier<VnFilterState> {
 final vnFilterProvider = NotifierProvider<VnFilterNotifier, VnFilterState>(
   VnFilterNotifier.new,
 );
+
+final hasActiveHomeFiltersProvider = Provider<bool>((ref) {
+  final filters = ref.watch(vnFilterProvider);
+
+  return filters.lang.isNotEmpty ||
+      filters.platform.isNotEmpty ||
+      filters.length.isNotEmpty ||
+      filters.devStatus.isNotEmpty ||
+      filters.minRating != 7.0 ||
+      filters.minVotes != 50 ||
+      filters.tags.isNotEmpty;
+});
 
 class VnSortState {
   final String field;

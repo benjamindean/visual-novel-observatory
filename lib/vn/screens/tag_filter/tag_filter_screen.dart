@@ -91,13 +91,15 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(settingsProvider);
+    final showExplicitContent = ref.watch(
+      settingsProvider.select((settings) => settings.showExplicitContent),
+    );
     final localTagsState = ref.watch(localTagsProvider);
     final initialTags = _searchController.text.isEmpty
         ? localTagsState.tags
         : _searchResults;
 
-    final filteredTags = settings.showExplicitContent
+    final filteredTags = showExplicitContent
         ? initialTags
         : initialTags.where((tag) => tag.category != 'ero').toList();
 

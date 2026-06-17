@@ -173,7 +173,14 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(settingsProvider);
+    final contentSettings = ref.watch(
+      settingsProvider.select(
+        (settings) => (
+          showExplicitContent: settings.showExplicitContent,
+          showViolentContent: settings.showViolentContent,
+        ),
+      ),
+    );
     final dragRatio = (_dragOffset.abs() / 300.0).clamp(0.0, 1.0);
     final bgOpacity = (1.0 - dragRatio).clamp(0.0, 1.0);
 
@@ -222,11 +229,11 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
                         final isRevealed = _revealedIndices.contains(index);
 
                         final shouldBlur =
-                            (!settings.showExplicitContent &&
+                            (!contentSettings.showExplicitContent &&
                                 screenshot.sexual != null &&
                                 screenshot.sexual! > 0.2 &&
                                 !isRevealed) ||
-                            (!settings.showViolentContent &&
+                            (!contentSettings.showViolentContent &&
                                 screenshot.violence != null &&
                                 screenshot.violence! > 0.2 &&
                                 !isRevealed);

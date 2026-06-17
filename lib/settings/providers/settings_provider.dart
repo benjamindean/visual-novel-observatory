@@ -3,8 +3,6 @@ import '../../core/storage/app_storage.dart';
 
 class SettingsState {
   final int spoilerLevel;
-  final String? defaultLanguage;
-  final String? defaultPlatform;
   final bool showExplicitContent;
   final bool showViolentContent;
   final String themeName;
@@ -13,8 +11,6 @@ class SettingsState {
 
   SettingsState({
     this.spoilerLevel = 0,
-    this.defaultLanguage,
-    this.defaultPlatform,
     this.showExplicitContent = false,
     this.showViolentContent = false,
     this.themeName = 'vndb',
@@ -24,8 +20,6 @@ class SettingsState {
 
   SettingsState copyWith({
     int? spoilerLevel,
-    String? Function()? defaultLanguage,
-    String? Function()? defaultPlatform,
     bool? showExplicitContent,
     bool? showViolentContent,
     String? themeName,
@@ -34,12 +28,6 @@ class SettingsState {
   }) {
     return SettingsState(
       spoilerLevel: spoilerLevel ?? this.spoilerLevel,
-      defaultLanguage: defaultLanguage != null
-          ? defaultLanguage()
-          : this.defaultLanguage,
-      defaultPlatform: defaultPlatform != null
-          ? defaultPlatform()
-          : this.defaultPlatform,
       showExplicitContent: showExplicitContent ?? this.showExplicitContent,
       showViolentContent: showViolentContent ?? this.showViolentContent,
       themeName: themeName ?? this.themeName,
@@ -51,8 +39,6 @@ class SettingsState {
 
 class SettingsNotifier extends Notifier<SettingsState> {
   static const String _spoilerKey = 'settings_spoiler_level';
-  static const String _languageKey = 'settings_default_language';
-  static const String _platformKey = 'settings_default_platform';
   static const String _explicitKey = 'settings_show_explicit';
   static const String _violentKey = 'settings_show_violent';
   static const String _themeKey = 'settings_theme_name';
@@ -64,8 +50,6 @@ class SettingsNotifier extends Notifier<SettingsState> {
     final box = AppStorage.mainBox;
 
     final spoiler = box.get(_spoilerKey) as int? ?? 0;
-    final language = box.get(_languageKey) as String?;
-    final platform = box.get(_platformKey) as String?;
     final explicit = box.get(_explicitKey) as bool? ?? false;
     final violent = box.get(_violentKey) as bool? ?? false;
     final theme = box.get(_themeKey) as String? ?? 'vndb';
@@ -74,8 +58,6 @@ class SettingsNotifier extends Notifier<SettingsState> {
 
     return SettingsState(
       spoilerLevel: spoiler,
-      defaultLanguage: language,
-      defaultPlatform: platform,
       showExplicitContent: explicit,
       showViolentContent: violent,
       themeName: theme,
@@ -135,30 +117,6 @@ class SettingsNotifier extends Notifier<SettingsState> {
     await box.put(_violentKey, value);
 
     state = state.copyWith(showViolentContent: value);
-  }
-
-  Future<void> setDefaultLanguage(String? language) async {
-    final box = AppStorage.mainBox;
-
-    if (language == null) {
-      await box.delete(_languageKey);
-    } else {
-      await box.put(_languageKey, language);
-    }
-
-    state = state.copyWith(defaultLanguage: () => language);
-  }
-
-  Future<void> setDefaultPlatform(String? platform) async {
-    final box = AppStorage.mainBox;
-
-    if (platform == null) {
-      await box.delete(_platformKey);
-    } else {
-      await box.put(_platformKey, platform);
-    }
-
-    state = state.copyWith(defaultPlatform: () => platform);
   }
 }
 

@@ -32,8 +32,10 @@ class _TagsSectionState extends ConsumerState<TagsSection> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final settings = ref.watch(settingsProvider);
-    final displayTagsList = _getDisplayTags(settings.showExplicitContent);
+    final showExplicitContent = ref.watch(
+      settingsProvider.select((settings) => settings.showExplicitContent),
+    );
+    final displayTagsList = _getDisplayTags(showExplicitContent);
 
     if (displayTagsList.isEmpty) {
       return const SizedBox.shrink();

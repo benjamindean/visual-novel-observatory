@@ -289,13 +289,48 @@ final vnUlistProvider = Provider.autoDispose.family<VnUlistState, String>((
   ref,
   vnId,
 ) {
-  final ulistState = ref.watch(userUlistProvider);
-  final entry = ulistState.entries[vnId];
+  final entry = ref.watch(
+    userUlistProvider.select((state) => state.entries[vnId]),
+  );
+  final isLoading = ref.watch(
+    userUlistProvider.select((state) => state.isLoading),
+  );
+  final errorMessage = ref.watch(
+    userUlistProvider.select((state) => state.errorMessage),
+  );
 
   return VnUlistState(
     entry: entry,
-    isLoading: ulistState.isLoading,
-    errorMessage: ulistState.errorMessage,
+    isLoading: isLoading,
+    errorMessage: errorMessage,
+  );
+});
+
+final userUlistIsLoadingProvider = Provider<bool>((ref) {
+  return ref.watch(userUlistProvider.select((state) => state.isLoading));
+});
+
+final libraryVnsByLabelProvider = Provider.autoDispose
+    .family<List<VisualNovel>, int>((ref, labelId) {
+      final entries = ref.watch(
+        userUlistProvider.select((state) => state.entries),
+      );
+
+      return entries.values
+          .where((entry) => entry.labels.contains(labelId))
+          .where((entry) => entry.vn != null)
+          .map((entry) => entry.vn!)
+          .toList();
+    });
+
+final libraryVnCountByLabelProvider = Provider.autoDispose.family<int, int>((
+  ref,
+  labelId,
+) {
+  return ref.watch(
+    libraryVnsByLabelProvider(labelId).select((vns) {
+      return vns.length;
+    }),
   );
 });
 

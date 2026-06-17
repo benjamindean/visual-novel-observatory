@@ -55,15 +55,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
   }
 
   void _resetFilters() {
-    final settings = ref.read(settingsProvider);
-
     setState(() {
-      _selectedLangs = settings.defaultLanguage != null
-          ? [settings.defaultLanguage!]
-          : const [];
-      _selectedPlatforms = settings.defaultPlatform != null
-          ? [settings.defaultPlatform!]
-          : const [];
+      _selectedLangs = const [];
+      _selectedPlatforms = const [];
       _selectedLengths = const [];
       _selectedDevStatuses = const [];
       _minRating = 7.0;
@@ -75,8 +69,8 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
   }
 
   void _applyFilters() {
-    final showExplicit = ref.read(vnFilterProvider).showExplicitContent;
-    final tags = showExplicit
+    final settings = ref.read(settingsProvider);
+    final tags = settings.showExplicitContent
         ? _selectedTags
         : _selectedTags.where((tag) => tag.category != 'ero').toList();
 
@@ -90,7 +84,6 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
             devStatus: _selectedDevStatuses,
             minRating: _minRating,
             minVotes: _minVotes,
-            showExplicitContent: showExplicit,
             tags: tags,
           ),
         );

@@ -19,7 +19,14 @@ class CharactersSection extends ConsumerWidget {
     }
 
     final theme = Theme.of(context);
-    final settings = ref.watch(settingsProvider);
+    final contentSettings = ref.watch(
+      settingsProvider.select(
+        (settings) => (
+          showExplicitContent: settings.showExplicitContent,
+          showViolentContent: settings.showViolentContent,
+        ),
+      ),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,10 +48,10 @@ class CharactersSection extends ConsumerWidget {
               final association = voiceActors[index];
               final char = association.character;
               final shouldBlur =
-                  (!settings.showExplicitContent &&
+                  (!contentSettings.showExplicitContent &&
                       char.imageSexual != null &&
                       char.imageSexual! > 0.2) ||
-                  (!settings.showViolentContent &&
+                  (!contentSettings.showViolentContent &&
                       char.imageViolence != null &&
                       char.imageViolence! > 0.2);
 
