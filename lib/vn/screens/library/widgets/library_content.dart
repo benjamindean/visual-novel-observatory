@@ -74,6 +74,7 @@ class LibraryContent extends ConsumerWidget {
         activeLabels: activeLabels,
         child: Scaffold(
           body: SafeArea(
+            top: false,
             bottom: false,
             child: labelsAsync.when(
               data: (labels) {

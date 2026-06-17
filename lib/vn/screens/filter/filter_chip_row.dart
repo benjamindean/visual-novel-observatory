@@ -28,16 +28,23 @@ class FilterChipRow<T> extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: ChoiceChip(
-              avatar: itemIcons != null && itemIcons!.containsKey(entry.key)
-                  ? FaIcon(
-                      itemIcons![entry.key]!,
-                      size: 12,
-                      color: isSelected
-                          ? context.colorScheme.onPrimary
-                          : context.appTextPrimary,
+              showCheckmark: itemIcons == null,
+              label: itemIcons != null && itemIcons!.containsKey(entry.key)
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FaIcon(
+                          itemIcons![entry.key]!,
+                          size: 12,
+                          color: isSelected
+                              ? context.colorScheme.onPrimary
+                              : context.appTextPrimary,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(entry.value),
+                      ],
                     )
-                  : null,
-              label: Text(entry.value),
+                  : Text(entry.value),
               selected: isSelected,
               onSelected: (selected) {
                 final newValues = List<T>.from(selectedValues);

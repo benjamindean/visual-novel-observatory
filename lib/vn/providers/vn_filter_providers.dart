@@ -21,15 +21,19 @@ class VnFilterState {
   final List<int> devStatus;
   final double minRating; // 0.0 to 10.0
   final int minVotes;
+  final String? releasedFrom;
+  final String? releasedTo;
   final List<VnTag> tags;
 
-  VnFilterState({
+  const VnFilterState({
     this.lang = const [],
     this.platform = const [],
     this.length = const [],
     this.devStatus = const [],
     this.minRating = 7.0,
     this.minVotes = 50,
+    this.releasedFrom,
+    this.releasedTo,
     this.tags = const [],
   });
 
@@ -40,6 +44,8 @@ class VnFilterState {
     List<int>? devStatus,
     double? minRating,
     int? minVotes,
+    String? Function()? releasedFrom,
+    String? Function()? releasedTo,
     List<VnTag>? tags,
   }) {
     return VnFilterState(
@@ -49,6 +55,8 @@ class VnFilterState {
       devStatus: devStatus ?? this.devStatus,
       minRating: minRating ?? this.minRating,
       minVotes: minVotes ?? this.minVotes,
+      releasedFrom: releasedFrom != null ? releasedFrom() : this.releasedFrom,
+      releasedTo: releasedTo != null ? releasedTo() : this.releasedTo,
       tags: tags ?? this.tags,
     );
   }
@@ -60,6 +68,8 @@ class VnFilterState {
       devStatus.isEmpty &&
       minRating == 7.0 &&
       minVotes == 50 &&
+      releasedFrom == null &&
+      releasedTo == null &&
       tags.isEmpty;
 
   Map<String, dynamic> toJson() {
@@ -70,6 +80,8 @@ class VnFilterState {
       'devStatus': devStatus,
       'minRating': minRating,
       'minVotes': minVotes,
+      'releasedFrom': releasedFrom,
+      'releasedTo': releasedTo,
       'tags': tags
           .map(
             (t) => t.toJson(),
@@ -86,6 +98,8 @@ class VnFilterState {
       devStatus: List<int>.from(json['devStatus'] ?? const []),
       minRating: (json['minRating'] as num?)?.toDouble() ?? 7.0,
       minVotes: json['minVotes'] as int? ?? 50,
+      releasedFrom: json['releasedFrom'] as String?,
+      releasedTo: json['releasedTo'] as String?,
       tags:
           (json['tags'] as List?)
               ?.map(
@@ -201,21 +215,45 @@ class VnFilterState {
       }
     }
 
-    // Always apply rating and votecount if set (or let it be dynamic)
-    filters.add(
-      [
-        'rating',
-        '>=',
-        (minRating * 10).round(),
-      ],
-    );
-    filters.add(
-      [
-        'votecount',
-        '>=',
-        minVotes,
-      ],
-    );
+    if (minRating > 0.0) {
+      filters.add(
+        [
+          'rating',
+          '>=',
+          (minRating * 10).round(),
+        ],
+      );
+    }
+
+    if (minVotes > 0) {
+      filters.add(
+        [
+          'votecount',
+          '>=',
+          minVotes,
+        ],
+      );
+    }
+
+    if (releasedFrom != null) {
+      filters.add(
+        [
+          'released',
+          '>=',
+          releasedFrom!,
+        ],
+      );
+    }
+
+    if (releasedTo != null) {
+      filters.add(
+        [
+          'released',
+          '<=',
+          releasedTo!,
+        ],
+      );
+    }
 
     for (final tag in tags) {
       filters.add(
@@ -241,6 +279,8 @@ class VnFilterState {
         listEquals(other.devStatus, devStatus) &&
         other.minRating == minRating &&
         other.minVotes == minVotes &&
+        other.releasedFrom == releasedFrom &&
+        other.releasedTo == releasedTo &&
         listEquals(other.tags, tags);
   }
 
@@ -253,6 +293,8 @@ class VnFilterState {
       Object.hashAll(devStatus),
       minRating,
       minVotes,
+      releasedFrom,
+      releasedTo,
       Object.hashAll(tags),
     );
   }
@@ -302,6 +344,8 @@ final hasActiveHomeFiltersProvider = Provider<bool>((ref) {
       filters.devStatus.isNotEmpty ||
       filters.minRating != 7.0 ||
       filters.minVotes != 50 ||
+      filters.releasedFrom != null ||
+      filters.releasedTo != null ||
       filters.tags.isNotEmpty;
 });
 

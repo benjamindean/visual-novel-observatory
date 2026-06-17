@@ -10,12 +10,7 @@ import '../search_recent_list.dart';
 import '../search_results_grid.dart';
 
 class SearchBody extends ConsumerWidget {
-  final ScrollController scrollController;
-
-  const SearchBody({
-    super.key,
-    required this.scrollController,
-  });
+  const SearchBody({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,7 +47,6 @@ class SearchBody extends ConsumerWidget {
     // 5. Results State
     return SearchResultsGrid(
       searchState: searchState,
-      scrollController: scrollController,
     );
   }
 }

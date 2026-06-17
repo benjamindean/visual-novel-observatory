@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../models/visual_novel.dart';
 import '../../providers/vn_providers.dart';
 import '../../widgets/vn_card.dart';
@@ -35,52 +36,15 @@ class SearchRecentList extends ConsumerWidget {
                 ),
                 TextButton(
                   onPressed: () async {
-                    final confirm = await showDialog<bool>(
+                    final confirm = await showAppConfirmationDialog(
                       context: context,
-                      builder: (context) => AlertDialog(
-                        backgroundColor: context.appSurface,
-                        title: Text(
-                          'Clear Recent Searches?',
-                          style: TextStyle(
-                            color: context.appTextPrimary,
-                          ),
-                        ),
-                        content: Text(
+                      title: 'Clear Recent Searches?',
+                      message:
                           'Are you sure you want to clear your search history?',
-                          style: TextStyle(
-                            color: context.appTextSecondary,
-                          ),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(
-                              context,
-                              false,
-                            ),
-                            child: Text(
-                              'Cancel',
-                              style: TextStyle(
-                                color: context.appTextMuted,
-                              ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () => Navigator.pop(
-                              context,
-                              true,
-                            ),
-                            child: Text(
-                              'Clear',
-                              style: TextStyle(
-                                color: context.colorScheme.error,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      confirmLabel: 'Clear',
                     );
 
-                    if (confirm == true) {
+                    if (confirm) {
                       ref.read(recentlyOpenedSearchProvider.notifier).clear();
                     }
                   },

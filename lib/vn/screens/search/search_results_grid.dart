@@ -7,18 +7,15 @@ import '../../../theme/app_theme.dart';
 
 class SearchResultsGrid extends ConsumerWidget {
   final VnListState searchState;
-  final ScrollController scrollController;
 
   const SearchResultsGrid({
     super.key,
     required this.searchState,
-    required this.scrollController,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CustomScrollView(
-      controller: scrollController,
       physics: const BouncingScrollPhysics(),
       slivers: [
         SliverPadding(

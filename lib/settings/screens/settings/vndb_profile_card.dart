@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../auth/providers/auth_provider.dart';
+import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../theme/app_theme.dart';
 import '../../../vn/providers/vn_providers.dart';
 import '../../../core/utils/error_utils.dart';
@@ -155,55 +156,22 @@ class VndbProfileCard extends ConsumerWidget {
     );
   }
 
-  void _showDisconnectConfirmation(BuildContext context, WidgetRef ref) {
-    showDialog<void>(
+  Future<void> _showDisconnectConfirmation(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final isConfirmed = await showAppConfirmationDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: context.appSurface,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Text(
-            'Disconnect Account',
-            style: TextStyle(
-              color: context.appTextPrimary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: Text(
-            'Are you sure you want to disconnect your VNDB account? Your local data sync will be disabled.',
-            style: TextStyle(color: context.appTextSecondary),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                'Cancel',
-                style: TextStyle(
-                  color: context.appTextSecondary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                ref.read(authProvider.notifier).logout();
-              },
-              child: Text(
-                'Disconnect',
-                style: TextStyle(
-                  color: context.colorScheme.error,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
+      title: 'Disconnect Account',
+      message:
+          'Are you sure you want to disconnect your VNDB account? Your local data sync will be disabled.',
+      confirmLabel: 'Disconnect',
     );
+
+    if (!isConfirmed) {
+      return;
+    }
+
+    ref.read(authProvider.notifier).logout();
   }
 }

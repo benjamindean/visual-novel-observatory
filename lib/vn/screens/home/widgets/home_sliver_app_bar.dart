@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../providers/vn_providers.dart';
 import '../../../widgets/app_settings_button.dart';
-import 'home_filter_button.dart';
 
 class HomeSliverAppBar extends ConsumerWidget {
   const HomeSliverAppBar({super.key});
@@ -34,8 +33,6 @@ class HomeSliverAppBar extends ConsumerWidget {
         ),
       ),
       actions: const [
-        HomeFilterButton(),
-        SizedBox(width: 8),
         AppSettingsButton(),
         SizedBox(width: 20),
       ],

@@ -11,6 +11,7 @@ class LibraryAuthPlaceholder extends StatelessWidget {
 
     return Scaffold(
       body: SafeArea(
+        top: false,
         bottom: false,
         child: CustomScrollView(
           physics: const NeverScrollableScrollPhysics(),

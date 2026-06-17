@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../vn/models/visual_novel.dart';
 import '../../vn/models/vn_screenshot.dart';
 import '../../vn/screens/home/home_screen.dart';
+import '../../vn/screens/home/home_create_filter_screen.dart';
 import '../../vn/screens/search/search_screen.dart';
 import '../../vn/screens/library/library_screen.dart';
 import '../../vn/screens/vn_detail/vn_detail_screen.dart';
@@ -106,6 +107,18 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/filters',
       builder: (context, state) => const FilterScreen(),
+    ),
+    GoRoute(
+      path: '/home/create-filter',
+      builder: (context, state) => const HomeCreateFilterScreen(),
+    ),
+    GoRoute(
+      path: '/home/edit-filter',
+      builder: (context, state) {
+        final tabId = state.extra as String;
+
+        return HomeCreateFilterScreen(tabId: tabId);
+      },
     ),
     GoRoute(
       path: '/login',
