@@ -8,6 +8,7 @@ class SettingsState {
   final String themeName;
   final String themeMode;
   final bool darkIsTrueBlack;
+  final bool useCoverColorScheme;
 
   SettingsState({
     this.spoilerLevel = 0,
@@ -16,6 +17,7 @@ class SettingsState {
     this.themeName = 'vndb',
     this.themeMode = 'system',
     this.darkIsTrueBlack = false,
+    this.useCoverColorScheme = false,
   });
 
   SettingsState copyWith({
@@ -25,6 +27,7 @@ class SettingsState {
     String? themeName,
     String? themeMode,
     bool? darkIsTrueBlack,
+    bool? useCoverColorScheme,
   }) {
     return SettingsState(
       spoilerLevel: spoilerLevel ?? this.spoilerLevel,
@@ -33,6 +36,7 @@ class SettingsState {
       themeName: themeName ?? this.themeName,
       themeMode: themeMode ?? this.themeMode,
       darkIsTrueBlack: darkIsTrueBlack ?? this.darkIsTrueBlack,
+      useCoverColorScheme: useCoverColorScheme ?? this.useCoverColorScheme,
     );
   }
 }
@@ -44,6 +48,8 @@ class SettingsNotifier extends Notifier<SettingsState> {
   static const String _themeKey = 'settings_theme_name';
   static const String _themeModeKey = 'settings_theme_mode';
   static const String _darkIsTrueBlackKey = 'settings_dark_is_true_black';
+  static const String _useCoverColorSchemeKey =
+      'settings_use_cover_color_scheme';
 
   @override
   SettingsState build() {
@@ -55,6 +61,8 @@ class SettingsNotifier extends Notifier<SettingsState> {
     final theme = box.get(_themeKey) as String? ?? 'vndb';
     final mode = box.get(_themeModeKey) as String? ?? 'system';
     final isTrueBlack = box.get(_darkIsTrueBlackKey) as bool? ?? false;
+    final useCoverColorScheme =
+        box.get(_useCoverColorSchemeKey) as bool? ?? false;
 
     return SettingsState(
       spoilerLevel: spoiler,
@@ -63,6 +71,7 @@ class SettingsNotifier extends Notifier<SettingsState> {
       themeName: theme,
       themeMode: mode,
       darkIsTrueBlack: isTrueBlack,
+      useCoverColorScheme: useCoverColorScheme,
     );
   }
 
@@ -93,6 +102,14 @@ class SettingsNotifier extends Notifier<SettingsState> {
     await box.put(_darkIsTrueBlackKey, value);
 
     state = state.copyWith(darkIsTrueBlack: value);
+  }
+
+  Future<void> setUseCoverColorScheme(bool value) async {
+    final box = AppStorage.mainBox;
+
+    await box.put(_useCoverColorSchemeKey, value);
+
+    state = state.copyWith(useCoverColorScheme: value);
   }
 
   Future<void> setSpoilerLevel(int level) async {

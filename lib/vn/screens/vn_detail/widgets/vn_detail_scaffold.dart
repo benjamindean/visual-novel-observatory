@@ -1,0 +1,122 @@
+import 'package:flutter/material.dart';
+
+import '../../../../theme/app_theme.dart';
+import '../../../models/visual_novel.dart';
+import '../../../widgets/detail_header.dart';
+import '../../../widgets/links_section.dart';
+import '../../../widgets/metadata_row.dart';
+import '../../../widgets/platforms_section.dart';
+import '../../../widgets/screenshots_section.dart';
+import '../../../widgets/synopsis_section.dart';
+import '../../../widgets/tags_section.dart';
+import '../../../widgets/vndb_source_note.dart';
+import 'vn_detail_actions.dart';
+import 'vn_relations_section.dart';
+
+class VnDetailScaffold extends StatelessWidget {
+  const VnDetailScaffold({super.key, required this.vn});
+
+  final VisualNovel vn;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          SliverAppBar(
+            expandedHeight: size.height * 0.6,
+            collapsedHeight: size.height * 0.6,
+            toolbarHeight: size.height * 0.6,
+            stretch: true,
+            pinned: false,
+            automaticallyImplyLeading: false,
+            backgroundColor: context.appBackground,
+            flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.none,
+              stretchModes: const [
+                StretchMode.zoomBackground,
+              ],
+              background: DetailHeader(vn: vn),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 16),
+
+                  VnDetailActions(vn: vn),
+
+                  const SizedBox(height: 24),
+
+                  // Metadata Row (Release, Playtime)
+                  MetadataRow(vn: vn),
+                  const SizedBox(height: 20),
+
+                  // Synopsis Section (Expandable description)
+                  if (vn.description != null && vn.description!.isNotEmpty) ...[
+                    SynopsisSection(description: vn.description!),
+                    const SizedBox(height: 24),
+                  ],
+
+                  // Tags List
+                  TagsSection(tags: vn.tags, initialLimit: 7),
+                  if (vn.tags.isNotEmpty) const SizedBox(height: 24),
+
+                  // Platforms Section
+                  PlatformsSection(platforms: vn.platforms),
+                  const SizedBox(height: 24),
+                ],
+              ),
+            ),
+          ),
+          if (vn.screenshots.isNotEmpty)
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  ScreenshotsSection(screenshots: vn.screenshots),
+                  const SizedBox(height: 24),
+                ],
+              ),
+            ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // External Links Section
+                  LinksSection(
+                    vnId: vn.id,
+                    extLinks: vn.extLinks,
+                  ),
+                  const SizedBox(height: 24),
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: VnRelationsSection(vn: vn),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Center(child: VndbSourceNote()),
+                  const SizedBox(height: 48),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

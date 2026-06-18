@@ -10,6 +10,7 @@ import 'settings_card.dart';
 import 'theme_mode_tile.dart';
 import 'true_black_tile.dart';
 import 'theme_tile.dart';
+import 'cover_color_scheme_tile.dart';
 import 'spoiler_tile.dart';
 import 'explicit_content_tile.dart';
 import 'violent_content_tile.dart';
@@ -54,6 +55,8 @@ class SettingsScreen extends ConsumerWidget {
               ],
               const Divider(height: 1),
               const ThemeTile(),
+              const Divider(height: 1),
+              const CoverColorSchemeTile(),
             ],
           ),
           const SizedBox(height: 32),
