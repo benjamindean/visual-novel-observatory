@@ -139,11 +139,20 @@ class VndbClient {
   /// Get visual novels filtered by a tag ID (paginated)
   Future<Map<String, dynamic>> getVisualNovelsByTag({
     required String tagId,
+    required int spoilerLevel,
     required int page,
     int resultsPerPage = 15,
   }) async {
     final body = {
-      'filters': ['tag', '=', tagId],
+      'filters': [
+        'tag',
+        '=',
+        [
+          tagId,
+          _normalizedTagSpoilerLevel(spoilerLevel),
+          0,
+        ],
+      ],
       'fields': _vnFields,
       'sort': 'rating',
       'reverse': true,
@@ -163,6 +172,18 @@ class VndbClient {
     final hasMore = data['more'] as bool? ?? false;
 
     return {'vns': vns, 'hasMore': hasMore};
+  }
+
+  int _normalizedTagSpoilerLevel(int spoilerLevel) {
+    if (spoilerLevel < 0) {
+      return 0;
+    }
+
+    if (spoilerLevel > 2) {
+      return 2;
+    }
+
+    return spoilerLevel;
   }
 
   Future<Map<String, dynamic>> getVisualNovels({

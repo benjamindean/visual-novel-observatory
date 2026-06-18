@@ -112,8 +112,11 @@ class VnFilterState {
     );
   }
 
-  List<dynamic> buildApiFilters() {
+  List<dynamic> buildApiFilters({
+    int spoilerLevel = 0,
+  }) {
     final filters = <dynamic>[];
+    final tagSpoilerLevel = _normalizedSpoilerLevel(spoilerLevel);
 
     if (lang.isNotEmpty) {
       if (lang.length == 1) {
@@ -260,7 +263,11 @@ class VnFilterState {
         [
           'tag',
           '=',
-          tag.id,
+          [
+            tag.id,
+            tagSpoilerLevel,
+            0,
+          ],
         ],
       );
     }
@@ -268,9 +275,23 @@ class VnFilterState {
     return filters;
   }
 
+  int _normalizedSpoilerLevel(int spoilerLevel) {
+    if (spoilerLevel < 0) {
+      return 0;
+    }
+
+    if (spoilerLevel > 2) {
+      return 2;
+    }
+
+    return spoilerLevel;
+  }
+
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other is VnFilterState &&
         listEquals(other.lang, lang) &&
@@ -384,7 +405,9 @@ class VnSortState {
 
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other is VnSortState &&
         other.field == field &&

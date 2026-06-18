@@ -4,6 +4,7 @@ import '../models/visual_novel.dart';
 import 'vn_core_providers.dart';
 import 'vn_filter_providers.dart';
 import '../../core/utils/error_utils.dart';
+import '../../settings/providers/settings_provider.dart';
 
 class VnListState {
   final List<VisualNovel> vns;
@@ -73,6 +74,13 @@ class VnListNotifier extends Notifier<VnListState> {
       Future.microtask(() => resetAndFetch());
     });
 
+    ref.listen<int>(
+      settingsProvider.select((settings) => settings.spoilerLevel),
+      (previous, next) {
+        Future.microtask(() => resetAndFetch());
+      },
+    );
+
     ref.onDispose(() {
       _debounceTimer?.cancel();
     });
@@ -95,6 +103,9 @@ class VnListNotifier extends Notifier<VnListState> {
 
     final query = ref.read(searchQueryProvider);
     final filtersState = ref.read(vnFilterProvider);
+    final spoilerLevel = ref.read(
+      settingsProvider.select((settings) => settings.spoilerLevel),
+    );
     final sortState = ref.read(vnSortProvider);
     final currentPage = state.page;
     final repository = ref.read(vnRepositoryProvider);
@@ -106,7 +117,9 @@ class VnListNotifier extends Notifier<VnListState> {
         apiFilters.add(['search', '=', query]);
       }
 
-      apiFilters.addAll(filtersState.buildApiFilters());
+      apiFilters.addAll(
+        filtersState.buildApiFilters(spoilerLevel: spoilerLevel),
+      );
 
       final response = await repository.getVisualNovels(
         filters: apiFilters.length > 1
@@ -155,6 +168,13 @@ class VnListByTagNotifier extends Notifier<VnListState> {
   VnListState build() {
     Future.microtask(() => fetchVns());
 
+    ref.listen<int>(
+      settingsProvider.select((settings) => settings.spoilerLevel),
+      (previous, next) {
+        Future.microtask(() => resetAndFetch());
+      },
+    );
+
     return VnListState.initial();
   }
 
@@ -173,10 +193,14 @@ class VnListByTagNotifier extends Notifier<VnListState> {
 
     final currentPage = state.page;
     final repository = ref.read(vnRepositoryProvider);
+    final spoilerLevel = ref.read(
+      settingsProvider.select((settings) => settings.spoilerLevel),
+    );
 
     try {
       final response = await repository.getVisualNovelsByTag(
         tagId: _tagId,
+        spoilerLevel: spoilerLevel,
         page: currentPage,
       );
 

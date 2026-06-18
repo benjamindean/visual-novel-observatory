@@ -13,7 +13,7 @@ class ViolentContentTile extends ConsumerWidget {
     return SwitchListTile(
       value: settings.showViolentContent,
       title: const Text(
-        'Show Violent Content',
+        'Violent Content',
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
       ),
       subtitle: Text(

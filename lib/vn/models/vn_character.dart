@@ -73,9 +73,17 @@ abstract class VnCharacter with _$VnCharacter {
 
     final val = gender![0];
 
-    if (val == 'm') return 'Male';
-    if (val == 'f') return 'Female';
-    if (val == 'both') return 'Both / Hermaphrodite';
+    if (val == 'm') {
+      return 'Male';
+    }
+
+    if (val == 'f') {
+      return 'Female';
+    }
+
+    if (val == 'both') {
+      return 'Both';
+    }
 
     return val;
   }

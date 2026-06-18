@@ -8,6 +8,7 @@ import '../../../theme/app_theme.dart';
 import '../../../settings/providers/settings_provider.dart';
 import 'filter_section_header.dart';
 import 'filter_chip_row.dart';
+import 'filter_release_date_range_tile.dart';
 import 'filter_sort_row.dart';
 import 'filter_tags_tile.dart';
 
@@ -25,6 +26,8 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
   List<int> _selectedDevStatuses = [];
   double _minRating = 7.0;
   int _minVotes = 50;
+  String? _releasedFrom;
+  String? _releasedTo;
   List<VnTag> _selectedTags = [];
   String _selectedSortField = 'rating';
   bool _selectedSortDescending = true;
@@ -44,6 +47,8 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
     _selectedDevStatuses = List<int>.from(currentFilters.devStatus);
     _minRating = currentFilters.minRating;
     _minVotes = currentFilters.minVotes;
+    _releasedFrom = currentFilters.releasedFrom;
+    _releasedTo = currentFilters.releasedTo;
     _selectedSortField = currentSort.field;
     _selectedSortDescending = currentSort.descending;
 
@@ -62,6 +67,8 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
       _selectedDevStatuses = const [];
       _minRating = 7.0;
       _minVotes = 50;
+      _releasedFrom = null;
+      _releasedTo = null;
       _selectedTags = const [];
       _selectedSortField = 'rating';
       _selectedSortDescending = true;
@@ -84,6 +91,8 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
             devStatus: _selectedDevStatuses,
             minRating: _minRating,
             minVotes: _minVotes,
+            releasedFrom: _releasedFrom,
+            releasedTo: _releasedTo,
             tags: tags,
           ),
         );
@@ -226,6 +235,24 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                 onSelected: (vals) {
                   setState(() {
                     _selectedDevStatuses = vals;
+                  });
+                },
+              ),
+              const SizedBox(height: 20.0),
+
+              // Release Date Section
+              const FilterSectionHeader(title: 'Release Date'),
+              FilterReleaseDateRangeTile(
+                releasedFrom: _releasedFrom,
+                releasedTo: _releasedTo,
+                onFromChanged: (value) {
+                  setState(() {
+                    _releasedFrom = value;
+                  });
+                },
+                onToChanged: (value) {
+                  setState(() {
+                    _releasedTo = value;
                   });
                 },
               ),

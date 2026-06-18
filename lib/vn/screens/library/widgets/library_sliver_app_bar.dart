@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../theme/app_theme.dart';
-import '../../../providers/vn_providers.dart';
 import '../../../widgets/app_settings_button.dart';
 
-class LibrarySliverAppBar extends ConsumerWidget {
+class LibrarySliverAppBar extends StatelessWidget {
   const LibrarySliverAppBar({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return SliverAppBar(
@@ -21,16 +19,11 @@ class LibrarySliverAppBar extends ConsumerWidget {
       backgroundColor: context.appBackground,
       titleSpacing: 20,
       centerTitle: false,
-      title: GestureDetector(
-        onDoubleTap: () {
-          ref.read(libraryDoubleTapProvider.notifier).increment();
-        },
-        child: Text(
-          'Library',
-          style: theme.textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            letterSpacing: -0.5,
-          ),
+      title: Text(
+        'Library',
+        style: theme.textTheme.headlineMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+          letterSpacing: -0.5,
         ),
       ),
       actions: const [

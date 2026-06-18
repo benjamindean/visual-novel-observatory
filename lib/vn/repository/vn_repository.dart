@@ -21,11 +21,13 @@ class VnRepository {
 
   Future<Map<String, dynamic>> getVisualNovelsByTag({
     required String tagId,
+    required int spoilerLevel,
     required int page,
     int resultsPerPage = 15,
   }) {
     return _client.getVisualNovelsByTag(
       tagId: tagId,
+      spoilerLevel: spoilerLevel,
       page: page,
       resultsPerPage: resultsPerPage,
     );

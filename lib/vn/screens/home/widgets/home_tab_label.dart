@@ -16,17 +16,23 @@ class HomeTabLabel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (tab.id == HomeTabIds.createFilter) {
-      return const Tab(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
+      return Tab(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: context.colorScheme.surfaceContainerHigh,
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 6.0,
+              vertical: 6.0,
+            ),
+            child: Icon(
               Icons.add_rounded,
               size: 16,
+              color: context.colorScheme.onSurfaceVariant,
             ),
-            SizedBox(width: 4),
-            Text('New Filter'),
-          ],
+          ),
         ),
       );
     }
@@ -53,13 +59,13 @@ class HomeTabLabel extends ConsumerWidget {
             child: IconButton(
               tooltip: 'Edit ${tab.title}',
               padding: EdgeInsets.zero,
-              iconSize: 16,
+              iconSize: 14,
               onPressed: () {
                 context.push('/home/edit-filter', extra: tab.id);
               },
               icon: Icon(
                 Icons.edit_rounded,
-                color: context.appTextMuted,
+                color: context.colorScheme.outline,
               ),
             ),
           ),

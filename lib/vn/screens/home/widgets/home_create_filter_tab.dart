@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../settings/providers/settings_provider.dart';
@@ -7,6 +8,7 @@ import '../../../../theme/app_theme.dart';
 import '../../../models/vn_tag.dart';
 import '../../../providers/vn_providers.dart';
 import '../../filter/filter_chip_row.dart';
+import '../../filter/filter_release_date_range_tile.dart';
 import '../../filter/filter_section_header.dart';
 import '../../filter/filter_sort_row.dart';
 import '../../filter/filter_tags_tile.dart';
@@ -35,6 +37,8 @@ class HomeCreateFilterTabState extends ConsumerState<HomeCreateFilterTab> {
   List<int> _selectedDevStatuses = [];
   double _minRating = 7.0;
   int _minVotes = 50;
+  String? _releasedFrom;
+  String? _releasedTo;
   List<VnTag> _selectedTags = [];
   String _selectedSortField = 'rating';
   bool _selectedSortDescending = true;
@@ -86,6 +90,8 @@ class HomeCreateFilterTabState extends ConsumerState<HomeCreateFilterTab> {
     _selectedDevStatuses = List<int>.from(filters?.devStatus ?? const []);
     _minRating = filters?.minRating ?? 7.0;
     _minVotes = filters?.minVotes ?? 50;
+    _releasedFrom = filters?.releasedFrom;
+    _releasedTo = filters?.releasedTo;
     _selectedTags = List<VnTag>.from(filters?.tags ?? const []);
     _selectedSortField = sort?.field ?? 'rating';
     _selectedSortDescending = sort?.descending ?? true;
@@ -116,6 +122,8 @@ class HomeCreateFilterTabState extends ConsumerState<HomeCreateFilterTab> {
       devStatus: _selectedDevStatuses,
       minRating: _minRating,
       minVotes: _minVotes,
+      releasedFrom: _releasedFrom,
+      releasedTo: _releasedTo,
       tags: tags,
     );
     final sort = VnSortState(
@@ -150,20 +158,6 @@ class HomeCreateFilterTabState extends ConsumerState<HomeCreateFilterTab> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    ref.listen<int>(homeDoubleTapProvider, (previous, next) {
-      final selectedTabId = ref.read(homeTabsProvider).selectedTabId;
-
-      if (next > 0 &&
-          selectedTabId == HomeTabIds.createFilter &&
-          _scrollController.hasClients) {
-        _scrollController.animateTo(
-          0.0,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
-      }
-    });
-
     return CustomScrollView(
       controller: _scrollController,
       physics: const BouncingScrollPhysics(),
@@ -179,6 +173,10 @@ class HomeCreateFilterTabState extends ConsumerState<HomeCreateFilterTab> {
                 children: [
                   TextField(
                     controller: _nameController,
+                    maxLength: 50,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(50),
+                    ],
                     textCapitalization: TextCapitalization.words,
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.next,
@@ -289,6 +287,22 @@ class HomeCreateFilterTabState extends ConsumerState<HomeCreateFilterTab> {
                     onSelected: (vals) {
                       setState(() {
                         _selectedDevStatuses = vals;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20.0),
+                  const FilterSectionHeader(title: 'Release Date'),
+                  FilterReleaseDateRangeTile(
+                    releasedFrom: _releasedFrom,
+                    releasedTo: _releasedTo,
+                    onFromChanged: (value) {
+                      setState(() {
+                        _releasedFrom = value;
+                      });
+                    },
+                    onToChanged: (value) {
+                      setState(() {
+                        _releasedTo = value;
                       });
                     },
                   ),

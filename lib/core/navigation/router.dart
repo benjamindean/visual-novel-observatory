@@ -30,12 +30,8 @@ class ScaffoldWithNavBar extends ConsumerWidget {
         selectedIndex: navigationShell.currentIndex,
         onDestinationSelected: (index) {
           if (index == navigationShell.currentIndex) {
-            if (index == 0) {
-              ref.read(homeDoubleTapProvider.notifier).increment();
-            } else if (index == 1) {
+            if (index == 1) {
               ref.read(searchDoubleTapProvider.notifier).increment();
-            } else if (index == 2) {
-              ref.read(libraryDoubleTapProvider.notifier).increment();
             }
           }
 

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../theme/app_theme.dart';
-import '../../../providers/vn_providers.dart';
 import '../../../widgets/app_settings_button.dart';
 
-class HomeSliverAppBar extends ConsumerWidget {
+class HomeSliverAppBar extends StatelessWidget {
   const HomeSliverAppBar({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return SliverAppBar(
@@ -20,16 +18,11 @@ class HomeSliverAppBar extends ConsumerWidget {
       scrolledUnderElevation: 0,
       backgroundColor: context.appBackground,
       titleSpacing: 20,
-      title: GestureDetector(
-        onDoubleTap: () {
-          ref.read(homeDoubleTapProvider.notifier).increment();
-        },
-        child: Text(
-          'Home',
-          style: theme.textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            letterSpacing: -0.5,
-          ),
+      title: Text(
+        'Home',
+        style: theme.textTheme.headlineMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+          letterSpacing: -0.5,
         ),
       ),
       actions: const [

@@ -33,22 +33,6 @@ class HomeVnTabViewState extends ConsumerState<HomeVnTabView> {
     final listState = ref.watch(homeVnListProvider(widget.tab.id));
     final theme = Theme.of(context);
 
-    ref.listen<int>(homeDoubleTapProvider, (previous, next) {
-      final selectedTabId = ref.read(homeTabsProvider).selectedTabId;
-      final scrollController = PrimaryScrollController.maybeOf(context);
-
-      if (next > 0 &&
-          selectedTabId == widget.tab.id &&
-          scrollController != null &&
-          scrollController.hasClients) {
-        scrollController.animateTo(
-          0.0,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
-      }
-    });
-
     return NotificationListener<ScrollNotification>(
       onNotification: _handleScrollNotification,
       child: CustomScrollView(

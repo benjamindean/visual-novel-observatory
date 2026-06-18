@@ -19,10 +19,13 @@ class TagsSection extends ConsumerStatefulWidget {
 class _TagsSectionState extends ConsumerState<TagsSection> {
   bool _areTagsExpanded = false;
 
-  List<VnTag> _getDisplayTags(bool showExplicitContent) {
-    final filtered = showExplicitContent
-        ? List<VnTag>.from(widget.tags)
-        : widget.tags.where((tag) => tag.category != 'ero').toList();
+  List<VnTag> _getDisplayTags(SettingsState settings) {
+    final filtered = widget.tags.where((tag) {
+      final isExplicit = tag.category == 'ero';
+      final isAllowedSpoiler = tag.spoiler <= settings.spoilerLevel;
+
+      return isAllowedSpoiler && (settings.showExplicitContent || !isExplicit);
+    }).toList();
 
     filtered.sort((a, b) => (b.rating ?? 0.0).compareTo(a.rating ?? 0.0));
 
@@ -32,10 +35,8 @@ class _TagsSectionState extends ConsumerState<TagsSection> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final showExplicitContent = ref.watch(
-      settingsProvider.select((settings) => settings.showExplicitContent),
-    );
-    final displayTagsList = _getDisplayTags(showExplicitContent);
+    final settings = ref.watch(settingsProvider);
+    final displayTagsList = _getDisplayTags(settings);
 
     if (displayTagsList.isEmpty) {
       return const SizedBox.shrink();

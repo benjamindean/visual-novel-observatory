@@ -11,13 +11,12 @@ dependencies:
   http: ^1.6.0
   dio: ^5.9.2
   google_fonts: ^8.1.0
-  flutter_riverpod: ^3.3.1
+  flutter_riverpod: ^3.3.2
   freezed_annotation: ^3.1.0
   json_annotation: ^4.12.0
   url_launcher: ^6.3.2
   cached_network_image: ^3.4.1
   photo_view: ^0.15.0
-  sqflite_common_ffi: ^2.4.1
   hive_ce: ^2.19.3
   hive_ce_flutter: ^2.3.4
   share_plus: ^13.1.0
@@ -39,7 +38,8 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/icon/observatory_ios.png"
+  image_path_android: "assets/icon/observatory_android.png"
+  image_path_ios: "assets/icon/observatory_ios.png"
 
 flutter_native_splash:
   color: "#161c2e"

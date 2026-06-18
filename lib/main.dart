@@ -13,7 +13,6 @@ void main() async {
   await AppStorage.init();
 
   runApp(
-    // ProviderScope is required for Riverpod state management
     const ProviderScope(child: VisualNovelObservatoryApp()),
   );
 }

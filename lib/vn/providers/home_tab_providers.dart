@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/storage/app_storage.dart';
 import '../../core/utils/error_utils.dart';
+import '../../settings/providers/settings_provider.dart';
 import '../models/visual_novel.dart';
 import 'vn_core_providers.dart';
 import 'vn_filter_providers.dart';
@@ -54,7 +55,9 @@ class HomeTabDefinition {
 
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other is HomeTabDefinition &&
         other.id == id &&
@@ -324,6 +327,13 @@ class HomeVnListNotifier extends Notifier<VnListState> {
       }
     });
 
+    ref.listen<int>(
+      settingsProvider.select((settings) => settings.spoilerLevel),
+      (previous, next) {
+        Future.microtask(() => resetAndFetch());
+      },
+    );
+
     Future.microtask(() => fetchVns());
 
     return VnListState.initial();
@@ -350,7 +360,12 @@ class HomeVnListNotifier extends Notifier<VnListState> {
 
     final currentPage = state.page;
     final repository = ref.read(vnRepositoryProvider);
-    final apiFilters = tab.filters.buildApiFilters();
+    final spoilerLevel = ref.read(
+      settingsProvider.select((settings) => settings.spoilerLevel),
+    );
+    final apiFilters = tab.filters.buildApiFilters(
+      spoilerLevel: spoilerLevel,
+    );
 
     try {
       final response = await repository.getVisualNovels(

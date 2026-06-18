@@ -13,7 +13,7 @@ class ExplicitContentTile extends ConsumerWidget {
     return SwitchListTile(
       value: settings.showExplicitContent,
       title: const Text(
-        'Show Explicit Content',
+        'Explicit Content',
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
       ),
       subtitle: Text(

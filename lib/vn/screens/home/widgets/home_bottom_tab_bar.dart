@@ -17,7 +17,7 @@ class HomeBottomTabBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Material(
-      color: context.colorScheme.surfaceContainerHigh,
+      color: context.appSurface,
       child: Container(
         decoration: BoxDecoration(
           border: Border(
