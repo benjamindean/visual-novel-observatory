@@ -57,7 +57,7 @@ class FilterChipRow<T> extends StatelessWidget {
 
                 onSelected(newValues);
               },
-              backgroundColor: context.appSurface,
+              backgroundColor: context.colorScheme.surfaceContainerHigh,
               selectedColor: context.appAccentTeal,
               checkmarkColor: context.colorScheme.onPrimary,
               labelStyle: TextStyle(

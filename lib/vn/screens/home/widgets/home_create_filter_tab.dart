@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../settings/providers/settings_provider.dart';
@@ -9,9 +8,11 @@ import '../../../models/vn_tag.dart';
 import '../../../providers/vn_providers.dart';
 import '../../filter/filter_chip_row.dart';
 import '../../filter/filter_release_date_range_tile.dart';
-import '../../filter/filter_section_header.dart';
 import '../../filter/filter_sort_row.dart';
 import '../../filter/filter_tags_tile.dart';
+import 'home_filter_form_section.dart';
+import 'home_filter_name_field.dart';
+import 'home_filter_slider_field.dart';
 
 class HomeCreateFilterTab extends ConsumerStatefulWidget {
   const HomeCreateFilterTab({
@@ -156,8 +157,6 @@ class HomeCreateFilterTabState extends ConsumerState<HomeCreateFilterTab> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return CustomScrollView(
       controller: _scrollController,
       physics: const BouncingScrollPhysics(),
@@ -167,218 +166,228 @@ class HomeCreateFilterTabState extends ConsumerState<HomeCreateFilterTab> {
             top: false,
             bottom: false,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 24.0),
+              padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextField(
+                  HomeFilterNameField(
                     controller: _nameController,
-                    maxLength: 50,
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(50),
-                    ],
-                    textCapitalization: TextCapitalization.words,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      labelText: 'Filter Name',
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 16.0,
-                      ),
-                      filled: true,
-                      fillColor: context.appSearchField,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
+                  ),
+                  const SizedBox(height: 12.0),
+                  HomeFilterFormSection(
+                    title: 'Sort Order',
+                    icon: Icons.sort_rounded,
+                    child: FilterSortRow(
+                      items: const {
+                        'rating': 'Rating',
+                        'votecount': 'Votes',
+                        'released': 'Release Date',
+                        'title': 'Title',
+                      },
+                      selectedField: _selectedSortField,
+                      isDescending: _selectedSortDescending,
+                      onChanged: (field, descending) {
+                        setState(() {
+                          _selectedSortField = field;
+                          _selectedSortDescending = descending;
+                        });
+                      },
                     ),
                   ),
-                  const SizedBox(height: 20.0),
-                  const FilterSectionHeader(title: 'Sort By'),
-                  FilterSortRow(
-                    items: const {
-                      'rating': 'Rating',
-                      'votecount': 'Votes',
-                      'released': 'Release Date',
-                      'title': 'Title',
-                    },
-                    selectedField: _selectedSortField,
-                    isDescending: _selectedSortDescending,
-                    onChanged: (field, descending) {
-                      setState(() {
-                        _selectedSortField = field;
-                        _selectedSortDescending = descending;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20.0),
-                  Divider(
-                    color: context.appTextPrimary.withValues(alpha: 0.08),
-                    height: 1.0,
-                  ),
-                  const SizedBox(height: 20.0),
-                  const FilterSectionHeader(title: 'Language'),
-                  FilterChipRow<String>(
-                    items: const {
-                      'en': 'English',
-                      'ja': 'Japanese',
-                      'zh': 'Chinese',
-                      'es': 'Spanish',
-                      'ko': 'Korean',
-                    },
-                    selectedValues: _selectedLangs,
-                    onSelected: (vals) {
-                      setState(() {
-                        _selectedLangs = vals;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20.0),
-                  const FilterSectionHeader(title: 'Platform'),
-                  FilterChipRow<String>(
-                    items: const {
-                      'win': 'Windows',
-                      'swi': 'Switch',
-                      'ps4': 'PS4',
-                      'and': 'Android',
-                      'ios': 'iOS',
-                    },
-                    itemIcons: const {
-                      'win': FontAwesomeIcons.windows,
-                      'swi': FontAwesomeIcons.gamepad,
-                      'ps4': FontAwesomeIcons.playstation,
-                      'and': FontAwesomeIcons.android,
-                      'ios': FontAwesomeIcons.apple,
-                    },
-                    selectedValues: _selectedPlatforms,
-                    onSelected: (vals) {
-                      setState(() {
-                        _selectedPlatforms = vals;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20.0),
-                  const FilterSectionHeader(title: 'Play Time'),
-                  FilterChipRow<int>(
-                    items: const {
-                      1: 'Very Short (<2h)',
-                      2: 'Short (2-10h)',
-                      3: 'Medium (10-30h)',
-                      4: 'Long (30-50h)',
-                      5: 'Very Long (>50h)',
-                    },
-                    selectedValues: _selectedLengths,
-                    onSelected: (vals) {
-                      setState(() {
-                        _selectedLengths = vals;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20.0),
-                  const FilterSectionHeader(title: 'Development Status'),
-                  FilterChipRow<int>(
-                    items: const {
-                      0: 'Finished',
-                      1: 'In Dev',
-                      2: 'Cancelled',
-                    },
-                    selectedValues: _selectedDevStatuses,
-                    onSelected: (vals) {
-                      setState(() {
-                        _selectedDevStatuses = vals;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20.0),
-                  const FilterSectionHeader(title: 'Release Date'),
-                  FilterReleaseDateRangeTile(
-                    releasedFrom: _releasedFrom,
-                    releasedTo: _releasedTo,
-                    onFromChanged: (value) {
-                      setState(() {
-                        _releasedFrom = value;
-                      });
-                    },
-                    onToChanged: (value) {
-                      setState(() {
-                        _releasedTo = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20.0),
-                  const FilterSectionHeader(title: 'Tags'),
-                  FilterTagsTile(
-                    selectedTags: _selectedTags,
-                    onTagsChanged: (tags) {
-                      setState(() {
-                        _selectedTags = tags;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 24.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Minimum Rating',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
+                  const SizedBox(height: 12.0),
+                  HomeFilterFormSection(
+                    title: 'Availability',
+                    icon: Icons.public_rounded,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Language',
+                          style: context.theme.textTheme.labelLarge?.copyWith(
+                            color: context.appTextSecondary,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ),
-                      Text(
-                        '${_minRating.toStringAsFixed(1)} / 10.0',
-                        style: TextStyle(
-                          color: context.appAccentTeal,
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(height: 8.0),
+                        FilterChipRow<String>(
+                          items: const {
+                            'en': 'English',
+                            'ja': 'Japanese',
+                            'zh': 'Chinese',
+                            'es': 'Spanish',
+                            'ko': 'Korean',
+                          },
+                          selectedValues: _selectedLangs,
+                          onSelected: (vals) {
+                            setState(() {
+                              _selectedLangs = vals;
+                            });
+                          },
                         ),
-                      ),
-                    ],
-                  ),
-                  Slider(
-                    value: _minRating,
-                    min: 0.0,
-                    max: 10.0,
-                    divisions: 100,
-                    activeColor: context.appAccentTeal,
-                    inactiveColor: context.appSurface,
-                    onChanged: (val) {
-                      setState(() {
-                        _minRating = val;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Minimum Votes',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(height: 16.0),
+                        Text(
+                          'Platform',
+                          style: context.theme.textTheme.labelLarge?.copyWith(
+                            color: context.appTextSecondary,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ),
-                      Text(
-                        '$_minVotes votes',
-                        style: TextStyle(
-                          color: context.appAccentTeal,
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(height: 8.0),
+                        FilterChipRow<String>(
+                          items: const {
+                            'win': 'Windows',
+                            'swi': 'Switch',
+                            'ps4': 'PS4',
+                            'and': 'Android',
+                            'ios': 'iOS',
+                          },
+                          itemIcons: const {
+                            'win': FontAwesomeIcons.windows,
+                            'swi': FontAwesomeIcons.gamepad,
+                            'ps4': FontAwesomeIcons.playstation,
+                            'and': FontAwesomeIcons.android,
+                            'ios': FontAwesomeIcons.apple,
+                          },
+                          selectedValues: _selectedPlatforms,
+                          onSelected: (vals) {
+                            setState(() {
+                              _selectedPlatforms = vals;
+                            });
+                          },
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  Slider(
-                    value: _minVotes.toDouble(),
-                    min: 0,
-                    max: 500,
-                    divisions: 50,
-                    activeColor: context.appAccentTeal,
-                    inactiveColor: context.appSurface,
-                    onChanged: (val) {
-                      setState(() {
-                        _minVotes = val.round();
-                      });
-                    },
+                  const SizedBox(height: 12.0),
+                  HomeFilterFormSection(
+                    title: 'Main Details',
+                    icon: Icons.tune_rounded,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Play Time',
+                          style: context.theme.textTheme.labelLarge?.copyWith(
+                            color: context.appTextSecondary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        FilterChipRow<int>(
+                          items: const {
+                            1: 'Very Short (<2h)',
+                            2: 'Short (2-10h)',
+                            3: 'Medium (10-30h)',
+                            4: 'Long (30-50h)',
+                            5: 'Very Long (>50h)',
+                          },
+                          selectedValues: _selectedLengths,
+                          onSelected: (vals) {
+                            setState(() {
+                              _selectedLengths = vals;
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 16.0),
+                        Text(
+                          'Development Status',
+                          style: context.theme.textTheme.labelLarge?.copyWith(
+                            color: context.appTextSecondary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        FilterChipRow<int>(
+                          items: const {
+                            0: 'Finished',
+                            1: 'In Dev',
+                            2: 'Cancelled',
+                          },
+                          selectedValues: _selectedDevStatuses,
+                          onSelected: (vals) {
+                            setState(() {
+                              _selectedDevStatuses = vals;
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 16.0),
+                        Text(
+                          'Release Date',
+                          style: context.theme.textTheme.labelLarge?.copyWith(
+                            color: context.appTextSecondary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        FilterReleaseDateRangeTile(
+                          releasedFrom: _releasedFrom,
+                          releasedTo: _releasedTo,
+                          onFromChanged: (value) {
+                            setState(() {
+                              _releasedFrom = value;
+                            });
+                          },
+                          onToChanged: (value) {
+                            setState(() {
+                              _releasedTo = value;
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 16.0),
+                        Text(
+                          'Tags',
+                          style: context.theme.textTheme.labelLarge?.copyWith(
+                            color: context.appTextSecondary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        FilterTagsTile(
+                          selectedTags: _selectedTags,
+                          onTagsChanged: (tags) {
+                            setState(() {
+                              _selectedTags = tags;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12.0),
+                  HomeFilterFormSection(
+                    title: 'Score & Popularity',
+                    icon: Icons.insights_rounded,
+                    child: Column(
+                      children: [
+                        HomeFilterSliderField(
+                          title: 'Minimum Rating',
+                          valueLabel: '${_minRating.toStringAsFixed(1)} / 10.0',
+                          value: _minRating,
+                          min: 0.0,
+                          max: 10.0,
+                          divisions: 100,
+                          onChanged: (val) {
+                            setState(() {
+                              _minRating = val;
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 12.0),
+                        HomeFilterSliderField(
+                          title: 'Minimum Votes',
+                          valueLabel: '$_minVotes votes',
+                          value: _minVotes.toDouble(),
+                          min: 0.0,
+                          max: 500.0,
+                          divisions: 50,
+                          onChanged: (val) {
+                            setState(() {
+                              _minVotes = val.round();
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

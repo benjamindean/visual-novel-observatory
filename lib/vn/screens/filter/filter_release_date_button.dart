@@ -17,8 +17,11 @@ class FilterReleaseDateButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.appSurface,
-      borderRadius: BorderRadius.circular(12.0),
+      color: context.colorScheme.surfaceContainerHigh,
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12.0),

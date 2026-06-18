@@ -60,7 +60,7 @@ class FilterSortRow extends StatelessWidget {
                   onChanged(entry.key, defaultDescending);
                 }
               },
-              backgroundColor: context.appSurface,
+              backgroundColor: context.colorScheme.surfaceContainerHigh,
               selectedColor: context.appAccentTeal,
               checkmarkColor: Colors.transparent,
               showCheckmark: false,

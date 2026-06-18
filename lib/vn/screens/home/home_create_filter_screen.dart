@@ -101,7 +101,7 @@ class HomeCreateFilterScreenState
       ),
       bottomNavigationBar: BottomActionBar(
         label: isEditing ? 'Save Changes' : 'Create Tab',
-        icon: Icons.add_rounded,
+        icon: isEditing ? Icons.check_rounded : Icons.add_rounded,
         onPressed: () {
           _filterKey.currentState?.submitTab();
         },
