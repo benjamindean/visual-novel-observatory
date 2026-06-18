@@ -40,7 +40,7 @@ class HomeVnTabViewState extends ConsumerState<HomeVnTabView> {
         key: PageStorageKey('home_tab_scroll_${widget.tab.id}'),
         physics: const BouncingScrollPhysics(),
         slivers: [
-          HomeSliverAppBar(title: widget.tab.title),
+          HomeSliverAppBar(tab: widget.tab),
           if (listState.isLoading)
             SliverFillRemaining(
               child: Center(

@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../theme/app_theme.dart';
+import '../../../providers/vn_providers.dart';
+import '../../../widgets/app_icon_button.dart';
 import '../../../widgets/app_settings_button.dart';
 
 class HomeSliverAppBar extends StatelessWidget {
   const HomeSliverAppBar({
     super.key,
-    required this.title,
+    required this.tab,
   });
 
-  final String title;
+  final HomeTabDefinition tab;
 
   @override
   Widget build(BuildContext context) {
@@ -24,16 +27,27 @@ class HomeSliverAppBar extends StatelessWidget {
       backgroundColor: context.appBackground,
       titleSpacing: 20,
       title: Text(
-        title,
+        tab.title,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.bold,
         ),
       ),
-      actions: const [
-        AppSettingsButton(),
-        SizedBox(width: 20),
+      actions: [
+        if (tab.isCustom)
+          AppIconButton(
+            icon: Icons.edit_rounded,
+            tooltip: 'Edit ${tab.title}',
+            onPressed: () {
+              context.push('/home/edit-filter', extra: tab.id);
+            },
+            backgroundColor: context.colorScheme.secondaryContainer,
+            foregroundColor: context.colorScheme.onSecondaryContainer,
+          ),
+        if (tab.isCustom) const SizedBox(width: 8),
+        const AppSettingsButton(),
+        const SizedBox(width: 20),
       ],
     );
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../theme/app_theme.dart';
 import '../../../providers/vn_providers.dart';
@@ -42,34 +41,10 @@ class HomeTabLabel extends ConsumerWidget {
     }
 
     return Tab(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: Text(
-              tab.title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          const SizedBox(width: 6),
-          SizedBox(
-            width: 24,
-            height: 24,
-            child: IconButton(
-              tooltip: 'Edit ${tab.title}',
-              padding: EdgeInsets.zero,
-              iconSize: 14,
-              onPressed: () {
-                context.push('/home/edit-filter', extra: tab.id);
-              },
-              icon: Icon(
-                Icons.edit_rounded,
-                color: context.colorScheme.outline,
-              ),
-            ),
-          ),
-        ],
+      child: Text(
+        tab.title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }
