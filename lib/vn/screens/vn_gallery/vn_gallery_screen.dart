@@ -1,12 +1,9 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../models/vn_screenshot.dart';
-import '../../widgets/image_placeholder.dart';
-import '../../widgets/image_error_widget.dart';
+import '../../widgets/cached_app_image.dart';
 import '../../widgets/reveal_image_button.dart';
 import '../../../settings/providers/settings_provider.dart';
 import '../../../theme/app_theme.dart';
@@ -248,47 +245,20 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
                             clipBehavior: Clip.none,
                             minScale: 1.0,
                             maxScale: 4.0,
-                            child: Center(
+                            child: SizedBox.expand(
                               child: Stack(
                                 children: [
-                                  CachedNetworkImage(
-                                    imageUrl: screenshot.url,
-                                    fit: BoxFit.contain,
-                                    fadeInDuration: const Duration(
-                                      milliseconds: 200,
+                                  Positioned.fill(
+                                    child: CachedAppImage(
+                                      imageUrl: screenshot.url,
+                                      fit: BoxFit.contain,
+                                      shouldBlur: shouldBlur,
+                                      blurSigma: 20.0,
+                                      placeholderIconSize: 64.0,
+                                      placeholderBackgroundColor:
+                                          Colors.transparent,
+                                      errorBackgroundColor: Colors.transparent,
                                     ),
-                                    fadeOutDuration: const Duration(
-                                      milliseconds: 200,
-                                    ),
-                                    imageBuilder: (context, imageProvider) {
-                                      final image = Image(
-                                        image: imageProvider,
-                                        fit: BoxFit.contain,
-                                      );
-
-                                      return shouldBlur
-                                          ? ClipRect(
-                                              child: ImageFiltered(
-                                                imageFilter: ImageFilter.blur(
-                                                  sigmaX: 20,
-                                                  sigmaY: 20,
-                                                  tileMode: TileMode.clamp,
-                                                ),
-                                                child: image,
-                                              ),
-                                            )
-                                          : image;
-                                    },
-                                    placeholder: (context, url) =>
-                                        const ImagePlaceholder(
-                                          iconSize: 64,
-                                          backgroundColor: Colors.transparent,
-                                        ),
-                                    errorWidget: (context, url, error) =>
-                                        const ImageErrorWidget(
-                                          iconSize: 64,
-                                          backgroundColor: Colors.transparent,
-                                        ),
                                   ),
                                   if (shouldBlur)
                                     Positioned.fill(

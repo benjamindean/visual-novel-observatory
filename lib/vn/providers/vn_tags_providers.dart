@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:developer' as developer;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/storage/app_storage.dart';
 import '../models/vn_tag.dart';
@@ -56,8 +58,13 @@ class LocalTagsNotifier extends Notifier<LocalTagsState> {
 
         return;
       }
-    } catch (_) {
-      // fallback to api below
+    } catch (error, stackTrace) {
+      developer.log(
+        'Failed to load cached tags; falling back to API.',
+        name: 'LocalTagsNotifier',
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
 
     await fetchAndCacheAllTags();

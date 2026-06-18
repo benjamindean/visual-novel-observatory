@@ -1,11 +1,9 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../models/visual_novel.dart';
+import 'cached_app_image.dart';
 import 'rating_badge.dart';
 import 'image_placeholder.dart';
-import 'image_error_widget.dart';
 import '../../theme/app_theme.dart';
 import '../../settings/providers/settings_provider.dart';
 
@@ -45,36 +43,9 @@ class VnCard extends ConsumerWidget {
             children: [
               Positioned.fill(
                 child: vn.imageUrl != null
-                    ? CachedNetworkImage(
+                    ? CachedPosterImage(
                         imageUrl: vn.imageUrl!,
-                        fit: BoxFit.cover,
-                        memCacheWidth: 300,
-                        memCacheHeight: 450,
-                        fadeInDuration: const Duration(milliseconds: 200),
-                        fadeOutDuration: const Duration(milliseconds: 200),
-                        imageBuilder: (context, imageProvider) {
-                          final image = Image(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                          );
-
-                          return shouldBlur
-                              ? ImageFiltered(
-                                  imageFilter: ImageFilter.blur(
-                                    sigmaX: 12,
-                                    sigmaY: 12,
-                                    tileMode: TileMode.clamp,
-                                  ),
-                                  child: image,
-                                )
-                              : image;
-                        },
-                        placeholder: (context, url) => ImagePlaceholder(
-                          backgroundColor: context.appSearchField,
-                        ),
-                        errorWidget: (context, url, error) => ImageErrorWidget(
-                          backgroundColor: context.appSearchField,
-                        ),
+                        shouldBlur: shouldBlur,
                       )
                     : ImagePlaceholder(
                         backgroundColor: context.appSearchField,

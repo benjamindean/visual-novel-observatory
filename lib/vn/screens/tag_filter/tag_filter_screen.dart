@@ -20,6 +20,7 @@ class TagFilterScreen extends ConsumerStatefulWidget {
 class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
   final TextEditingController _searchController = TextEditingController();
   final List<VnTag> _selectedTags = [];
+  final Set<String> _selectedTagIds = {};
 
   List<VnTag> _searchResults = [];
 
@@ -37,6 +38,8 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
     } else {
       _selectedTags.addAll(initial);
     }
+
+    _selectedTagIds.addAll(_selectedTags.map((tag) => tag.id));
   }
 
   @override
@@ -76,11 +79,10 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
 
   void _toggleTag(VnTag tag) {
     setState(() {
-      final exists = _selectedTags.any((t) => t.id == tag.id);
-
-      if (exists) {
+      if (_selectedTagIds.remove(tag.id)) {
         _selectedTags.removeWhere((t) => t.id == tag.id);
       } else {
+        _selectedTagIds.add(tag.id);
         _selectedTags.add(tag);
       }
     });
@@ -104,11 +106,9 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
         ? initialTags
         : initialTags.where((tag) => tag.category != 'ero').toList();
 
-    final selectedSet = _selectedTags.map((t) => t.id).toSet();
-
     final displayTags = [
-      ...filteredTags.where((tag) => selectedSet.contains(tag.id)),
-      ...filteredTags.where((tag) => !selectedSet.contains(tag.id)),
+      ...filteredTags.where((tag) => _selectedTagIds.contains(tag.id)),
+      ...filteredTags.where((tag) => !_selectedTagIds.contains(tag.id)),
     ];
 
     return Scaffold(
@@ -174,8 +174,8 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                               itemCount: displayTags.length,
                               itemBuilder: (context, index) {
                                 final tag = displayTags[index];
-                                final isSelected = _selectedTags.any(
-                                  (t) => t.id == tag.id,
+                                final isSelected = _selectedTagIds.contains(
+                                  tag.id,
                                 );
 
                                 return Container(

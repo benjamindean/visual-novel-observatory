@@ -1,11 +1,9 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../models/visual_novel.dart';
+import 'cached_app_image.dart';
 import 'rating_badge.dart';
 import 'image_placeholder.dart';
-import 'image_error_widget.dart';
 import 'reveal_image_button.dart';
 import '../../theme/app_theme.dart';
 import '../../settings/providers/settings_provider.dart';
@@ -72,35 +70,14 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
                 child: Stack(
                   children: [
                     Positioned.fill(
-                      child: CachedNetworkImage(
+                      child: CachedAppImage(
                         imageUrl: vn.imageUrl!,
+                        width: size.width,
+                        height: size.height * 0.6,
                         fit: BoxFit.cover,
-                        fadeInDuration: const Duration(milliseconds: 200),
-                        fadeOutDuration: const Duration(milliseconds: 200),
-                        imageBuilder: (context, imageProvider) {
-                          final image = Image(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                          );
-
-                          return shouldBlur
-                              ? ImageFiltered(
-                                  imageFilter: ImageFilter.blur(
-                                    sigmaX: 15.0,
-                                    sigmaY: 15.0,
-                                    tileMode: TileMode.clamp,
-                                  ),
-                                  child: image,
-                                )
-                              : image;
-                        },
-                        placeholder: (context, url) => const ImagePlaceholder(
-                          iconSize: 64,
-                        ),
-                        errorWidget: (context, url, error) =>
-                            const ImageErrorWidget(
-                              iconSize: 64,
-                            ),
+                        shouldBlur: shouldBlur,
+                        blurSigma: 15.0,
+                        placeholderIconSize: 64.0,
                       ),
                     ),
                     if (shouldBlur)

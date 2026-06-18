@@ -28,22 +28,24 @@ class MetadataRow extends StatelessWidget {
       return 'TBA';
     }
 
-    try {
-      final parts = released.split('-');
+    final parts = released.split('-');
 
-      if (parts.length == 3) {
-        final year = parts[0];
-        final month = int.parse(parts[1]);
-        final day = int.parse(parts[2]);
+    if (parts.length == 3) {
+      final year = parts[0];
+      final month = int.tryParse(parts[1]);
+      final day = int.tryParse(parts[2]);
 
+      if (month != null && month >= 1 && month <= 12 && day != null) {
         return '${_months[month - 1]} $day, $year';
-      } else if (parts.length == 2) {
-        final year = parts[0];
-        final month = int.parse(parts[1]);
+      }
+    } else if (parts.length == 2) {
+      final year = parts[0];
+      final month = int.tryParse(parts[1]);
 
+      if (month != null && month >= 1 && month <= 12) {
         return '${_months[month - 1]} $year';
       }
-    } catch (_) {}
+    }
 
     return released;
   }

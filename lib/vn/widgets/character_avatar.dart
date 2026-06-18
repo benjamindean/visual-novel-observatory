@@ -1,7 +1,6 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../theme/app_theme.dart';
+import 'cached_app_image.dart';
 
 class CharacterAvatar extends StatelessWidget {
   final String? imageUrl;
@@ -33,48 +32,10 @@ class CharacterAvatar extends StatelessWidget {
       ),
       clipBehavior: Clip.antiAlias,
       child: imageUrl != null
-          ? CachedNetworkImage(
+          ? CachedAvatarImage(
               imageUrl: imageUrl!,
-              fadeInDuration: const Duration(milliseconds: 200),
-              fadeOutDuration: const Duration(milliseconds: 200),
-              imageBuilder: (context, imageProvider) {
-                final imageDecoration = DecorationImage(
-                  image: imageProvider,
-                  fit: BoxFit.cover,
-                  alignment: Alignment.topCenter,
-                );
-
-                if (shouldBlur) {
-                  return ImageFiltered(
-                    imageFilter: ImageFilter.blur(
-                      sigmaX: 12,
-                      sigmaY: 12,
-                      tileMode: TileMode.clamp,
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: imageDecoration,
-                      ),
-                    ),
-                  );
-                }
-
-                return Container(
-                  decoration: BoxDecoration(
-                    image: imageDecoration,
-                  ),
-                );
-              },
-              placeholder: (context, url) => Icon(
-                Icons.person_rounded,
-                size: size * 0.4,
-                color: context.appTextMuted,
-              ),
-              errorWidget: (context, url, error) => Icon(
-                Icons.person_rounded,
-                size: size * 0.4,
-                color: context.appTextMuted,
-              ),
+              size: size,
+              shouldBlur: shouldBlur,
             )
           : Icon(
               Icons.person_rounded,

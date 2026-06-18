@@ -315,6 +315,7 @@ class HomeVnListNotifier extends Notifier<VnListState> {
   HomeVnListNotifier(this.tabId);
 
   final String tabId;
+  int _requestGeneration = 0;
 
   @override
   VnListState build() {
@@ -323,6 +324,7 @@ class HomeVnListNotifier extends Notifier<VnListState> {
       next,
     ) {
       if (previous != next && next != null) {
+        _requestGeneration++;
         Future.microtask(() => resetAndFetch());
       }
     });
@@ -330,6 +332,7 @@ class HomeVnListNotifier extends Notifier<VnListState> {
     ref.listen<int>(
       settingsProvider.select((settings) => settings.spoilerLevel),
       (previous, next) {
+        _requestGeneration++;
         Future.microtask(() => resetAndFetch());
       },
     );
@@ -350,6 +353,7 @@ class HomeVnListNotifier extends Notifier<VnListState> {
       return;
     }
 
+    final requestGeneration = _requestGeneration;
     final isInitial = state.vns.isEmpty;
 
     if (isInitial) {
@@ -377,6 +381,10 @@ class HomeVnListNotifier extends Notifier<VnListState> {
         reverse: tab.sort.descending,
       );
 
+      if (requestGeneration != _requestGeneration) {
+        return;
+      }
+
       final allVns = response['vns'] as List<VisualNovel>;
       final hasMore = response['hasMore'] as bool;
 
@@ -388,6 +396,10 @@ class HomeVnListNotifier extends Notifier<VnListState> {
         page: currentPage + 1,
       );
     } catch (e) {
+      if (requestGeneration != _requestGeneration) {
+        return;
+      }
+
       state = state.copyWith(
         isLoading: false,
         isLoadMore: false,
@@ -397,6 +409,7 @@ class HomeVnListNotifier extends Notifier<VnListState> {
   }
 
   Future<void> resetAndFetch() async {
+    _requestGeneration++;
     state = VnListState.initial();
     await fetchVns();
   }

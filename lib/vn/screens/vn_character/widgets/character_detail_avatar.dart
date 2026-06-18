@@ -1,7 +1,6 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../theme/app_theme.dart';
+import '../../../widgets/cached_app_image.dart';
 
 class CharacterDetailAvatar extends StatelessWidget {
   final String? imageUrl;
@@ -35,66 +34,26 @@ class CharacterDetailAvatar extends StatelessWidget {
       ),
       child: ClipOval(
         child: imageUrl != null
-            ? CachedNetworkImage(
-                imageUrl: imageUrl!,
-                fadeInDuration: const Duration(milliseconds: 200),
-                fadeOutDuration: const Duration(milliseconds: 200),
-                imageBuilder: (context, imageProvider) {
-                  final imageDecoration = DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
-                  );
-
-                  if (shouldBlur) {
-                    return Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        ImageFiltered(
-                          imageFilter: ImageFilter.blur(
-                            sigmaX: 16,
-                            sigmaY: 16,
-                            tileMode: TileMode.clamp,
-                          ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              image: imageDecoration,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          color: context.appBackground.withValues(
-                            alpha: 0.65,
-                          ),
-                          alignment: Alignment.center,
-                          child: Icon(
-                            Icons.visibility_off_rounded,
-                            color: context.appTextPrimary.withValues(
-                              alpha: 0.7,
-                            ),
-                            size: 24,
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-
-                  return Container(
-                    decoration: BoxDecoration(
-                      image: imageDecoration,
+            ? Stack(
+                fit: StackFit.expand,
+                children: [
+                  CachedAvatarImage(
+                    imageUrl: imageUrl!,
+                    size: 100.0,
+                    shouldBlur: shouldBlur,
+                    blurSigma: 16.0,
+                  ),
+                  if (shouldBlur)
+                    Container(
+                      color: context.appBackground.withValues(alpha: 0.65),
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.visibility_off_rounded,
+                        color: context.appTextPrimary.withValues(alpha: 0.7),
+                        size: 24,
+                      ),
                     ),
-                  );
-                },
-                placeholder: (context, url) => Icon(
-                  Icons.person_rounded,
-                  size: 40,
-                  color: context.appTextMuted,
-                ),
-                errorWidget: (context, url, error) => Icon(
-                  Icons.person_rounded,
-                  size: 40,
-                  color: context.appTextMuted,
-                ),
+                ],
               )
             : Icon(
                 Icons.person_rounded,

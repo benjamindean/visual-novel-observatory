@@ -1,4 +1,7 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../core/storage/app_storage.dart';
 import '../../core/api/vndb_client.dart';
 import '../../core/utils/error_utils.dart';
@@ -47,6 +50,7 @@ class AuthNotifier extends Notifier<AuthState> {
   static const String _usernameKey = 'vndb_username';
   static const String _userIdKey = 'vndb_user_id';
   static const String _permissionsKey = 'vndb_permissions';
+  static const FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
   @override
   AuthState build() {
@@ -56,10 +60,38 @@ class AuthNotifier extends Notifier<AuthState> {
   Future<void> loadCachedAuth() async {
     final box = AppStorage.mainBox;
 
-    final cachedToken = box.get(_tokenKey) as String?;
+    final legacyToken = box.get(_tokenKey) as String?;
+    String? secureToken;
+
+    try {
+      secureToken = await _secureStorage.read(key: _tokenKey);
+    } catch (error, stackTrace) {
+      developer.log(
+        'Failed to read VNDB token from secure storage.',
+        name: 'AuthNotifier',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final cachedToken = secureToken ?? legacyToken;
     final cachedUsername = box.get(_usernameKey) as String?;
     final cachedUserId = box.get(_userIdKey) as String?;
     final cachedPermissions = box.get(_permissionsKey) as List<dynamic>?;
+
+    if (secureToken == null && legacyToken != null) {
+      try {
+        await _secureStorage.write(key: _tokenKey, value: legacyToken);
+        await box.delete(_tokenKey);
+      } catch (error, stackTrace) {
+        developer.log(
+          'Failed to migrate VNDB token to secure storage.',
+          name: 'AuthNotifier',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
+    }
 
     if (cachedToken != null && cachedUsername != null && cachedUserId != null) {
       state = AuthState(
@@ -87,7 +119,8 @@ class AuthNotifier extends Notifier<AuthState> {
 
       final box = AppStorage.mainBox;
 
-      await box.put(_tokenKey, token);
+      await _secureStorage.write(key: _tokenKey, value: token);
+      await box.delete(_tokenKey);
       await box.put(_usernameKey, username);
       await box.put(_userIdKey, userId);
       await box.put(_permissionsKey, permissions);
@@ -112,6 +145,17 @@ class AuthNotifier extends Notifier<AuthState> {
 
   Future<void> logout() async {
     final box = AppStorage.mainBox;
+
+    try {
+      await _secureStorage.delete(key: _tokenKey);
+    } catch (error, stackTrace) {
+      developer.log(
+        'Failed to delete VNDB token from secure storage.',
+        name: 'AuthNotifier',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
 
     await box.delete(_tokenKey);
     await box.delete(_usernameKey);

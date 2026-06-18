@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer' as developer;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/storage/app_storage.dart';
 import '../models/visual_novel.dart';
@@ -21,10 +23,12 @@ final searchScreenQueryProvider =
 
 class VnSearchNotifier extends Notifier<VnListState> {
   Timer? _debounceTimer;
+  int _requestGeneration = 0;
 
   @override
   VnListState build() {
     ref.listen<String>(searchScreenQueryProvider, (previous, next) {
+      _requestGeneration++;
       _debounceTimer?.cancel();
       _debounceTimer = Timer(const Duration(milliseconds: 500), () {
         resetAndFetch();
@@ -49,6 +53,7 @@ class VnSearchNotifier extends Notifier<VnListState> {
       return;
     }
 
+    final requestGeneration = _requestGeneration;
     final isInitial = state.vns.isEmpty;
 
     if (isInitial) {
@@ -66,6 +71,10 @@ class VnSearchNotifier extends Notifier<VnListState> {
         page: currentPage,
       );
 
+      if (requestGeneration != _requestGeneration) {
+        return;
+      }
+
       final List<VisualNovel> allVns = response['vns'] as List<VisualNovel>;
       final bool hasMore = response['hasMore'] as bool;
 
@@ -77,6 +86,10 @@ class VnSearchNotifier extends Notifier<VnListState> {
         page: currentPage + 1,
       );
     } catch (e) {
+      if (requestGeneration != _requestGeneration) {
+        return;
+      }
+
       state = state.copyWith(
         isLoading: false,
         isLoadMore: false,
@@ -86,6 +99,7 @@ class VnSearchNotifier extends Notifier<VnListState> {
   }
 
   Future<void> resetAndFetch() async {
+    _requestGeneration++;
     state = VnListState.initial();
     await fetchVns();
   }
@@ -116,7 +130,14 @@ class RecentlyOpenedSearchNotifier extends Notifier<List<VisualNovel>> {
             .map((e) => VisualNovel.fromJson(e as Map<String, dynamic>))
             .toList();
       }
-    } catch (_) {}
+    } catch (error, stackTrace) {
+      developer.log(
+        'Failed to load recently opened search VNs.',
+        name: 'RecentlyOpenedSearchNotifier',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   Future<void> addVn(VisualNovel vn) async {
@@ -134,7 +155,14 @@ class RecentlyOpenedSearchNotifier extends Notifier<List<VisualNovel>> {
       final String jsonStr = jsonEncode(list.map((e) => e.toJson()).toList());
 
       await box.put(_key, jsonStr);
-    } catch (_) {}
+    } catch (error, stackTrace) {
+      developer.log(
+        'Failed to save recently opened search VNs.',
+        name: 'RecentlyOpenedSearchNotifier',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   Future<void> clear() async {
@@ -143,7 +171,14 @@ class RecentlyOpenedSearchNotifier extends Notifier<List<VisualNovel>> {
       final box = AppStorage.mainBox;
 
       await box.delete(_key);
-    } catch (_) {}
+    } catch (error, stackTrace) {
+      developer.log(
+        'Failed to clear recently opened search VNs.',
+        name: 'RecentlyOpenedSearchNotifier',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
 }
 

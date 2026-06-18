@@ -16,6 +16,7 @@ import '../../vn/screens/filter/filter_screen.dart';
 import '../../vn/models/vn_voice_actor.dart';
 import '../../vn/screens/vn_character/character_screen.dart';
 import '../../vn/providers/vn_providers.dart';
+import 'invalid_route_screen.dart';
 
 class ScaffoldWithNavBar extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
@@ -111,9 +112,16 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/home/edit-filter',
       builder: (context, state) {
-        final tabId = state.extra as String;
+        final extra = state.extra;
 
-        return HomeCreateFilterScreen(tabId: tabId);
+        if (extra is! String) {
+          return const InvalidRouteScreen(
+            title: 'Filter Not Found',
+            message: 'This filter editor was opened without a valid filter.',
+          );
+        }
+
+        return HomeCreateFilterScreen(tabId: extra);
       },
     ),
     GoRoute(
@@ -123,33 +131,85 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/detail',
       builder: (context, state) {
-        final vn = state.extra as VisualNovel;
+        final extra = state.extra;
 
-        return VnDetailScreen(vn: vn);
+        if (extra is! VisualNovel) {
+          return const InvalidRouteScreen(
+            title: 'Visual Novel Not Found',
+            message: 'This detail page was opened without a visual novel.',
+          );
+        }
+
+        return VnDetailScreen(vn: extra);
       },
     ),
     GoRoute(
       path: '/character',
       builder: (context, state) {
-        final association = state.extra as VnVoiceActorAssociation;
+        final extra = state.extra;
 
-        return CharacterScreen(association: association);
+        if (extra is! VnVoiceActorAssociation) {
+          return const InvalidRouteScreen(
+            title: 'Character Not Found',
+            message: 'This character page was opened without character data.',
+          );
+        }
+
+        return CharacterScreen(association: extra);
       },
     ),
     GoRoute(
       path: '/tag-list',
       builder: (context, state) {
-        final args = state.extra as Map<String, String>;
+        final extra = state.extra;
 
-        return VnByTagScreen(tagId: args['tagId']!, tagName: args['tagName']!);
+        if (extra is! Map) {
+          return const InvalidRouteScreen(
+            title: 'Tag Not Found',
+            message: 'This tag page was opened without tag data.',
+          );
+        }
+
+        final tagId = extra['tagId'];
+        final tagName = extra['tagName'];
+
+        if (tagId is! String || tagName is! String) {
+          return const InvalidRouteScreen(
+            title: 'Tag Not Found',
+            message: 'This tag page was opened with invalid tag data.',
+          );
+        }
+
+        return VnByTagScreen(tagId: tagId, tagName: tagName);
       },
     ),
     GoRoute(
       path: '/gallery',
       pageBuilder: (context, state) {
-        final args = state.extra as Map<String, dynamic>;
-        final screenshots = args['screenshots'] as List<VnScreenshot>;
-        final initialIndex = args['initialIndex'] as int;
+        final extra = state.extra;
+
+        if (extra is! Map) {
+          return MaterialPage<void>(
+            key: state.pageKey,
+            child: const InvalidRouteScreen(
+              title: 'Gallery Not Found',
+              message: 'This gallery was opened without image data.',
+            ),
+          );
+        }
+
+        final screenshots = extra['screenshots'];
+        final initialIndex = extra['initialIndex'];
+
+        if (screenshots is! List<VnScreenshot> || initialIndex is! int) {
+          return MaterialPage<void>(
+            key: state.pageKey,
+            child: const InvalidRouteScreen(
+              title: 'Gallery Not Found',
+              message: 'This gallery was opened with invalid image data.',
+            ),
+          );
+        }
 
         return CustomTransitionPage<void>(
           key: state.pageKey,

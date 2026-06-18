@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/storage/app_storage.dart';
 import '../models/visual_novel.dart';
@@ -79,7 +81,14 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
 
         state = state.copyWith(entries: entriesMap);
       }
-    } catch (_) {}
+    } catch (error, stackTrace) {
+      developer.log(
+        'Failed to load cached user list.',
+        name: 'UserUlistNotifier',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   Future<void> fetchAllEntries() async {
@@ -201,7 +210,14 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
 
       await box.clear();
       await box.putAll({for (final entry in entries.values) entry.id: entry});
-    } catch (_) {}
+    } catch (error, stackTrace) {
+      developer.log(
+        'Failed to save user list cache.',
+        name: 'UserUlistNotifier',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   Future<void> updateVote(VisualNovel vn, int? voteScore) async {
@@ -349,7 +365,14 @@ final ulistLabelsProvider = FutureProvider<List<VndbLabel>>((ref) async {
     if (cached.isNotEmpty) {
       return cached;
     }
-  } catch (_) {}
+  } catch (error, stackTrace) {
+    developer.log(
+      'Failed to read cached ulist labels.',
+      name: 'ulistLabelsProvider',
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
 
   final list = await repository.getUserListLabels();
 
@@ -358,7 +381,14 @@ final ulistLabelsProvider = FutureProvider<List<VndbLabel>>((ref) async {
 
     await box.clear();
     await box.putAll({for (final label in list) label.id.toString(): label});
-  } catch (_) {}
+  } catch (error, stackTrace) {
+    developer.log(
+      'Failed to save cached ulist labels.',
+      name: 'ulistLabelsProvider',
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
 
   return list;
 });

@@ -54,12 +54,14 @@ class VnListState {
 
 class VnListNotifier extends Notifier<VnListState> {
   Timer? _debounceTimer;
+  int _requestGeneration = 0;
 
   @override
   VnListState build() {
     Future.microtask(() => fetchVns());
 
     ref.listen<String>(searchQueryProvider, (previous, next) {
+      _requestGeneration++;
       _debounceTimer?.cancel();
       _debounceTimer = Timer(const Duration(milliseconds: 500), () {
         resetAndFetch();
@@ -67,16 +69,19 @@ class VnListNotifier extends Notifier<VnListState> {
     });
 
     ref.listen<VnFilterState>(vnFilterProvider, (previous, next) {
+      _requestGeneration++;
       Future.microtask(() => resetAndFetch());
     });
 
     ref.listen<VnSortState>(vnSortProvider, (previous, next) {
+      _requestGeneration++;
       Future.microtask(() => resetAndFetch());
     });
 
     ref.listen<int>(
       settingsProvider.select((settings) => settings.spoilerLevel),
       (previous, next) {
+        _requestGeneration++;
         Future.microtask(() => resetAndFetch());
       },
     );
@@ -93,6 +98,7 @@ class VnListNotifier extends Notifier<VnListState> {
       return;
     }
 
+    final requestGeneration = _requestGeneration;
     final isInitial = state.vns.isEmpty;
 
     if (isInitial) {
@@ -130,6 +136,10 @@ class VnListNotifier extends Notifier<VnListState> {
         reverse: query.trim().isEmpty ? sortState.descending : true,
       );
 
+      if (requestGeneration != _requestGeneration) {
+        return;
+      }
+
       final List<VisualNovel> allVns = response['vns'] as List<VisualNovel>;
       final bool hasMore = response['hasMore'] as bool;
 
@@ -141,6 +151,10 @@ class VnListNotifier extends Notifier<VnListState> {
         page: currentPage + 1,
       );
     } catch (e) {
+      if (requestGeneration != _requestGeneration) {
+        return;
+      }
+
       state = state.copyWith(
         isLoading: false,
         isLoadMore: false,
@@ -150,6 +164,7 @@ class VnListNotifier extends Notifier<VnListState> {
   }
 
   Future<void> resetAndFetch() async {
+    _requestGeneration++;
     state = VnListState.initial();
     await fetchVns();
   }
@@ -161,6 +176,7 @@ final vnListProvider = NotifierProvider<VnListNotifier, VnListState>(
 
 class VnListByTagNotifier extends Notifier<VnListState> {
   final String _tagId;
+  int _requestGeneration = 0;
 
   VnListByTagNotifier(this._tagId);
 
@@ -171,6 +187,7 @@ class VnListByTagNotifier extends Notifier<VnListState> {
     ref.listen<int>(
       settingsProvider.select((settings) => settings.spoilerLevel),
       (previous, next) {
+        _requestGeneration++;
         Future.microtask(() => resetAndFetch());
       },
     );
@@ -183,6 +200,7 @@ class VnListByTagNotifier extends Notifier<VnListState> {
       return;
     }
 
+    final requestGeneration = _requestGeneration;
     final isInitial = state.vns.isEmpty;
 
     if (isInitial) {
@@ -204,6 +222,10 @@ class VnListByTagNotifier extends Notifier<VnListState> {
         page: currentPage,
       );
 
+      if (requestGeneration != _requestGeneration) {
+        return;
+      }
+
       final List<VisualNovel> allVns = response['vns'] as List<VisualNovel>;
       final bool hasMore = response['hasMore'] as bool;
 
@@ -215,6 +237,10 @@ class VnListByTagNotifier extends Notifier<VnListState> {
         page: currentPage + 1,
       );
     } catch (e) {
+      if (requestGeneration != _requestGeneration) {
+        return;
+      }
+
       state = state.copyWith(
         isLoading: false,
         isLoadMore: false,
@@ -224,6 +250,7 @@ class VnListByTagNotifier extends Notifier<VnListState> {
   }
 
   Future<void> resetAndFetch() async {
+    _requestGeneration++;
     state = VnListState.initial();
     await fetchVns();
   }

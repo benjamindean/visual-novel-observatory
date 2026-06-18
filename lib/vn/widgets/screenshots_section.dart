@@ -1,11 +1,8 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import '../models/vn_screenshot.dart';
-import 'image_placeholder.dart';
-import 'image_error_widget.dart';
+import 'cached_app_image.dart';
 import '../../theme/app_theme.dart';
 import '../../settings/providers/settings_provider.dart';
 
@@ -77,43 +74,13 @@ class ScreenshotsSection extends ConsumerWidget {
                     },
                     child: Stack(
                       children: [
-                        CachedNetworkImage(
+                        CachedAppImage(
                           imageUrl: screen.url,
                           fit: BoxFit.cover,
                           width: 240,
                           height: 150,
-                          memCacheWidth: 240,
-                          memCacheHeight: 150,
-                          fadeInDuration: const Duration(milliseconds: 200),
-                          fadeOutDuration: const Duration(milliseconds: 200),
-                          imageBuilder: (context, imageProvider) {
-                            final image = Image(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                              width: 240,
-                              height: 150,
-                            );
-
-                            return shouldBlur
-                                ? ImageFiltered(
-                                    imageFilter: ImageFilter.blur(
-                                      sigmaX: 10,
-                                      sigmaY: 10,
-                                      tileMode: TileMode.clamp,
-                                    ),
-                                    child: image,
-                                  )
-                                : image;
-                          },
-                          placeholder: (context, url) => const ImagePlaceholder(
-                            width: 240,
-                            height: 150,
-                          ),
-                          errorWidget: (context, url, error) =>
-                              const ImageErrorWidget(
-                                width: 240,
-                                height: 150,
-                              ),
+                          shouldBlur: shouldBlur,
+                          blurSigma: 10.0,
                         ),
                         if (shouldBlur)
                           Positioned.fill(
