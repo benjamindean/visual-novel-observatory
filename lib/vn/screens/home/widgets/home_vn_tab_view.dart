@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../providers/vn_providers.dart';
 import '../../../widgets/vn_card.dart';
+import 'home_sliver_app_bar.dart';
 
 class HomeVnTabView extends ConsumerStatefulWidget {
   const HomeVnTabView({
@@ -39,6 +40,7 @@ class HomeVnTabViewState extends ConsumerState<HomeVnTabView> {
         key: PageStorageKey('home_tab_scroll_${widget.tab.id}'),
         physics: const BouncingScrollPhysics(),
         slivers: [
+          HomeSliverAppBar(title: widget.tab.title),
           if (listState.isLoading)
             SliverFillRemaining(
               child: Center(

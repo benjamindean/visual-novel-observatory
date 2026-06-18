@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../theme/app_theme.dart';
 import '../../../models/vndb_label.dart';
+import 'library_sliver_app_bar.dart';
 
 class LibraryEmptyLabelView extends StatelessWidget {
   const LibraryEmptyLabelView({
@@ -21,6 +22,7 @@ class LibraryEmptyLabelView extends StatelessWidget {
         parent: BouncingScrollPhysics(),
       ),
       slivers: [
+        LibrarySliverAppBar(title: label.label ?? 'Library'),
         SliverFillRemaining(
           hasScrollBody: false,
           child: Center(

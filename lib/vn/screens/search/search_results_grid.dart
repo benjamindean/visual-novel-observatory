@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../providers/vn_providers.dart';
 import '../../widgets/vn_card.dart';
 import '../../../theme/app_theme.dart';
+import 'widgets/search_sliver_app_bar.dart';
 
 class SearchResultsGrid extends ConsumerWidget {
   final VnListState searchState;
@@ -18,6 +19,7 @@ class SearchResultsGrid extends ConsumerWidget {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
+        const SearchSliverAppBar(),
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
           sliver: SliverGrid(

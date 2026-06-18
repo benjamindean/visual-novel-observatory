@@ -5,7 +5,6 @@ import '../../providers/vn_providers.dart';
 import '../../widgets/app_search_input.dart';
 import '../../../theme/app_theme.dart';
 import 'widgets/search_body.dart';
-import 'widgets/search_sliver_app_bar.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -66,37 +65,29 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     return Scaffold(
       backgroundColor: context.appBackground,
-      body: NestedScrollView(
-        floatHeaderSlivers: true,
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return const [
-            SearchSliverAppBar(),
-          ];
-        },
-        body: Stack(
-          children: [
-            NotificationListener<ScrollNotification>(
-              onNotification: _handleScrollNotification,
-              child: const SearchBody(),
-            ),
+      body: Stack(
+        children: [
+          NotificationListener<ScrollNotification>(
+            onNotification: _handleScrollNotification,
+            child: const SearchBody(),
+          ),
 
-            // Floating organic bottom search bar (thumb-stretch aware)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                child: AppSearchInput(
-                  controller: _searchController,
-                  focusNode: _searchFocusNode,
-                  onChanged: (val) {
-                    ref.read(searchScreenQueryProvider.notifier).update(val);
-                  },
-                  hintText: 'Search visual novels...',
-                ),
+          // Floating organic bottom search bar (thumb-stretch aware)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+              child: AppSearchInput(
+                controller: _searchController,
+                focusNode: _searchFocusNode,
+                onChanged: (val) {
+                  ref.read(searchScreenQueryProvider.notifier).update(val);
+                },
+                hintText: 'Search visual novels...',
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

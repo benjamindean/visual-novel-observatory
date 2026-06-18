@@ -6,6 +6,7 @@ import '../../models/visual_novel.dart';
 import '../../providers/vn_providers.dart';
 import '../../widgets/vn_card.dart';
 import '../../../theme/app_theme.dart';
+import 'widgets/search_sliver_app_bar.dart';
 
 class SearchRecentList extends ConsumerWidget {
   final List<VisualNovel> recentVns;
@@ -22,6 +23,7 @@ class SearchRecentList extends ConsumerWidget {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
+        const SearchSliverAppBar(),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20.0, 12.0, 16.0, 8.0),

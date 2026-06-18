@@ -7,6 +7,7 @@ import '../../../models/vndb_label.dart';
 import '../../../providers/vn_providers.dart';
 import '../../../widgets/vn_card.dart';
 import 'library_empty_label_view.dart';
+import 'library_sliver_app_bar.dart';
 
 class LibraryTabView extends ConsumerWidget {
   const LibraryTabView({
@@ -36,34 +37,44 @@ class LibraryTabView extends ConsumerWidget {
       backgroundColor: context.appSurface,
       child: vns.isEmpty
           ? LibraryEmptyLabelView(label: label)
-          : GridView.builder(
+          : CustomScrollView(
               key: PageStorageKey('library_grid_${label.id}'),
               physics: const AlwaysScrollableScrollPhysics(
                 parent: BouncingScrollPhysics(),
               ),
-              padding: const EdgeInsets.fromLTRB(
-                16,
-                0,
-                16,
-                16,
-              ),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                childAspectRatio: 2 / 3,
-              ),
-              itemCount: vns.length,
-              itemBuilder: (context, index) {
-                final vn = vns[index];
+              slivers: [
+                LibrarySliverAppBar(title: label.label ?? 'Library'),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(
+                    16,
+                    0,
+                    16,
+                    16,
+                  ),
+                  sliver: SliverGrid(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 12,
+                          crossAxisSpacing: 12,
+                          childAspectRatio: 2 / 3,
+                        ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final vn = vns[index];
 
-                return VnCard(
-                  vn: vn,
-                  onTap: () {
-                    context.push('/detail', extra: vn);
-                  },
-                );
-              },
+                        return VnCard(
+                          vn: vn,
+                          onTap: () {
+                            context.push('/detail', extra: vn);
+                          },
+                        );
+                      },
+                      childCount: vns.length,
+                    ),
+                  ),
+                ),
+              ],
             ),
     );
   }

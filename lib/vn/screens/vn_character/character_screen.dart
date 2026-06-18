@@ -74,6 +74,7 @@ class CharacterScreen extends ConsumerWidget {
           SliverAppBar(
             pinned: false,
             floating: true,
+            snap: true,
             automaticallyImplyLeading: false,
             leading: IconButton(
               icon: const Icon(
@@ -85,7 +86,9 @@ class CharacterScreen extends ConsumerWidget {
             backgroundColor: context.appBackground,
             title: Text(
               char.name,
-              style: TextStyle(
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.titleLarge?.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.bold,
               ),

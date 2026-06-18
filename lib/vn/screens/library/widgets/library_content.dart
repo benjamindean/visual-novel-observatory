@@ -12,14 +12,7 @@ import 'library_status_scroll_view.dart';
 import 'library_tab_change_listener.dart';
 
 class LibraryContent extends ConsumerWidget {
-  const LibraryContent({
-    super.key,
-    required this.nestedScrollViewKey,
-    required this.outerScrollController,
-  });
-
-  final GlobalKey<NestedScrollViewState> nestedScrollViewKey;
-  final ScrollController outerScrollController;
+  const LibraryContent({super.key});
 
   int _initialIndexFor(List<VndbLabel> activeLabels) {
     final lastLabelId =
@@ -82,8 +75,6 @@ class LibraryContent extends ConsumerWidget {
 
                 return LibraryDataView(
                   activeLabels: dataLabels,
-                  nestedScrollViewKey: nestedScrollViewKey,
-                  outerScrollController: outerScrollController,
                 );
               },
               loading: () => LibraryStatusScrollView(

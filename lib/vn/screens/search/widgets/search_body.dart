@@ -8,6 +8,7 @@ import '../search_loading_view.dart';
 import '../search_no_results.dart';
 import '../search_recent_list.dart';
 import '../search_results_grid.dart';
+import 'search_status_scroll_view.dart';
 
 class SearchBody extends ConsumerWidget {
   const SearchBody({super.key});
@@ -21,18 +22,24 @@ class SearchBody extends ConsumerWidget {
     // 1. Loading State (when no vns are loaded yet)
 
     if (searchState.isLoading && searchState.vns.isEmpty) {
-      return const SearchLoadingView();
+      return const SearchStatusScrollView(
+        child: SearchLoadingView(),
+      );
     }
 
     // 2. Error State (when no vns are loaded yet)
     if (searchState.errorMessage != null && searchState.vns.isEmpty) {
-      return SearchErrorView(errorMessage: searchState.errorMessage!);
+      return SearchStatusScrollView(
+        child: SearchErrorView(errorMessage: searchState.errorMessage!),
+      );
     }
 
     // 3. Initial Empty State (when search query is empty)
     if (query.trim().isEmpty) {
       if (recentVns.isEmpty) {
-        return const SearchEmptyPlaceholder();
+        return const SearchStatusScrollView(
+          child: SearchEmptyPlaceholder(),
+        );
       }
 
       // Recent searches list
@@ -41,7 +48,9 @@ class SearchBody extends ConsumerWidget {
 
     // 4. No Results Found State
     if (searchState.vns.isEmpty) {
-      return const SearchNoResults();
+      return const SearchStatusScrollView(
+        child: SearchNoResults(),
+      );
     }
 
     // 5. Results State

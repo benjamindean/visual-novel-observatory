@@ -4,7 +4,12 @@ import '../../../../theme/app_theme.dart';
 import '../../../widgets/app_settings_button.dart';
 
 class LibrarySliverAppBar extends StatelessWidget {
-  const LibrarySliverAppBar({super.key});
+  const LibrarySliverAppBar({
+    super.key,
+    this.title = 'Library',
+  });
+
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +17,7 @@ class LibrarySliverAppBar extends StatelessWidget {
 
     return SliverAppBar(
       floating: true,
-      snap: false,
+      snap: true,
       pinned: false,
       elevation: 0,
       scrolledUnderElevation: 0,
@@ -20,10 +25,11 @@ class LibrarySliverAppBar extends StatelessWidget {
       titleSpacing: 20,
       centerTitle: false,
       title: Text(
-        'Library',
-        style: theme.textTheme.headlineMedium?.copyWith(
+        title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.bold,
-          letterSpacing: -0.5,
         ),
       ),
       actions: const [

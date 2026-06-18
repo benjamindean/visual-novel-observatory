@@ -4,7 +4,12 @@ import '../../../../theme/app_theme.dart';
 import '../../../widgets/app_settings_button.dart';
 
 class HomeSliverAppBar extends StatelessWidget {
-  const HomeSliverAppBar({super.key});
+  const HomeSliverAppBar({
+    super.key,
+    required this.title,
+  });
+
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -12,17 +17,18 @@ class HomeSliverAppBar extends StatelessWidget {
 
     return SliverAppBar(
       floating: true,
-      snap: false,
+      snap: true,
       pinned: false,
       elevation: 0,
       scrolledUnderElevation: 0,
       backgroundColor: context.appBackground,
       titleSpacing: 20,
       title: Text(
-        'Home',
-        style: theme.textTheme.headlineMedium?.copyWith(
+        title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.bold,
-          letterSpacing: -0.5,
         ),
       ),
       actions: const [

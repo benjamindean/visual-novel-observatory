@@ -6,7 +6,6 @@ import '../../../providers/vn_providers.dart';
 import 'home_bottom_tab_bar.dart';
 import 'home_tab_change_listener.dart';
 import 'home_vn_tab_view.dart';
-import 'home_sliver_app_bar.dart';
 
 class HomeTabbedView extends ConsumerWidget {
   const HomeTabbedView({super.key});
@@ -31,23 +30,15 @@ class HomeTabbedView extends ConsumerWidget {
         tabs: tabs,
         child: Scaffold(
           backgroundColor: context.appBackground,
-          body: NestedScrollView(
-            floatHeaderSlivers: true,
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return const [
-                HomeSliverAppBar(),
-              ];
-            },
-            body: TabBarView(
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                for (final tab in tabs)
-                  if (tab.id == HomeTabIds.createFilter)
-                    const SizedBox.shrink()
-                  else
-                    HomeVnTabView(tab: tab),
-              ],
-            ),
+          body: TabBarView(
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              for (final tab in tabs)
+                if (tab.id == HomeTabIds.createFilter)
+                  const SizedBox.shrink()
+                else
+                  HomeVnTabView(tab: tab),
+            ],
           ),
           bottomNavigationBar: HomeBottomTabBar(tabs: tabs),
         ),

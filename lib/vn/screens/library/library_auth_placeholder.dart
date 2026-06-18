@@ -18,7 +18,7 @@ class LibraryAuthPlaceholder extends StatelessWidget {
           slivers: [
             SliverAppBar(
               floating: true,
-              snap: false,
+              snap: true,
               pinned: false,
               elevation: 0,
               scrolledUnderElevation: 0,
@@ -27,9 +27,10 @@ class LibraryAuthPlaceholder extends StatelessWidget {
               centerTitle: false,
               title: Text(
                 'Library',
-                style: theme.textTheme.headlineMedium?.copyWith(
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
-                  letterSpacing: -0.5,
                 ),
               ),
             ),

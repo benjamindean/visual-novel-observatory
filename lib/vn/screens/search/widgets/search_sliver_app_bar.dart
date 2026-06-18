@@ -14,7 +14,7 @@ class SearchSliverAppBar extends ConsumerWidget {
 
     return SliverAppBar(
       floating: true,
-      snap: false,
+      snap: true,
       pinned: false,
       elevation: 0,
       scrolledUnderElevation: 0,
@@ -27,9 +27,10 @@ class SearchSliverAppBar extends ConsumerWidget {
         },
         child: Text(
           'Search',
-          style: theme.textTheme.headlineMedium?.copyWith(
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
-            letterSpacing: -0.5,
           ),
         ),
       ),
