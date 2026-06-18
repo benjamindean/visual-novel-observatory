@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../theme/app_theme.dart';
 import '../../providers/vn_providers.dart';
+import '../../widgets/bottom_action_bar.dart';
 import 'widgets/home_create_filter_tab.dart';
 
 class HomeCreateFilterScreen extends ConsumerStatefulWidget {
@@ -98,45 +99,12 @@ class HomeCreateFilterScreenState
         key: _filterKey,
         initialTab: tab,
       ),
-      bottomNavigationBar: Material(
-        color: context.colorScheme.surfaceContainerHigh,
-        child: SafeArea(
-          top: false,
-          bottom: true,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 12.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.appAccentTeal,
-                      foregroundColor: context.colorScheme.onPrimary,
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24.0),
-                      ),
-                    ),
-                    onPressed: () {
-                      _filterKey.currentState?.submitTab();
-                    },
-                    icon: Icon(
-                      Icons.add_rounded,
-                      color: context.colorScheme.onPrimary,
-                    ),
-                    label: Text(
-                      isEditing ? 'Save Changes' : 'Create Tab',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+      bottomNavigationBar: BottomActionBar(
+        label: isEditing ? 'Save Changes' : 'Create Tab',
+        icon: Icons.add_rounded,
+        onPressed: () {
+          _filterKey.currentState?.submitTab();
+        },
       ),
     );
   }

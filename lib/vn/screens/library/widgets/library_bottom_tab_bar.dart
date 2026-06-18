@@ -41,7 +41,11 @@ class LibraryBottomTabBar extends StatelessWidget {
             fontSize: 13,
           ),
           tabs: [
-            for (final label in activeLabels) LibraryLabelTab(label: label),
+            for (final indexedLabel in activeLabels.indexed)
+              LibraryLabelTab(
+                label: indexedLabel.$2,
+                index: indexedLabel.$1,
+              ),
           ],
         ),
       ),

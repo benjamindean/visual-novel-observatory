@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/vn_tag.dart';
 import '../../providers/vn_providers.dart';
 import '../../widgets/app_search_input.dart';
+import '../../widgets/bottom_action_bar.dart';
 import '../../../theme/app_theme.dart';
 import '../../../settings/providers/settings_provider.dart';
 import 'tag_filter_caching_placeholder.dart';
@@ -122,64 +123,12 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
       bottomNavigationBar:
           localTagsState.isLoading && localTagsState.tags.isEmpty
           ? null
-          : BottomAppBar(
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: context.appAccentTeal,
-                    foregroundColor: context.colorScheme.onPrimary,
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24.0),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop(_selectedTags);
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Save Tags',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                      if (_selectedTags.isNotEmpty) ...[
-                        const SizedBox(
-                          width: 4.0,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 3.0,
-                          ),
-                          child: Container(
-                            width: 24.0,
-                            height: 24.0,
-                            decoration: BoxDecoration(
-                              color: context.colorScheme.onPrimary,
-                              shape: BoxShape.circle,
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              '${_selectedTags.length}',
-                              style: TextStyle(
-                                color: context.appAccentTeal,
-                                fontSize: 11.0,
-                                fontWeight: FontWeight.w900,
-                                height: 2.0,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
+          : BottomActionBar(
+              label: 'Save Tags',
+              badgeCount: _selectedTags.length,
+              onPressed: () {
+                Navigator.of(context).pop(_selectedTags);
+              },
             ),
       body: localTagsState.isLoading && localTagsState.tags.isEmpty
           ? TagFilterCachingPlaceholder(progress: localTagsState.progress)

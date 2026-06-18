@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../providers/vn_providers.dart';
 import '../../models/vn_tag.dart';
+import '../../widgets/bottom_action_bar.dart';
 import '../../../theme/app_theme.dart';
 import '../../../settings/providers/settings_provider.dart';
 import 'filter_section_header.dart';
@@ -341,25 +342,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: context.appAccentTeal,
-              foregroundColor: context.colorScheme.onPrimary,
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24.0),
-              ),
-            ),
-            onPressed: _applyFilters,
-            child: const Text(
-              'Apply Filters',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-            ),
-          ),
-        ),
+      bottomNavigationBar: BottomActionBar(
+        label: 'Apply Filters',
+        onPressed: _applyFilters,
       ),
     );
   }

@@ -68,7 +68,8 @@ class FilterTagsTile extends StatelessWidget {
                           child: Text(
                             tag.name,
                             style: TextStyle(
-                              color: context.appAccentTeal,
+                              color:
+                                  context.theme.colorScheme.onPrimaryContainer,
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
                             ),

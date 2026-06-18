@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../models/vn_screenshot.dart';
 import '../../widgets/image_placeholder.dart';
 import '../../widgets/image_error_widget.dart';
+import '../../widgets/reveal_image_button.dart';
 import '../../../settings/providers/settings_provider.dart';
 import '../../../theme/app_theme.dart';
 
@@ -318,44 +319,12 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
                                               ),
                                             ),
                                             const SizedBox(height: 16),
-                                            ElevatedButton.icon(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: context
-                                                    .appTextPrimary
-                                                    .withValues(alpha: 0.1),
-                                                foregroundColor:
-                                                    context.appTextPrimary,
-                                                side: BorderSide(
-                                                  color: context.appTextPrimary
-                                                      .withValues(alpha: 0.3),
-                                                ),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                        20,
-                                                      ),
-                                                ),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 16,
-                                                      vertical: 10,
-                                                    ),
-                                              ),
+                                            RevealImageButton(
                                               onPressed: () {
                                                 setState(() {
                                                   _revealedIndices.add(index);
                                                 });
                                               },
-                                              icon: const Icon(
-                                                Icons.visibility_rounded,
-                                                size: 16,
-                                              ),
-                                              label: const Text(
-                                                'Reveal Image',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
                                             ),
                                           ],
                                         ),

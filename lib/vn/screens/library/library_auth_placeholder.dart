@@ -18,7 +18,7 @@ class LibraryAuthPlaceholder extends StatelessWidget {
           slivers: [
             SliverAppBar(
               floating: true,
-              snap: true,
+              snap: false,
               pinned: false,
               elevation: 0,
               scrolledUnderElevation: 0,

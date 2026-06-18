@@ -74,7 +74,7 @@ class CharacterScreen extends ConsumerWidget {
           SliverAppBar(
             pinned: false,
             floating: true,
-            snap: true,
+            snap: false,
             automaticallyImplyLeading: false,
             leading: IconButton(
               icon: const Icon(

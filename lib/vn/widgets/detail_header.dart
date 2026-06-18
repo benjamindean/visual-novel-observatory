@@ -6,16 +6,26 @@ import '../models/visual_novel.dart';
 import 'rating_badge.dart';
 import 'image_placeholder.dart';
 import 'image_error_widget.dart';
+import 'reveal_image_button.dart';
 import '../../theme/app_theme.dart';
 import '../../settings/providers/settings_provider.dart';
 
-class DetailHeader extends ConsumerWidget {
+class DetailHeader extends ConsumerStatefulWidget {
   final VisualNovel vn;
 
   const DetailHeader({super.key, required this.vn});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DetailHeader> createState() {
+    return DetailHeaderState();
+  }
+}
+
+class DetailHeaderState extends ConsumerState<DetailHeader> {
+  bool _isImageRevealed = false;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final contentSettings = ref.watch(
@@ -26,14 +36,16 @@ class DetailHeader extends ConsumerWidget {
         ),
       ),
     );
+    final vn = widget.vn;
 
-    final shouldBlur =
+    final isSensitive =
         (!contentSettings.showExplicitContent &&
             vn.imageSexual != null &&
             vn.imageSexual! > 0.2) ||
         (!contentSettings.showViolentContent &&
             vn.imageViolence != null &&
             vn.imageViolence! > 0.2);
+    final shouldBlur = isSensitive && !_isImageRevealed;
 
     return SizedBox(
       width: double.infinity,
@@ -118,6 +130,14 @@ class DetailHeader extends ConsumerWidget {
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 ),
+                              ),
+                              const SizedBox(height: 16),
+                              RevealImageButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isImageRevealed = true;
+                                  });
+                                },
                               ),
                             ],
                           ),

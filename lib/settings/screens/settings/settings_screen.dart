@@ -30,49 +30,47 @@ class SettingsScreen extends ConsumerWidget {
         elevation: 0,
         scrolledUnderElevation: 0,
       ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20.0,
-            vertical: 16.0,
-          ),
-          children: [
-            const SettingsSectionHeader(title: 'VNDB Profile'),
-            const SizedBox(height: 12),
-            if (authState.isAuthenticated)
-              const VndbProfileCard()
-            else
-              const VndbConnectCard(),
-            const SizedBox(height: 32),
-            const SettingsSectionHeader(title: 'Appearance'),
-            const SizedBox(height: 12),
-            SettingsCard(
-              children: [
-                const ThemeModeTile(),
-                if (isDarkActive) ...[
-                  const Divider(height: 1),
-                  const TrueBlackTile(),
-                ],
-                const Divider(height: 1),
-                const ThemeTile(),
-              ],
-            ),
-            const SizedBox(height: 32),
-            const SettingsSectionHeader(title: 'Search Defaults'),
-            const SizedBox(height: 12),
-            const SettingsCard(
-              children: [
-                SpoilerTile(),
-                Divider(height: 1),
-                ExplicitContentTile(),
-                Divider(height: 1),
-                ViolentContentTile(),
-              ],
-            ),
-            const SizedBox(height: 32),
-            const Center(child: VndbSourceNote()),
-          ],
+      body: ListView(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20.0,
+          vertical: 16.0,
         ),
+        children: [
+          const SettingsSectionHeader(title: 'VNDB Profile'),
+          const SizedBox(height: 12),
+          if (authState.isAuthenticated)
+            const VndbProfileCard()
+          else
+            const VndbConnectCard(),
+          const SizedBox(height: 32),
+          const SettingsSectionHeader(title: 'Appearance'),
+          const SizedBox(height: 12),
+          SettingsCard(
+            children: [
+              const ThemeModeTile(),
+              if (isDarkActive) ...[
+                const Divider(height: 1),
+                const TrueBlackTile(),
+              ],
+              const Divider(height: 1),
+              const ThemeTile(),
+            ],
+          ),
+          const SizedBox(height: 32),
+          const SettingsSectionHeader(title: 'Search Defaults'),
+          const SizedBox(height: 12),
+          const SettingsCard(
+            children: [
+              SpoilerTile(),
+              Divider(height: 1),
+              ExplicitContentTile(),
+              Divider(height: 1),
+              ViolentContentTile(),
+            ],
+          ),
+          const SizedBox(height: 32),
+          const Center(child: VndbSourceNote()),
+        ],
       ),
     );
   }

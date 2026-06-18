@@ -14,7 +14,7 @@ class SearchSliverAppBar extends ConsumerWidget {
 
     return SliverAppBar(
       floating: true,
-      snap: true,
+      snap: false,
       pinned: false,
       elevation: 0,
       scrolledUnderElevation: 0,
