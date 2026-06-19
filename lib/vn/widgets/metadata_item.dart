@@ -5,12 +5,14 @@ class MetadataItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
+  final Color? iconColor;
 
   const MetadataItem({
     super.key,
     required this.icon,
     required this.label,
     required this.value,
+    this.iconColor,
   });
 
   @override
@@ -22,7 +24,7 @@ class MetadataItem extends StatelessWidget {
         children: [
           Icon(
             icon,
-            color: context.appTextMuted,
+            color: iconColor ?? context.appTextMuted,
             size: 20,
           ),
           const SizedBox(height: 6),

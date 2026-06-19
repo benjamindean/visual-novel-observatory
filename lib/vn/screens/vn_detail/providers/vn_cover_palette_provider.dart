@@ -37,13 +37,13 @@ class VnCoverPalette {
       brightness: brightness,
     );
     final tintAlpha = brightness == Brightness.dark ? 0.10 : 0.10;
-    final surfaceTintAlpha = brightness == Brightness.dark ? 0.15 : 0.15;
+    final surfaceTintAlpha = brightness == Brightness.dark ? 0.12 : 0.15;
     final scaffoldBackgroundColor = Color.alphaBlend(
       fittedPrimary.withValues(alpha: tintAlpha),
       baseTheme.scaffoldBackgroundColor,
     );
     final cardColor = Color.alphaBlend(
-      fittedSecondary.withValues(alpha: surfaceTintAlpha),
+      fittedPrimary.withValues(alpha: surfaceTintAlpha),
       baseTheme.cardColor,
     );
     final inputFillColor = Color.alphaBlend(

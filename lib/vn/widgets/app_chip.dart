@@ -28,6 +28,11 @@ class AppChip extends StatelessWidget {
     final decoration = BoxDecoration(
       color: backgroundColor ?? context.appSurface,
       borderRadius: BorderRadius.circular(12),
+      border: Border.all(
+        color: context.appTextPrimary.withValues(
+          alpha: context.theme.brightness == Brightness.light ? 0.10 : 0.05,
+        ),
+      ),
     );
 
     final innerContent = Row(
@@ -61,22 +66,19 @@ class AppChip extends StatelessWidget {
     );
 
     if (onTap != null) {
-      return Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: Ink(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: decoration,
-            child: innerContent,
-          ),
+      return InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Ink(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: decoration,
+          child: innerContent,
         ),
       );
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: decoration,
       child: innerContent,
     );

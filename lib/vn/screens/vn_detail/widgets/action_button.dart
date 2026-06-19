@@ -24,7 +24,7 @@ class ActionButton extends StatelessWidget {
         ),
         child: Icon(
           icon,
-          color: context.appTextPrimary,
+          color: context.theme.colorScheme.secondary,
           size: 22,
         ),
       ),

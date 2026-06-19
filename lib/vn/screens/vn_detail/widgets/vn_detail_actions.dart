@@ -74,7 +74,7 @@ class VnDetailActions extends ConsumerWidget {
         const SizedBox(width: 12),
         Expanded(
           child: VnDetailUserActionButton(
-            icon: Icons.star_border_rounded,
+            icon: Icons.star_outline_rounded,
             label: ulistState.entry?.vote != null ? 'Vote' : 'My Vote',
             count: ulistState.entry?.vote != null
                 ? (ulistState.entry!.vote! / 10).toInt()

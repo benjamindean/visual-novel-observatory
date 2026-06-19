@@ -17,7 +17,7 @@ class SettingsState {
     this.themeName = 'vndb',
     this.themeMode = 'system',
     this.darkIsTrueBlack = false,
-    this.useCoverColorScheme = false,
+    this.useCoverColorScheme = true,
   });
 
   SettingsState copyWith({
@@ -62,7 +62,7 @@ class SettingsNotifier extends Notifier<SettingsState> {
     final mode = box.get(_themeModeKey) as String? ?? 'system';
     final isTrueBlack = box.get(_darkIsTrueBlackKey) as bool? ?? false;
     final useCoverColorScheme =
-        box.get(_useCoverColorSchemeKey) as bool? ?? false;
+        box.get(_useCoverColorSchemeKey) as bool? ?? true;
 
     return SettingsState(
       spoilerLevel: spoiler,
