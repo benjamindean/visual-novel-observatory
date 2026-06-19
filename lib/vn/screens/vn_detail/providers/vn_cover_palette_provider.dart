@@ -36,8 +36,8 @@ class VnCoverPalette {
       seedColor: fittedPrimary,
       brightness: brightness,
     );
-    final tintAlpha = brightness == Brightness.dark ? 0.07 : 0.05;
-    final surfaceTintAlpha = brightness == Brightness.dark ? 0.10 : 0.07;
+    final tintAlpha = brightness == Brightness.dark ? 0.10 : 0.10;
+    final surfaceTintAlpha = brightness == Brightness.dark ? 0.15 : 0.15;
     final scaffoldBackgroundColor = Color.alphaBlend(
       fittedPrimary.withValues(alpha: tintAlpha),
       baseTheme.scaffoldBackgroundColor,
@@ -146,9 +146,9 @@ Color _fitAccentColor(
     return fallback;
   }
 
-  final minLightness = brightness == Brightness.dark ? 0.54 : 0.34;
-  final maxLightness = brightness == Brightness.dark ? 0.74 : 0.48;
-  final saturation = hsl.saturation.clamp(0.36, 0.82);
+  final minLightness = brightness == Brightness.dark ? 0.65 : 0.30;
+  final maxLightness = brightness == Brightness.dark ? 0.75 : 0.35;
+  final saturation = hsl.saturation.clamp(0.35, 0.80);
   final lightness = hsl.lightness.clamp(minLightness, maxLightness);
 
   return hsl.withSaturation(saturation).withLightness(lightness).toColor();
