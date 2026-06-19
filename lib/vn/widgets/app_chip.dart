@@ -66,13 +66,19 @@ class AppChip extends StatelessWidget {
     );
 
     if (onTap != null) {
-      return InkWell(
-        onTap: onTap,
+      return Material(
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(12),
+        clipBehavior: Clip.antiAlias,
         child: Ink(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: decoration,
-          child: innerContent,
+          child: InkWell(
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              child: innerContent,
+            ),
+          ),
         ),
       );
     }
