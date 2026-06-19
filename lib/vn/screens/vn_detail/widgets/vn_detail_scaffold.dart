@@ -72,7 +72,7 @@ class VnDetailScaffold extends StatelessWidget {
                   ],
 
                   // Tags List
-                  TagsSection(tags: vn.tags, initialLimit: 7),
+                  TagsSection(tags: vn.tags, initialLimit: 6),
                   if (vn.tags.isNotEmpty) const SizedBox(height: 24),
 
                   // Platforms Section

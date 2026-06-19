@@ -119,13 +119,33 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
         ),
         elevation: 0,
         scrolledUnderElevation: 0,
+        actions: [
+          TextButton(
+            onPressed: _selectedTags.isEmpty
+                ? null
+                : () {
+                    setState(() {
+                      _selectedTags.clear();
+                      _selectedTagIds.clear();
+                    });
+
+                    if (_searchController.text.isNotEmpty) {
+                      _performSearch(_searchController.text);
+                    }
+                  },
+            child: Text(
+              'Clear',
+              style: TextStyle(color: context.colorScheme.error),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       bottomNavigationBar:
           localTagsState.isLoading && localTagsState.tags.isEmpty
           ? null
           : BottomActionBar(
               label: 'Save Tags',
-              badgeCount: _selectedTags.length,
               onPressed: () {
                 Navigator.of(context).pop(_selectedTags);
               },

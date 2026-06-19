@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'app_chip.dart';
+import 'chip_overflow_wrap.dart';
 import '../../theme/app_theme.dart';
+import '../constants/vndb_platforms.dart';
 
 class PlatformsSection extends StatelessWidget {
   final List<String> platforms;
@@ -16,21 +18,6 @@ class PlatformsSection extends StatelessWidget {
 
     final theme = Theme.of(context);
 
-    final platformMeta = <String, (String, dynamic)>{
-      'win': ('Windows', FontAwesomeIcons.windows),
-      'swi': ('Nintendo Switch', FontAwesomeIcons.gamepad),
-      'ps4': ('PlayStation 4', FontAwesomeIcons.playstation),
-      'ps5': ('PlayStation 5', FontAwesomeIcons.playstation),
-      'ps3': ('PlayStation 3', FontAwesomeIcons.playstation),
-      'psv': ('PlayStation Vita', FontAwesomeIcons.playstation),
-      'psp': ('PlayStation Portable', FontAwesomeIcons.playstation),
-      'and': ('Android', FontAwesomeIcons.android),
-      'ios': ('iOS', FontAwesomeIcons.apple),
-      'mac': ('macOS', FontAwesomeIcons.apple),
-      'lin': ('Linux', FontAwesomeIcons.linux),
-      'web': ('Web Browser', FontAwesomeIcons.globe),
-    };
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -41,18 +28,14 @@ class PlatformsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
+        ChipOverflowWrap(
           children: platforms.map((platformCode) {
-            final meta =
-                platformMeta[platformCode.toLowerCase()] ??
-                (platformCode.toUpperCase(), FontAwesomeIcons.gamepad);
+            final platform = vndbPlatformById(platformCode.toLowerCase());
 
             return AppChip(
-              label: meta.$1,
+              label: platform?.label ?? platformCode.toUpperCase(),
               leading: FaIcon(
-                meta.$2,
+                platform?.icon ?? FontAwesomeIcons.gamepad,
                 size: 14,
                 color: context.appAccentTeal,
               ),

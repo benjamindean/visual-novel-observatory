@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
 import 'app_chip.dart';
+import 'chip_overflow_wrap.dart';
 
 class LanguagesSection extends StatelessWidget {
   final String? originalLanguage;
@@ -81,9 +82,7 @@ class LanguagesSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
+        ChipOverflowWrap(
           children: [
             if (originalLabel != null)
               AppChip(

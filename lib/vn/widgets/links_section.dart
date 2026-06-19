@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'app_chip.dart';
+import 'chip_overflow_wrap.dart';
 import '../models/vn_external_link.dart';
 
 class LinksSection extends StatelessWidget {
@@ -49,9 +50,7 @@ class LinksSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
+        ChipOverflowWrap(
           children: finalLinks.map((link) {
             return AppChip(
               label: link.label,

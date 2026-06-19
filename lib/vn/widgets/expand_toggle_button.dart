@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_theme.dart';
+import 'expand_chip_button.dart';
 
 class ExpandToggleButton extends StatelessWidget {
   final bool isExpanded;
@@ -18,30 +18,15 @@ class ExpandToggleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final labelText = isExpanded
-        ? (expandedLabel ?? 'Show Less')
-        : (collapsedLabel ?? 'Show More');
-
-    final iconData = isExpanded
-        ? Icons.keyboard_arrow_up_rounded
-        : Icons.keyboard_arrow_down_rounded;
+        ? (expandedLabel ?? 'Show less')
+        : (collapsedLabel ?? 'Show more');
 
     return Align(
       alignment: Alignment.centerLeft,
-      child: TextButton.icon(
-        onPressed: onPressed,
-        icon: Icon(iconData, color: context.appAccentTeal, size: 20),
-        label: Text(
-          labelText,
-          style: TextStyle(
-            color: context.appAccentTeal,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        style: TextButton.styleFrom(
-          padding: EdgeInsets.zero,
-          minimumSize: const Size(50, 30),
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
+      child: ExpandChipButton(
+        label: labelText,
+        isExpanded: isExpanded,
+        onTap: onPressed,
       ),
     );
   }

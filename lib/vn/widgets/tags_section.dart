@@ -3,22 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../models/vn_tag.dart';
 import 'tag_chip.dart';
-import 'expand_toggle_button.dart';
+import 'chip_overflow_wrap.dart';
 import '../../settings/providers/settings_provider.dart';
 
 class TagsSection extends ConsumerStatefulWidget {
   final List<VnTag> tags;
   final int initialLimit;
 
-  const TagsSection({super.key, required this.tags, this.initialLimit = 12});
+  const TagsSection({super.key, required this.tags, this.initialLimit = 6});
 
   @override
   ConsumerState<TagsSection> createState() => _TagsSectionState();
 }
 
 class _TagsSectionState extends ConsumerState<TagsSection> {
-  bool _areTagsExpanded = false;
-
   List<VnTag> _getDisplayTags(SettingsState settings) {
     final filtered = widget.tags.where((tag) {
       final isExplicit = tag.category == 'ero';
@@ -52,38 +50,23 @@ class _TagsSectionState extends ConsumerState<TagsSection> {
           ),
         ),
         const SizedBox(height: 12),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children:
-              (_areTagsExpanded
-                      ? displayTagsList
-                      : displayTagsList.take(widget.initialLimit))
-                  .map(
-                    (tag) => TagChip(
-                      label: tag.name,
-                      score: tag.rating,
-                      onTap: () {
-                        context.push(
-                          '/tag-list',
-                          extra: {'tagId': tag.id, 'tagName': tag.name},
-                        );
-                      },
-                    ),
-                  )
-                  .toList(),
+        ChipOverflowWrap(
+          initialLimit: widget.initialLimit,
+          children: displayTagsList
+              .map(
+                (tag) => TagChip(
+                  label: tag.name,
+                  score: tag.rating,
+                  onTap: () {
+                    context.push(
+                      '/tag-list',
+                      extra: {'tagId': tag.id, 'tagName': tag.name},
+                    );
+                  },
+                ),
+              )
+              .toList(),
         ),
-        if (displayTagsList.length > widget.initialLimit) ...[
-          const SizedBox(height: 12),
-          ExpandToggleButton(
-            isExpanded: _areTagsExpanded,
-            onPressed: () {
-              setState(() {
-                _areTagsExpanded = !_areTagsExpanded;
-              });
-            },
-          ),
-        ],
       ],
     );
   }

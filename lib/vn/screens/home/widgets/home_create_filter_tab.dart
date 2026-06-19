@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../settings/providers/settings_provider.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../models/vn_tag.dart';
 import '../../../providers/vn_providers.dart';
 import '../../filter/filter_chip_row.dart';
+import '../../filter/filter_platforms_tile.dart';
 import '../../filter/filter_release_date_range_tile.dart';
 import '../../filter/filter_sort_row.dart';
 import '../../filter/filter_tags_tile.dart';
@@ -233,25 +233,11 @@ class HomeCreateFilterTabState extends ConsumerState<HomeCreateFilterTab> {
                           ),
                         ),
                         const SizedBox(height: 8.0),
-                        FilterChipRow<String>(
-                          items: const {
-                            'win': 'Windows',
-                            'swi': 'Switch',
-                            'ps4': 'PS4',
-                            'and': 'Android',
-                            'ios': 'iOS',
-                          },
-                          itemIcons: const {
-                            'win': FontAwesomeIcons.windows,
-                            'swi': FontAwesomeIcons.gamepad,
-                            'ps4': FontAwesomeIcons.playstation,
-                            'and': FontAwesomeIcons.android,
-                            'ios': FontAwesomeIcons.apple,
-                          },
-                          selectedValues: _selectedPlatforms,
-                          onSelected: (vals) {
+                        FilterPlatformsTile(
+                          selectedPlatforms: _selectedPlatforms,
+                          onPlatformsChanged: (platforms) {
                             setState(() {
-                              _selectedPlatforms = vals;
+                              _selectedPlatforms = platforms;
                             });
                           },
                         ),

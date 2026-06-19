@@ -64,26 +64,33 @@ class BottomActionBar extends StatelessWidget {
                 ),
                 if (visibleBadgeCount > 0) ...[
                   const SizedBox(width: 8.0),
-                  SizedBox(
-                    width: 20.0,
-                    height: 20.0,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: foregroundColor,
-                        borderRadius: BorderRadius.circular(12.0),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: foregroundColor.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(999.0),
+                      border: Border.all(
+                        color: foregroundColor.withValues(alpha: 0.28),
+                      ),
+                    ),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        minWidth: 24.0,
+                        minHeight: 22.0,
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                        child: Center(
-                          widthFactor: 1.0,
-                          child: Text(
-                            '$visibleBadgeCount',
-                            style: TextStyle(
-                              color: context.appAccentTeal,
-                              fontSize: 10.0,
-                              fontWeight: FontWeight.w900,
-                              height: 1.0,
-                            ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 7.0,
+                          vertical: 3.0,
+                        ),
+                        child: Text(
+                          '$visibleBadgeCount',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: foregroundColor,
+                            fontSize: 11.0,
+                            fontWeight: FontWeight.w800,
+                            height: 1.0,
+                            letterSpacing: 0,
                           ),
                         ),
                       ),
