@@ -20,6 +20,7 @@ abstract class VisualNovel with _$VisualNovel {
     required String title,
     @JsonKey(name: 'alttitle') String? altTitle,
     String? description,
+    double? average,
     double? rating,
     int? votecount,
     String? imageUrl,
@@ -27,8 +28,11 @@ abstract class VisualNovel with _$VisualNovel {
     double? imageSexual,
     double? imageViolence,
     String? released,
+    @JsonKey(name: 'olang') String? originalLanguage,
+    @JsonKey(name: 'devstatus') int? devStatus,
     int? length,
     @JsonKey(name: 'length_minutes') int? lengthMinutes,
+    @JsonKey(name: 'length_votes') int? lengthVotes,
     @Default([]) List<VnTag> tags,
     @Default([]) List<VnDeveloper> developers,
     @Default([]) List<VnScreenshot> screenshots,
@@ -72,10 +76,16 @@ abstract class VisualNovel with _$VisualNovel {
       }
     }
 
-    // Normalise rating from 10-100 scale to 1-10 scale
+    // Normalise ratings from 10-100 scale to 1-10 scale
+    double? parsedAverage;
     double? parsedRating;
 
+    final rawAverage = json['average'];
     final rawRating = json['rating'];
+
+    if (rawAverage != null) {
+      parsedAverage = (rawAverage as num).toDouble() / 10.0;
+    }
 
     if (rawRating != null) {
       parsedRating = (rawRating as num).toDouble() / 10.0;
@@ -85,6 +95,7 @@ abstract class VisualNovel with _$VisualNovel {
     adjustedJson['imageDims'] = imgDims;
     adjustedJson['imageSexual'] = imgSexual;
     adjustedJson['imageViolence'] = imgViolence;
+    adjustedJson['average'] = parsedAverage;
     adjustedJson['rating'] = parsedRating;
 
     return adjustedJson;

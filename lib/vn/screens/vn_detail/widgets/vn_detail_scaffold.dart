@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../models/visual_novel.dart';
 import '../../../widgets/detail_header.dart';
+import '../../../widgets/languages_section.dart';
 import '../../../widgets/links_section.dart';
 import '../../../widgets/metadata_row.dart';
 import '../../../widgets/platforms_section.dart';
@@ -11,6 +12,7 @@ import '../../../widgets/synopsis_section.dart';
 import '../../../widgets/tags_section.dart';
 import '../../../widgets/vndb_source_note.dart';
 import 'vn_detail_actions.dart';
+import 'vn_detail_status_notice.dart';
 import 'vn_relations_section.dart';
 
 class VnDetailScaffold extends StatelessWidget {
@@ -54,6 +56,11 @@ class VnDetailScaffold extends StatelessWidget {
 
                   const SizedBox(height: 24),
 
+                  if (vn.devStatus == 2) ...[
+                    VnDetailStatusNotice(vn: vn),
+                    const SizedBox(height: 20),
+                  ],
+
                   // Metadata Row (Release, Playtime)
                   MetadataRow(vn: vn),
                   const SizedBox(height: 20),
@@ -70,6 +77,13 @@ class VnDetailScaffold extends StatelessWidget {
 
                   // Platforms Section
                   PlatformsSection(platforms: vn.platforms),
+                  if (vn.platforms.isNotEmpty) const SizedBox(height: 24),
+
+                  if (vn.originalLanguage != null || vn.languages.isNotEmpty)
+                    LanguagesSection(
+                      originalLanguage: vn.originalLanguage,
+                      languages: vn.languages,
+                    ),
                   const SizedBox(height: 24),
                 ],
               ),

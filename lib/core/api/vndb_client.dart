@@ -41,7 +41,7 @@ class VndbClient {
 
   // Lightweight fields for list queries (home, search, library)
   static const String _vnFields =
-      'title,alttitle,aliases,description,rating,votecount,released,platforms,languages,length,length_minutes,'
+      'title,alttitle,aliases,description,average,rating,votecount,released,olang,devstatus,platforms,languages,length,length_minutes,length_votes,'
       'image{url,dims,thumbnail,sexual,violence},'
       'extlinks{id,name,label,url},'
       'developers{id,name,original},'

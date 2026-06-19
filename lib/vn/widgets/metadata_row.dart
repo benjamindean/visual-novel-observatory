@@ -53,11 +53,15 @@ class MetadataRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String playtime = 'Unknown';
+    String? playtimeTooltip;
 
     if (vn.lengthMinutes != null) {
       final hours = vn.lengthMinutes! ~/ 60;
 
       playtime = '$hours hrs';
+      playtimeTooltip = vn.lengthVotes != null && vn.lengthVotes! > 0
+          ? 'Average playtime from ${vn.lengthVotes} submitted playtime votes.'
+          : 'Average user-submitted playtime.';
     } else if (vn.length != null) {
       switch (vn.length) {
         case 1:
@@ -78,6 +82,8 @@ class MetadataRow extends StatelessWidget {
         default:
           playtime = 'Unknown';
       }
+
+      playtimeTooltip = 'Estimated length category: ${vn.playLengthLabel}.';
     }
 
     final formattedRelease = _formatReleaseDate(vn.released);
@@ -108,6 +114,7 @@ class MetadataRow extends StatelessWidget {
             label: 'PLAYTIME',
             value: playtime,
             iconColor: context.colorScheme.tertiary,
+            tooltipMessage: playtimeTooltip,
           ),
           MetadataItem(
             icon: Icons.business_rounded,

@@ -28,11 +28,11 @@ class AppChip extends StatelessWidget {
     final decoration = BoxDecoration(
       color: backgroundColor ?? context.appSurface,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(
-        color: context.appTextPrimary.withValues(
-          alpha: context.theme.brightness == Brightness.light ? 0.10 : 0.05,
-        ),
-      ),
+      // border: Border.all(
+      //   color: context.appTextPrimary.withValues(
+      //     alpha: context.theme.brightness == Brightness.light ? 0.10 : 0.05,
+      //   ),
+      // ),
     );
 
     final innerContent = Row(

@@ -191,6 +191,7 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
                     children: [
                       RatingBadge(
                         rating: vn.rating!,
+                        averageRating: vn.average,
                         iconSize: 20,
                         fontSize: 16,
                       ),
