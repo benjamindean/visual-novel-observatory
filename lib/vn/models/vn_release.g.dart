@@ -27,6 +27,7 @@ _VnRelease _$VnReleaseFromJson(Map<String, dynamic> json) => _VnRelease(
   minage: (json['minage'] as num?)?.toInt(),
   patch: json['patch'] as bool? ?? false,
   freeware: json['freeware'] as bool? ?? false,
+  uncensored: json['uncensored'] as bool?,
   official: json['official'] as bool? ?? false,
 );
 
@@ -42,6 +43,7 @@ Map<String, dynamic> _$VnReleaseToJson(_VnRelease instance) =>
       'minage': instance.minage,
       'patch': instance.patch,
       'freeware': instance.freeware,
+      'uncensored': instance.uncensored,
       'official': instance.official,
     };
 

@@ -20,6 +20,7 @@ abstract class VnRelease with _$VnRelease {
     int? minage,
     @Default(false) bool patch,
     @Default(false) bool freeware,
+    bool? uncensored,
     @Default(false) bool official,
   }) = _VnRelease;
 

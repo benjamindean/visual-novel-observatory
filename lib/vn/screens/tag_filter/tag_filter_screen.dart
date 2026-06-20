@@ -189,7 +189,7 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                                 16.0,
                                 8.0,
                                 16.0,
-                                90.0,
+                                64.0,
                               ),
                               itemCount: displayTags.length,
                               itemBuilder: (context, index) {

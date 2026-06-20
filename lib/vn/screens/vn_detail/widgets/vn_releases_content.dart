@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../theme/app_theme.dart';
 import '../../../models/vn_release.dart';
+import '../../../utils/vndb_date_display.dart';
 import 'vn_releases_sheet.dart';
 
 class VnReleasesContent extends StatelessWidget {
@@ -25,10 +26,7 @@ class VnReleasesContent extends StatelessWidget {
     final releaseLabel = releaseCount == 1
         ? '1 release'
         : '$releaseCount releases';
-    final latestReleaseDate = _formatReleaseDate(
-      context,
-      releases.first.released,
-    );
+    final latestReleaseDate = formatVndbDate(releases.first.released);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,42 +105,5 @@ class VnReleasesContent extends StatelessWidget {
         );
       },
     );
-  }
-
-  String _formatReleaseDate(BuildContext context, String? released) {
-    if (released == null || released.isEmpty) {
-      return 'TBA';
-    }
-
-    final parts = released.split('-');
-    final year = int.tryParse(parts.first);
-
-    if (year == null) {
-      return released;
-    }
-
-    final localizations = MaterialLocalizations.of(context);
-
-    if (parts.length == 1) {
-      return year.toString();
-    }
-
-    final month = int.tryParse(parts[1]);
-
-    if (month == null || month < 1 || month > 12) {
-      return released;
-    }
-
-    if (parts.length == 2) {
-      return localizations.formatMonthYear(DateTime(year, month));
-    }
-
-    final day = int.tryParse(parts[2]);
-
-    if (day == null || day < 1 || day > 31) {
-      return released;
-    }
-
-    return localizations.formatCompactDate(DateTime(year, month, day));
   }
 }

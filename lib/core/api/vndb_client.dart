@@ -41,7 +41,7 @@ class VndbClient {
 
   // VN fields for list queries and detail screens.
   static const String _vnFields =
-      'title,alttitle,aliases,description,average,rating,votecount,released,olang,devstatus,platforms,languages,length,length_minutes,length_votes,'
+      'title,alttitle,titles{lang,title,latin,official,main},aliases,description,average,rating,votecount,released,olang,devstatus,platforms,languages,length,length_minutes,length_votes,'
       'image{url,dims,thumbnail,sexual,violence},'
       'extlinks{id,name,label,url},'
       'developers{id,name,original},'
@@ -178,7 +178,7 @@ class VndbClient {
         ['id', '=', vnId],
       ],
       'fields':
-          'title,alttitle,released,platforms,languages{lang,title,latin,mtl,main},vns{id,title,rtype},minage,patch,freeware,official',
+          'title,alttitle,released,platforms,languages{lang,title,latin,mtl,main},vns{id,title,rtype},minage,patch,freeware,uncensored,official',
       'sort': 'released',
       'reverse': true,
       'results': 100,

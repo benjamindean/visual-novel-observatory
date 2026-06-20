@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../constants/vndb_platforms.dart';
 import '../../../models/vn_release.dart';
+import '../../../utils/vndb_date_display.dart';
 import '../../../widgets/app_chip.dart';
 import '../../../widgets/chip_overflow_wrap.dart';
 
@@ -19,7 +20,7 @@ class VnReleaseTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final releaseDate = _formatReleaseDate(context, release.released);
+    final releaseDate = formatVndbDate(release.released);
     final releaseType = release.releaseTypeFor(vnId);
     final chips = _buildChips(context, releaseType);
 
@@ -119,6 +120,16 @@ class VnReleaseTile extends StatelessWidget {
       );
     }
 
+    if (release.uncensored == true) {
+      chips.add(
+        AppChip(
+          label: 'Uncensored',
+          leadingIcon: Icons.visibility_outlined,
+          backgroundColor: context.appSearchField,
+        ),
+      );
+    }
+
     if (release.minage != null) {
       chips.add(
         AppChip(
@@ -152,43 +163,6 @@ class VnReleaseTile extends StatelessWidget {
     }
 
     return chips;
-  }
-
-  String _formatReleaseDate(BuildContext context, String? released) {
-    if (released == null || released.isEmpty) {
-      return 'TBA';
-    }
-
-    final parts = released.split('-');
-    final year = int.tryParse(parts.first);
-
-    if (year == null) {
-      return released;
-    }
-
-    final localizations = MaterialLocalizations.of(context);
-
-    if (parts.length == 1) {
-      return year.toString();
-    }
-
-    final month = int.tryParse(parts[1]);
-
-    if (month == null || month < 1 || month > 12) {
-      return released;
-    }
-
-    if (parts.length == 2) {
-      return localizations.formatMonthYear(DateTime(year, month));
-    }
-
-    final day = int.tryParse(parts[2]);
-
-    if (day == null || day < 1 || day > 31) {
-      return released;
-    }
-
-    return localizations.formatCompactDate(DateTime(year, month, day));
   }
 
   String _releaseTypeLabel(String releaseType) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/visual_novel.dart';
+import '../utils/vndb_date_display.dart';
 import '../../theme/app_theme.dart';
 import 'metadata_item.dart';
 
@@ -7,48 +8,6 @@ class MetadataRow extends StatelessWidget {
   final VisualNovel vn;
 
   const MetadataRow({super.key, required this.vn});
-
-  static const _months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-
-  String _formatReleaseDate(String? released) {
-    if (released == null || released == 'TBA') {
-      return 'TBA';
-    }
-
-    final parts = released.split('-');
-
-    if (parts.length == 3) {
-      final year = parts[0];
-      final month = int.tryParse(parts[1]);
-      final day = int.tryParse(parts[2]);
-
-      if (month != null && month >= 1 && month <= 12 && day != null) {
-        return '${_months[month - 1]} $day, $year';
-      }
-    } else if (parts.length == 2) {
-      final year = parts[0];
-      final month = int.tryParse(parts[1]);
-
-      if (month != null && month >= 1 && month <= 12) {
-        return '${_months[month - 1]} $year';
-      }
-    }
-
-    return released;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +45,7 @@ class MetadataRow extends StatelessWidget {
       playtimeTooltip = 'Estimated length category: ${vn.playLengthLabel}.';
     }
 
-    final formattedRelease = _formatReleaseDate(vn.released);
+    final formattedRelease = formatVndbDate(vn.released);
 
     final developerName = vn.developers.isNotEmpty
         ? vn.developers.first.name

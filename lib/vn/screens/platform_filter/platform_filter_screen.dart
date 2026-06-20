@@ -113,7 +113,7 @@ class PlatformFilterScreenState extends State<PlatformFilterScreen> {
                     16.0,
                     8.0,
                     16.0,
-                    96.0,
+                    64.0,
                   ),
                   children: groupedPlatforms.entries.map((entry) {
                     return PlatformFilterGroup(

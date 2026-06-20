@@ -73,6 +73,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 32),
           const Center(child: VndbSourceNote()),
+          const SizedBox(height: 48),
         ],
       ),
     );

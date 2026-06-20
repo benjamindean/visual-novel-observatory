@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_theme.dart';
+import '../../utils/vndb_date_display.dart';
 
 class FilterReleaseDateButton extends StatelessWidget {
   const FilterReleaseDateButton({
@@ -16,6 +17,8 @@ class FilterReleaseDateButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final displayValue = value == null ? 'Any date' : formatVndbDate(value);
+
     return Material(
       color: context.colorScheme.surfaceContainerHigh,
       clipBehavior: Clip.antiAlias,
@@ -56,7 +59,7 @@ class FilterReleaseDateButton extends StatelessWidget {
                     ),
                     const SizedBox(height: 4.0),
                     Text(
-                      value ?? 'Any date',
+                      displayValue,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

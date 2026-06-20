@@ -5,6 +5,7 @@ import 'cached_app_image.dart';
 import 'rating_badge.dart';
 import 'image_placeholder.dart';
 import 'reveal_image_button.dart';
+import 'vn_titles_sheet.dart';
 import '../../theme/app_theme.dart';
 import '../../settings/providers/settings_provider.dart';
 
@@ -35,6 +36,7 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
       ),
     );
     final vn = widget.vn;
+    final hasMultipleTitles = vn.titles.length > 1;
 
     final isSensitive =
         (!contentSettings.showExplicitContent &&
@@ -156,11 +158,16 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // VN Title
-                Text(
-                  vn.title,
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+                GestureDetector(
+                  onTap: hasMultipleTitles
+                      ? () => _showTitlesSheet(context, vn.titles)
+                      : null,
+                  behavior: HitTestBehavior.opaque,
+                  child: Text(
+                    vn.title,
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -219,6 +226,19 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showTitlesSheet(BuildContext context, List<VnTitle> titles) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      backgroundColor: context.appBackground,
+      builder: (context) {
+        return VnTitlesSheet(titles: titles);
+      },
     );
   }
 }

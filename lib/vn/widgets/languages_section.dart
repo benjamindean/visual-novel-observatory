@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
+import '../utils/language_display.dart';
 import 'app_chip.dart';
 import 'chip_overflow_wrap.dart';
 
@@ -14,57 +15,11 @@ class LanguagesSection extends StatelessWidget {
     required this.languages,
   });
 
-  static const _languageLabels = {
-    'ar': 'Arabic',
-    'bg': 'Bulgarian',
-    'ca': 'Catalan',
-    'cs': 'Czech',
-    'da': 'Danish',
-    'de': 'German',
-    'el': 'Greek',
-    'en': 'English',
-    'eo': 'Esperanto',
-    'es': 'Spanish',
-    'eu': 'Basque',
-    'fi': 'Finnish',
-    'fr': 'French',
-    'ga': 'Irish',
-    'he': 'Hebrew',
-    'hi': 'Hindi',
-    'hr': 'Croatian',
-    'hu': 'Hungarian',
-    'id': 'Indonesian',
-    'it': 'Italian',
-    'ja': 'Japanese',
-    'ko': 'Korean',
-    'lt': 'Lithuanian',
-    'lv': 'Latvian',
-    'ms': 'Malay',
-    'nl': 'Dutch',
-    'no': 'Norwegian',
-    'pl': 'Polish',
-    'pt-br': 'Portuguese (Brazil)',
-    'pt-pt': 'Portuguese',
-    'ro': 'Romanian',
-    'ru': 'Russian',
-    'sk': 'Slovak',
-    'sr': 'Serbian',
-    'sv': 'Swedish',
-    'ta': 'Tamil',
-    'th': 'Thai',
-    'tr': 'Turkish',
-    'uk': 'Ukrainian',
-    'vi': 'Vietnamese',
-    'zh': 'Chinese',
-    'zh-hans': 'Chinese (Simplified)',
-    'zh-hant': 'Chinese (Traditional)',
-  };
-
   @override
   Widget build(BuildContext context) {
     final originalCode = originalLanguage?.toLowerCase();
-    final originalLabel = _languageLabel(originalLanguage);
-    final availableLanguages = _availableLanguageLabels(originalCode);
+    final originalLabel = _languageLabel(context, originalLanguage);
+    final availableLanguages = _availableLanguageLabels(context, originalCode);
 
     if (originalLabel == null && availableLanguages.isEmpty) {
       return const SizedBox.shrink();
@@ -101,7 +56,10 @@ class LanguagesSection extends StatelessWidget {
     );
   }
 
-  List<String> _availableLanguageLabels(String? originalCode) {
+  List<String> _availableLanguageLabels(
+    BuildContext context,
+    String? originalCode,
+  ) {
     final seen = <String>{};
     final labels = <String>[];
 
@@ -112,19 +70,17 @@ class LanguagesSection extends StatelessWidget {
         continue;
       }
 
-      labels.add(_languageLabels[code] ?? language.toUpperCase());
+      labels.add(languageDisplayName(context, language));
     }
 
     return labels;
   }
 
-  String? _languageLabel(String? language) {
+  String? _languageLabel(BuildContext context, String? language) {
     if (language == null || language.isEmpty) {
       return null;
     }
 
-    final code = language.toLowerCase();
-
-    return _languageLabels[code] ?? language.toUpperCase();
+    return languageDisplayName(context, language);
   }
 }

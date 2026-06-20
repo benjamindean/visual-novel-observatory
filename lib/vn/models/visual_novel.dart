@@ -19,6 +19,7 @@ abstract class VisualNovel with _$VisualNovel {
     required String id,
     required String title,
     @JsonKey(name: 'alttitle') String? altTitle,
+    @Default([]) List<VnTitle> titles,
     String? description,
     double? average,
     double? rating,
@@ -131,4 +132,18 @@ abstract class VisualNovel with _$VisualNovel {
 
     return released!;
   }
+}
+
+@freezed
+abstract class VnTitle with _$VnTitle {
+  const factory VnTitle({
+    required String lang,
+    required String title,
+    String? latin,
+    @Default(false) bool official,
+    @Default(false) bool main,
+  }) = _VnTitle;
+
+  factory VnTitle.fromJson(Map<String, dynamic> json) =>
+      _$VnTitleFromJson(json);
 }

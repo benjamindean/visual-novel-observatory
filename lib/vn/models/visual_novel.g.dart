@@ -10,6 +10,11 @@ _VisualNovel _$VisualNovelFromJson(Map<String, dynamic> json) => _VisualNovel(
   id: json['id'] as String,
   title: json['title'] as String,
   altTitle: json['alttitle'] as String?,
+  titles:
+      (json['titles'] as List<dynamic>?)
+          ?.map((e) => VnTitle.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
   description: json['description'] as String?,
   average: (json['average'] as num?)?.toDouble(),
   rating: (json['rating'] as num?)?.toDouble(),
@@ -74,6 +79,7 @@ Map<String, dynamic> _$VisualNovelToJson(_VisualNovel instance) =>
       'id': instance.id,
       'title': instance.title,
       'alttitle': instance.altTitle,
+      'titles': instance.titles,
       'description': instance.description,
       'average': instance.average,
       'rating': instance.rating,
@@ -98,3 +104,19 @@ Map<String, dynamic> _$VisualNovelToJson(_VisualNovel instance) =>
       'va': instance.voiceActors,
       'relations': instance.relations,
     };
+
+_VnTitle _$VnTitleFromJson(Map<String, dynamic> json) => _VnTitle(
+  lang: json['lang'] as String,
+  title: json['title'] as String,
+  latin: json['latin'] as String?,
+  official: json['official'] as bool? ?? false,
+  main: json['main'] as bool? ?? false,
+);
+
+Map<String, dynamic> _$VnTitleToJson(_VnTitle instance) => <String, dynamic>{
+  'lang': instance.lang,
+  'title': instance.title,
+  'latin': instance.latin,
+  'official': instance.official,
+  'main': instance.main,
+};

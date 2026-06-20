@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$VnRelease {
 
- String get id; String get title;@JsonKey(name: 'alttitle') String? get altTitle; String? get released; List<String> get platforms; List<VnReleaseLanguage> get languages; List<VnReleaseVn> get vns; int? get minage; bool get patch; bool get freeware; bool get official;
+ String get id; String get title;@JsonKey(name: 'alttitle') String? get altTitle; String? get released; List<String> get platforms; List<VnReleaseLanguage> get languages; List<VnReleaseVn> get vns; int? get minage; bool get patch; bool get freeware; bool? get uncensored; bool get official;
 /// Create a copy of VnRelease
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $VnReleaseCopyWith<VnRelease> get copyWith => _$VnReleaseCopyWithImpl<VnRelease>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnRelease&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.altTitle, altTitle) || other.altTitle == altTitle)&&(identical(other.released, released) || other.released == released)&&const DeepCollectionEquality().equals(other.platforms, platforms)&&const DeepCollectionEquality().equals(other.languages, languages)&&const DeepCollectionEquality().equals(other.vns, vns)&&(identical(other.minage, minage) || other.minage == minage)&&(identical(other.patch, patch) || other.patch == patch)&&(identical(other.freeware, freeware) || other.freeware == freeware)&&(identical(other.official, official) || other.official == official));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnRelease&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.altTitle, altTitle) || other.altTitle == altTitle)&&(identical(other.released, released) || other.released == released)&&const DeepCollectionEquality().equals(other.platforms, platforms)&&const DeepCollectionEquality().equals(other.languages, languages)&&const DeepCollectionEquality().equals(other.vns, vns)&&(identical(other.minage, minage) || other.minage == minage)&&(identical(other.patch, patch) || other.patch == patch)&&(identical(other.freeware, freeware) || other.freeware == freeware)&&(identical(other.uncensored, uncensored) || other.uncensored == uncensored)&&(identical(other.official, official) || other.official == official));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,altTitle,released,const DeepCollectionEquality().hash(platforms),const DeepCollectionEquality().hash(languages),const DeepCollectionEquality().hash(vns),minage,patch,freeware,official);
+int get hashCode => Object.hash(runtimeType,id,title,altTitle,released,const DeepCollectionEquality().hash(platforms),const DeepCollectionEquality().hash(languages),const DeepCollectionEquality().hash(vns),minage,patch,freeware,uncensored,official);
 
 @override
 String toString() {
-  return 'VnRelease(id: $id, title: $title, altTitle: $altTitle, released: $released, platforms: $platforms, languages: $languages, vns: $vns, minage: $minage, patch: $patch, freeware: $freeware, official: $official)';
+  return 'VnRelease(id: $id, title: $title, altTitle: $altTitle, released: $released, platforms: $platforms, languages: $languages, vns: $vns, minage: $minage, patch: $patch, freeware: $freeware, uncensored: $uncensored, official: $official)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $VnReleaseCopyWith<$Res>  {
   factory $VnReleaseCopyWith(VnRelease value, $Res Function(VnRelease) _then) = _$VnReleaseCopyWithImpl;
 @useResult
 $Res call({
- String id, String title,@JsonKey(name: 'alttitle') String? altTitle, String? released, List<String> platforms, List<VnReleaseLanguage> languages, List<VnReleaseVn> vns, int? minage, bool patch, bool freeware, bool official
+ String id, String title,@JsonKey(name: 'alttitle') String? altTitle, String? released, List<String> platforms, List<VnReleaseLanguage> languages, List<VnReleaseVn> vns, int? minage, bool patch, bool freeware, bool? uncensored, bool official
 });
 
 
@@ -65,7 +65,7 @@ class _$VnReleaseCopyWithImpl<$Res>
 
 /// Create a copy of VnRelease
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? altTitle = freezed,Object? released = freezed,Object? platforms = null,Object? languages = null,Object? vns = null,Object? minage = freezed,Object? patch = null,Object? freeware = null,Object? official = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? altTitle = freezed,Object? released = freezed,Object? platforms = null,Object? languages = null,Object? vns = null,Object? minage = freezed,Object? patch = null,Object? freeware = null,Object? uncensored = freezed,Object? official = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -77,7 +77,8 @@ as List<VnReleaseLanguage>,vns: null == vns ? _self.vns : vns // ignore: cast_nu
 as List<VnReleaseVn>,minage: freezed == minage ? _self.minage : minage // ignore: cast_nullable_to_non_nullable
 as int?,patch: null == patch ? _self.patch : patch // ignore: cast_nullable_to_non_nullable
 as bool,freeware: null == freeware ? _self.freeware : freeware // ignore: cast_nullable_to_non_nullable
-as bool,official: null == official ? _self.official : official // ignore: cast_nullable_to_non_nullable
+as bool,uncensored: freezed == uncensored ? _self.uncensored : uncensored // ignore: cast_nullable_to_non_nullable
+as bool?,official: null == official ? _self.official : official // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -163,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title, @JsonKey(name: 'alttitle')  String? altTitle,  String? released,  List<String> platforms,  List<VnReleaseLanguage> languages,  List<VnReleaseVn> vns,  int? minage,  bool patch,  bool freeware,  bool official)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title, @JsonKey(name: 'alttitle')  String? altTitle,  String? released,  List<String> platforms,  List<VnReleaseLanguage> languages,  List<VnReleaseVn> vns,  int? minage,  bool patch,  bool freeware,  bool? uncensored,  bool official)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VnRelease() when $default != null:
-return $default(_that.id,_that.title,_that.altTitle,_that.released,_that.platforms,_that.languages,_that.vns,_that.minage,_that.patch,_that.freeware,_that.official);case _:
+return $default(_that.id,_that.title,_that.altTitle,_that.released,_that.platforms,_that.languages,_that.vns,_that.minage,_that.patch,_that.freeware,_that.uncensored,_that.official);case _:
   return orElse();
 
 }
@@ -184,10 +185,10 @@ return $default(_that.id,_that.title,_that.altTitle,_that.released,_that.platfor
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title, @JsonKey(name: 'alttitle')  String? altTitle,  String? released,  List<String> platforms,  List<VnReleaseLanguage> languages,  List<VnReleaseVn> vns,  int? minage,  bool patch,  bool freeware,  bool official)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title, @JsonKey(name: 'alttitle')  String? altTitle,  String? released,  List<String> platforms,  List<VnReleaseLanguage> languages,  List<VnReleaseVn> vns,  int? minage,  bool patch,  bool freeware,  bool? uncensored,  bool official)  $default,) {final _that = this;
 switch (_that) {
 case _VnRelease():
-return $default(_that.id,_that.title,_that.altTitle,_that.released,_that.platforms,_that.languages,_that.vns,_that.minage,_that.patch,_that.freeware,_that.official);case _:
+return $default(_that.id,_that.title,_that.altTitle,_that.released,_that.platforms,_that.languages,_that.vns,_that.minage,_that.patch,_that.freeware,_that.uncensored,_that.official);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +205,10 @@ return $default(_that.id,_that.title,_that.altTitle,_that.released,_that.platfor
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title, @JsonKey(name: 'alttitle')  String? altTitle,  String? released,  List<String> platforms,  List<VnReleaseLanguage> languages,  List<VnReleaseVn> vns,  int? minage,  bool patch,  bool freeware,  bool official)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title, @JsonKey(name: 'alttitle')  String? altTitle,  String? released,  List<String> platforms,  List<VnReleaseLanguage> languages,  List<VnReleaseVn> vns,  int? minage,  bool patch,  bool freeware,  bool? uncensored,  bool official)?  $default,) {final _that = this;
 switch (_that) {
 case _VnRelease() when $default != null:
-return $default(_that.id,_that.title,_that.altTitle,_that.released,_that.platforms,_that.languages,_that.vns,_that.minage,_that.patch,_that.freeware,_that.official);case _:
+return $default(_that.id,_that.title,_that.altTitle,_that.released,_that.platforms,_that.languages,_that.vns,_that.minage,_that.patch,_that.freeware,_that.uncensored,_that.official);case _:
   return null;
 
 }
@@ -219,7 +220,7 @@ return $default(_that.id,_that.title,_that.altTitle,_that.released,_that.platfor
 @JsonSerializable()
 
 class _VnRelease extends VnRelease {
-  const _VnRelease({required this.id, required this.title, @JsonKey(name: 'alttitle') this.altTitle, this.released, final  List<String> platforms = const [], final  List<VnReleaseLanguage> languages = const [], final  List<VnReleaseVn> vns = const [], this.minage, this.patch = false, this.freeware = false, this.official = false}): _platforms = platforms,_languages = languages,_vns = vns,super._();
+  const _VnRelease({required this.id, required this.title, @JsonKey(name: 'alttitle') this.altTitle, this.released, final  List<String> platforms = const [], final  List<VnReleaseLanguage> languages = const [], final  List<VnReleaseVn> vns = const [], this.minage, this.patch = false, this.freeware = false, this.uncensored, this.official = false}): _platforms = platforms,_languages = languages,_vns = vns,super._();
   factory _VnRelease.fromJson(Map<String, dynamic> json) => _$VnReleaseFromJson(json);
 
 @override final  String id;
@@ -250,6 +251,7 @@ class _VnRelease extends VnRelease {
 @override final  int? minage;
 @override@JsonKey() final  bool patch;
 @override@JsonKey() final  bool freeware;
+@override final  bool? uncensored;
 @override@JsonKey() final  bool official;
 
 /// Create a copy of VnRelease
@@ -265,16 +267,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnRelease&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.altTitle, altTitle) || other.altTitle == altTitle)&&(identical(other.released, released) || other.released == released)&&const DeepCollectionEquality().equals(other._platforms, _platforms)&&const DeepCollectionEquality().equals(other._languages, _languages)&&const DeepCollectionEquality().equals(other._vns, _vns)&&(identical(other.minage, minage) || other.minage == minage)&&(identical(other.patch, patch) || other.patch == patch)&&(identical(other.freeware, freeware) || other.freeware == freeware)&&(identical(other.official, official) || other.official == official));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnRelease&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.altTitle, altTitle) || other.altTitle == altTitle)&&(identical(other.released, released) || other.released == released)&&const DeepCollectionEquality().equals(other._platforms, _platforms)&&const DeepCollectionEquality().equals(other._languages, _languages)&&const DeepCollectionEquality().equals(other._vns, _vns)&&(identical(other.minage, minage) || other.minage == minage)&&(identical(other.patch, patch) || other.patch == patch)&&(identical(other.freeware, freeware) || other.freeware == freeware)&&(identical(other.uncensored, uncensored) || other.uncensored == uncensored)&&(identical(other.official, official) || other.official == official));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,altTitle,released,const DeepCollectionEquality().hash(_platforms),const DeepCollectionEquality().hash(_languages),const DeepCollectionEquality().hash(_vns),minage,patch,freeware,official);
+int get hashCode => Object.hash(runtimeType,id,title,altTitle,released,const DeepCollectionEquality().hash(_platforms),const DeepCollectionEquality().hash(_languages),const DeepCollectionEquality().hash(_vns),minage,patch,freeware,uncensored,official);
 
 @override
 String toString() {
-  return 'VnRelease(id: $id, title: $title, altTitle: $altTitle, released: $released, platforms: $platforms, languages: $languages, vns: $vns, minage: $minage, patch: $patch, freeware: $freeware, official: $official)';
+  return 'VnRelease(id: $id, title: $title, altTitle: $altTitle, released: $released, platforms: $platforms, languages: $languages, vns: $vns, minage: $minage, patch: $patch, freeware: $freeware, uncensored: $uncensored, official: $official)';
 }
 
 
@@ -285,7 +287,7 @@ abstract mixin class _$VnReleaseCopyWith<$Res> implements $VnReleaseCopyWith<$Re
   factory _$VnReleaseCopyWith(_VnRelease value, $Res Function(_VnRelease) _then) = __$VnReleaseCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title,@JsonKey(name: 'alttitle') String? altTitle, String? released, List<String> platforms, List<VnReleaseLanguage> languages, List<VnReleaseVn> vns, int? minage, bool patch, bool freeware, bool official
+ String id, String title,@JsonKey(name: 'alttitle') String? altTitle, String? released, List<String> platforms, List<VnReleaseLanguage> languages, List<VnReleaseVn> vns, int? minage, bool patch, bool freeware, bool? uncensored, bool official
 });
 
 
@@ -302,7 +304,7 @@ class __$VnReleaseCopyWithImpl<$Res>
 
 /// Create a copy of VnRelease
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? altTitle = freezed,Object? released = freezed,Object? platforms = null,Object? languages = null,Object? vns = null,Object? minage = freezed,Object? patch = null,Object? freeware = null,Object? official = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? altTitle = freezed,Object? released = freezed,Object? platforms = null,Object? languages = null,Object? vns = null,Object? minage = freezed,Object? patch = null,Object? freeware = null,Object? uncensored = freezed,Object? official = null,}) {
   return _then(_VnRelease(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -314,7 +316,8 @@ as List<VnReleaseLanguage>,vns: null == vns ? _self._vns : vns // ignore: cast_n
 as List<VnReleaseVn>,minage: freezed == minage ? _self.minage : minage // ignore: cast_nullable_to_non_nullable
 as int?,patch: null == patch ? _self.patch : patch // ignore: cast_nullable_to_non_nullable
 as bool,freeware: null == freeware ? _self.freeware : freeware // ignore: cast_nullable_to_non_nullable
-as bool,official: null == official ? _self.official : official // ignore: cast_nullable_to_non_nullable
+as bool,uncensored: freezed == uncensored ? _self.uncensored : uncensored // ignore: cast_nullable_to_non_nullable
+as bool?,official: null == official ? _self.official : official // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

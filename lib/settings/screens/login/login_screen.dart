@@ -93,7 +93,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 isValidating: authState.isValidating,
                 onPressed: _handleLogin,
               ),
-              const SizedBox(height: 40.0),
+              const SizedBox(height: 24.0),
               const VndbSourceNote(),
             ],
           ),
