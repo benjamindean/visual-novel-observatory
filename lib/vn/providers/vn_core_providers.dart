@@ -21,16 +21,6 @@ final vnDetailProvider = FutureProvider.family<VisualNovel, String>((
   vnId,
 ) async {
   final repository = ref.watch(vnRepositoryProvider);
-  final response = await repository.getVisualNovels(
-    filters: ['id', '=', vnId],
-    page: 1,
-    resultsPerPage: 1,
-  );
-  final vns = response['vns'] as List<VisualNovel>;
 
-  if (vns.isEmpty) {
-    throw Exception('Visual novel not found');
-  }
-
-  return vns.first;
+  return repository.getVisualNovelDetails(vnId);
 });

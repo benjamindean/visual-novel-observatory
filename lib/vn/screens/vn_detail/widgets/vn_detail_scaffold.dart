@@ -14,6 +14,7 @@ import '../../../widgets/vndb_source_note.dart';
 import 'vn_detail_actions.dart';
 import 'vn_detail_status_notice.dart';
 import 'vn_relations_section.dart';
+import 'vn_releases_section.dart';
 
 class VnDetailScaffold extends StatelessWidget {
   const VnDetailScaffold({super.key, required this.vn});
@@ -115,7 +116,23 @@ class VnDetailScaffold extends StatelessWidget {
             ),
           ),
           SliverToBoxAdapter(
-            child: VnRelationsSection(vn: vn),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // if (vn.voiceActors.isNotEmpty) ...[
+                //   CharactersSection(
+                //     vnId: vn.id,
+                //     voiceActors: vn.voiceActors,
+                //   ),
+                //   const SizedBox(height: 24),
+                // ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: VnReleasesSection(vnId: vn.id),
+                ),
+                VnRelationsSection(relations: vn.relations),
+              ],
+            ),
           ),
           SliverToBoxAdapter(
             child: Padding(

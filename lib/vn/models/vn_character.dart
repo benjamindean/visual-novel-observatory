@@ -26,6 +26,7 @@ abstract class VnCharacter with _$VnCharacter {
     List<int>? imageDims,
     double? imageSexual,
     double? imageViolence,
+    @Default([]) List<VnCharacterVn> vns,
     @Default([]) List<VnCharacterTrait> traits,
   }) = _VnCharacter;
 
@@ -152,6 +153,75 @@ abstract class VnCharacter with _$VnCharacter {
     }
 
     return age.toString();
+  }
+
+  String? roleForVn(String? vnId) {
+    if (vnId == null) {
+      return null;
+    }
+
+    for (final vn in vns) {
+      if (vn.id == vnId) {
+        return vn.role;
+      }
+    }
+
+    return null;
+  }
+
+  String? roleLabelForVn(String? vnId) {
+    final role = roleForVn(vnId);
+
+    if (role == null) {
+      return null;
+    }
+
+    return VnCharacterVn.roleLabel(role);
+  }
+}
+
+@freezed
+abstract class VnCharacterVn with _$VnCharacterVn {
+  const VnCharacterVn._();
+
+  const factory VnCharacterVn({
+    required String id,
+    String? title,
+    String? role,
+    int? spoiler,
+  }) = _VnCharacterVn;
+
+  factory VnCharacterVn.fromJson(Map<String, dynamic> json) =>
+      _$VnCharacterVnFromJson(json);
+
+  static String roleLabel(String role) {
+    switch (role) {
+      case 'main':
+        return 'Main character';
+      case 'primary':
+        return 'Primary character';
+      case 'side':
+        return 'Side character';
+      case 'appears':
+        return 'Appears';
+      default:
+        return role;
+    }
+  }
+
+  static int roleSortRank(String? role) {
+    switch (role) {
+      case 'main':
+        return 0;
+      case 'primary':
+        return 1;
+      case 'side':
+        return 2;
+      case 'appears':
+        return 3;
+      default:
+        return 4;
+    }
   }
 }
 

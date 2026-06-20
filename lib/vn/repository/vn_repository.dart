@@ -1,6 +1,8 @@
 import '../../core/api/vndb_client.dart';
+import '../models/visual_novel.dart';
 import '../models/vndb_label.dart';
-import '../models/vn_relation.dart';
+import '../models/vn_character.dart';
+import '../models/vn_release.dart';
 
 class VnRepository {
   final VndbClient _client;
@@ -49,6 +51,16 @@ class VnRepository {
     );
   }
 
+  Future<VisualNovel> getVisualNovelDetails(String vnId) {
+    return _client.getVisualNovelDetails(vnId);
+  }
+
+  Future<VnCharacter> getCharacterDetails(String characterId) async {
+    final data = await _client.getCharacterDetails(characterId);
+
+    return VnCharacter.fromJson(data);
+  }
+
   Future<List<VndbLabel>> getUserListLabels() async {
     final list = await _client.getUserListLabels();
 
@@ -90,9 +102,9 @@ class VnRepository {
     return _client.getTagsPage(page: page, resultsPerPage: resultsPerPage);
   }
 
-  Future<List<VnRelation>> getRelations(String vnId) async {
-    final list = await _client.getRelations(vnId);
+  Future<List<VnRelease>> getReleases(String vnId) async {
+    final list = await _client.getReleases(vnId);
 
-    return list.map((e) => VnRelation.fromJson(e)).toList();
+    return list.map((e) => VnRelease.fromJson(e)).toList();
   }
 }

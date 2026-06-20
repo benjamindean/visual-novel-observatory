@@ -147,15 +147,32 @@ final goRouter = GoRouter(
       path: '/character',
       builder: (context, state) {
         final extra = state.extra;
+        VnVoiceActorAssociation? association;
+        String? vnId;
 
-        if (extra is! VnVoiceActorAssociation) {
+        if (extra is VnVoiceActorAssociation) {
+          association = extra;
+        } else if (extra is Map) {
+          final extraAssociation = extra['association'];
+          final extraVnId = extra['vnId'];
+
+          if (extraAssociation is VnVoiceActorAssociation) {
+            association = extraAssociation;
+          }
+
+          if (extraVnId is String) {
+            vnId = extraVnId;
+          }
+        }
+
+        if (association == null) {
           return const InvalidRouteScreen(
             title: 'Character Not Found',
             message: 'This character page was opened without character data.',
           );
         }
 
-        return CharacterScreen(association: extra);
+        return CharacterScreen(association: association, vnId: vnId);
       },
     ),
     GoRoute(

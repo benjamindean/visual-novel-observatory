@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../models/vn_relation.dart';
-import '../../../models/visual_novel.dart';
 import '../../../widgets/cached_app_image.dart';
 import '../../../widgets/rating_badge.dart';
 import '../../../widgets/image_placeholder.dart';
@@ -10,13 +9,13 @@ import '../../../../theme/app_theme.dart';
 import '../../../../settings/providers/settings_provider.dart';
 
 class VnRelationsSection extends StatelessWidget {
-  final VisualNovel vn;
+  final List<VnRelation> relations;
 
-  const VnRelationsSection({super.key, required this.vn});
+  const VnRelationsSection({super.key, required this.relations});
 
   @override
   Widget build(BuildContext context) {
-    if (vn.relations.isEmpty) {
+    if (relations.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -44,9 +43,9 @@ class VnRelationsSection extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             physics: const BouncingScrollPhysics(),
-            itemCount: vn.relations.length,
+            itemCount: relations.length,
             itemBuilder: (context, index) {
-              final relation = vn.relations[index];
+              final relation = relations[index];
 
               return VnRelationCard(relation: relation);
             },

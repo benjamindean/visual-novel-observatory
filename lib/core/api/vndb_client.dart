@@ -39,7 +39,7 @@ class VndbClient {
     );
   }
 
-  // Lightweight fields for list queries (home, search, library)
+  // VN fields for list queries and detail screens.
   static const String _vnFields =
       'title,alttitle,aliases,description,average,rating,votecount,released,olang,devstatus,platforms,languages,length,length_minutes,length_votes,'
       'image{url,dims,thumbnail,sexual,violence},'
@@ -47,12 +47,62 @@ class VndbClient {
       'developers{id,name,original},'
       'tags{id,name,spoiler,rating,category},'
       'screenshots{url,dims,thumbnail,sexual,violence},'
-      'relations{id,relation,relation_official,title,image{url,dims,sexual,violence}}';
+      'relations{id,relation,relation_official,title,alttitle,image{url,dims,sexual,violence},rating},'
+      'va{character{id,name,image{url,sexual,violence},vns{id,role}}}';
+
+  static const String _characterFields =
+      'name,original,description,image{url,dims,sexual,violence},gender,blood_type,birthday,height,weight,bust,waist,hips,cup,age,vns{id,title,role,spoiler},traits{id,name,spoiler}';
 
   /// Helper to send generic POST query to VNDB /vn endpoint
   Future<Map<String, dynamic>> _postVnQuery(Map<String, dynamic> body) async {
     try {
       final response = await _dio.post<Map<String, dynamic>>('/vn', data: body);
+
+      if (response.statusCode == 200 && response.data != null) {
+        return response.data!;
+      } else {
+        throw Exception(
+          'Failed to query VNDB API: Code ${response.statusCode}\nBody: ${response.data}',
+        );
+      }
+    } on DioException catch (e) {
+      throw Exception(
+        'Failed to query VNDB API: ${e.message}\nBody: ${e.response?.data}',
+      );
+    }
+  }
+
+  Future<Map<String, dynamic>> _postReleaseQuery(
+    Map<String, dynamic> body,
+  ) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/release',
+        data: body,
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        return response.data!;
+      } else {
+        throw Exception(
+          'Failed to query VNDB API: Code ${response.statusCode}\nBody: ${response.data}',
+        );
+      }
+    } on DioException catch (e) {
+      throw Exception(
+        'Failed to query VNDB API: ${e.message}\nBody: ${e.response?.data}',
+      );
+    }
+  }
+
+  Future<Map<String, dynamic>> _postCharacterQuery(
+    Map<String, dynamic> body,
+  ) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/character',
+        data: body,
+      );
 
       if (response.statusCode == 200 && response.data != null) {
         return response.data!;
@@ -88,25 +138,56 @@ class VndbClient {
     }
   }
 
-  /// Fetch relations for a given visual novel ID
-  Future<List<Map<String, dynamic>>> getRelations(String vnId) async {
+  Future<VisualNovel> getVisualNovelDetails(String vnId) async {
     final body = {
       'filters': ['id', '=', vnId],
-      'fields':
-          'relations{id, relation, relation_official, title, alttitle, image{url,dims,sexual,violence}, rating, votecount, released, platforms, languages, length, length_minutes, description, screenshots{url,dims,thumbnail,sexual,violence}}',
+      'fields': _vnFields,
+      'results': 1,
     };
-
-    final response = await _postVnQuery(body);
-    final results = response['results'] as List? ?? [];
+    final data = await _postVnQuery(body);
+    final results = data['results'] as List? ?? [];
 
     if (results.isEmpty) {
-      return const [];
+      throw Exception('Visual novel not found');
     }
 
-    final vnData = results.first as Map<String, dynamic>;
-    final relationsList = vnData['relations'] as List? ?? [];
+    return VisualNovel.fromJson(results.first as Map<String, dynamic>);
+  }
 
-    return relationsList.map((e) => e as Map<String, dynamic>).toList();
+  Future<Map<String, dynamic>> getCharacterDetails(String characterId) async {
+    final body = {
+      'filters': ['id', '=', characterId],
+      'fields': _characterFields,
+      'results': 1,
+    };
+    final data = await _postCharacterQuery(body);
+    final results = data['results'] as List? ?? [];
+
+    if (results.isEmpty) {
+      throw Exception('Character not found');
+    }
+
+    return results.first as Map<String, dynamic>;
+  }
+
+  Future<List<Map<String, dynamic>>> getReleases(String vnId) async {
+    final body = {
+      'filters': [
+        'vn',
+        '=',
+        ['id', '=', vnId],
+      ],
+      'fields':
+          'title,alttitle,released,platforms,languages{lang,title,latin,mtl,main},vns{id,title,rtype},minage,patch,freeware,official',
+      'sort': 'released',
+      'reverse': true,
+      'results': 100,
+    };
+
+    final data = await _postReleaseQuery(body);
+    final results = data['results'] as List? ?? [];
+
+    return results.map((e) => e as Map<String, dynamic>).toList();
   }
 
   /// Search visual novels by text query

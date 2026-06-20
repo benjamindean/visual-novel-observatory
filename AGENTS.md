@@ -40,6 +40,7 @@ Styling & Formatting Rules
   - Keep `build()` methods lightweight and free of heavy computations or database/API requests.
   - Split complex widgets into smaller, atomic widgets to localize state changes and avoid rebuilding large parts of the screen.
   - Localize State Updates: Avoid watching providers that update frequently (e.g., search queries, active list states, or authentication states) at the screen root or full-page scaffold level. Instead, push `ref.watch` calls down into dedicated, focused child sub-widgets so that changes only rebuild the relevant, local widgets rather than the entire page layout. Use `ref.listen` on the root widget if you need to trigger callbacks (like text controller synchronization) without triggering a build cycle.
+  - Scope `AsyncValue` rendering to the exact widget that depends on it. Do not wrap unrelated static sections in a widget that watches async state, and prefer `.when` with explicit loading/error/data branches when a visible placeholder is expected; avoid `maybeWhen` fallbacks that silently remove or reinsert layout and cause stutter.
   - Use lazy loading (`ListView.builder`, `GridView.builder`) for any long or scrollable lists.
   - Run heavy CPU-bound computations in an **Isolate** to avoid blocking the main UI thread.
   - Always use `Profile` mode (`flutter run --profile`) when profiling performance or measuring frames.

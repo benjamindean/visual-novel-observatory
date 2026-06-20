@@ -5,5 +5,6 @@ export 'vn_list_providers.dart';
 export 'vn_ulist_providers.dart';
 export 'vn_tags_providers.dart';
 export 'vn_ui_providers.dart';
-export 'vn_relations_providers.dart';
+export 'vn_releases_providers.dart';
+export 'vn_character_providers.dart';
 export 'home_tab_providers.dart';

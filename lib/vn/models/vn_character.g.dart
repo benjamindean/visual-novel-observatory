@@ -29,6 +29,11 @@ _VnCharacter _$VnCharacterFromJson(Map<String, dynamic> json) => _VnCharacter(
       .toList(),
   imageSexual: (json['imageSexual'] as num?)?.toDouble(),
   imageViolence: (json['imageViolence'] as num?)?.toDouble(),
+  vns:
+      (json['vns'] as List<dynamic>?)
+          ?.map((e) => VnCharacterVn.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
   traits:
       (json['traits'] as List<dynamic>?)
           ?.map((e) => VnCharacterTrait.fromJson(e as Map<String, dynamic>))
@@ -56,7 +61,24 @@ Map<String, dynamic> _$VnCharacterToJson(_VnCharacter instance) =>
       'imageDims': instance.imageDims,
       'imageSexual': instance.imageSexual,
       'imageViolence': instance.imageViolence,
+      'vns': instance.vns,
       'traits': instance.traits,
+    };
+
+_VnCharacterVn _$VnCharacterVnFromJson(Map<String, dynamic> json) =>
+    _VnCharacterVn(
+      id: json['id'] as String,
+      title: json['title'] as String?,
+      role: json['role'] as String?,
+      spoiler: (json['spoiler'] as num?)?.toInt(),
+    );
+
+Map<String, dynamic> _$VnCharacterVnToJson(_VnCharacterVn instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'role': instance.role,
+      'spoiler': instance.spoiler,
     };
 
 _VnCharacterTrait _$VnCharacterTraitFromJson(Map<String, dynamic> json) =>
