@@ -8,6 +8,7 @@ import '../../../theme/app_theme.dart';
 import '../../../settings/providers/settings_provider.dart';
 import 'filter_section_header.dart';
 import 'filter_chip_row.dart';
+import 'filter_languages_tile.dart';
 import 'filter_platforms_tile.dart';
 import 'filter_release_date_range_tile.dart';
 import 'filter_sort_row.dart';
@@ -166,18 +167,11 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
 
               // Language Section
               const FilterSectionHeader(title: 'Language'),
-              FilterChipRow<String>(
-                items: const {
-                  'en': 'English',
-                  'ja': 'Japanese',
-                  'zh': 'Chinese',
-                  'es': 'Spanish',
-                  'ko': 'Korean',
-                },
-                selectedValues: _selectedLangs,
-                onSelected: (vals) {
+              FilterLanguagesTile(
+                selectedLanguages: _selectedLangs,
+                onLanguagesChanged: (languages) {
                   setState(() {
-                    _selectedLangs = vals;
+                    _selectedLangs = languages;
                   });
                 },
               ),

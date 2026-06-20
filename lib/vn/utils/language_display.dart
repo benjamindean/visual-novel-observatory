@@ -1,7 +1,15 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 
+import '../constants/vndb_languages.dart';
+
 String languageDisplayName(BuildContext context, String language) {
+  final vndbLanguage = vndbLanguageById(language);
+
+  if (vndbLanguage != null) {
+    return vndbLanguage.label;
+  }
+
   final normalizedLanguage = _normalizeLocaleCode(language);
   final localizedName = LocaleNames.of(context)?.nameOf(normalizedLanguage);
   final nativeName =

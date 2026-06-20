@@ -4,6 +4,7 @@ import '../../models/vn_tag.dart';
 import '../../providers/vn_providers.dart';
 import '../../widgets/app_search_input.dart';
 import '../../widgets/bottom_action_bar.dart';
+import '../../widgets/filter_selectable_list_tile.dart';
 import '../../../theme/app_theme.dart';
 import '../../../settings/providers/settings_provider.dart';
 import 'tag_filter_caching_placeholder.dart';
@@ -198,67 +199,17 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                                   tag.id,
                                 );
 
-                                return Container(
-                                  margin: const EdgeInsets.only(bottom: 8.0),
-                                  child: Material(
+                                return FilterSelectableListTile(
+                                  leading: Icon(
+                                    Icons.tag_rounded,
+                                    size: 18,
                                     color: isSelected
-                                        ? context
-                                              .colorScheme
-                                              .surfaceContainerHigh
-                                        : context.appSurface,
-                                    clipBehavior: Clip.antiAlias,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: ListTile(
-                                      leading: Container(
-                                        padding: const EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                          color: isSelected
-                                              ? context
-                                                    .colorScheme
-                                                    .primaryContainer
-                                              : context
-                                                    .colorScheme
-                                                    .surfaceContainer,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Icon(
-                                          Icons.tag_rounded,
-                                          size: 18,
-                                          color: isSelected
-                                              ? context.appAccentTeal
-                                              : context.appTextSecondary,
-                                        ),
-                                      ),
-                                      title: Text(
-                                        tag.name,
-                                        style: TextStyle(
-                                          color: isSelected
-                                              ? context
-                                                    .colorScheme
-                                                    .onPrimaryContainer
-                                              : context.appTextPrimary,
-                                          fontWeight: isSelected
-                                              ? FontWeight.bold
-                                              : FontWeight.w500,
-                                        ),
-                                      ),
-                                      trailing: Checkbox(
-                                        activeColor: context.appAccentTeal,
-                                        checkColor:
-                                            context.colorScheme.onPrimary,
-                                        value: isSelected,
-                                        onChanged: (_) => _toggleTag(tag),
-                                      ),
-                                      onTap: () => _toggleTag(tag),
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                            horizontal: 16,
-                                            vertical: 4,
-                                          ),
-                                    ),
+                                        ? context.colorScheme.onPrimaryContainer
+                                        : context.appTextSecondary,
                                   ),
+                                  title: tag.name,
+                                  isSelected: isSelected,
+                                  onTap: () => _toggleTag(tag),
                                 );
                               },
                             ),

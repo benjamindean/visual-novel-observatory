@@ -6,6 +6,7 @@ import '../../../../theme/app_theme.dart';
 import '../../../models/vn_tag.dart';
 import '../../../providers/vn_providers.dart';
 import '../../filter/filter_chip_row.dart';
+import '../../filter/filter_languages_tile.dart';
 import '../../filter/filter_platforms_tile.dart';
 import '../../filter/filter_release_date_range_tile.dart';
 import '../../filter/filter_sort_row.dart';
@@ -209,18 +210,11 @@ class HomeCreateFilterTabState extends ConsumerState<HomeCreateFilterTab> {
                           ),
                         ),
                         const SizedBox(height: 8.0),
-                        FilterChipRow<String>(
-                          items: const {
-                            'en': 'English',
-                            'ja': 'Japanese',
-                            'zh': 'Chinese',
-                            'es': 'Spanish',
-                            'ko': 'Korean',
-                          },
-                          selectedValues: _selectedLangs,
-                          onSelected: (vals) {
+                        FilterLanguagesTile(
+                          selectedLanguages: _selectedLangs,
+                          onLanguagesChanged: (languages) {
                             setState(() {
-                              _selectedLangs = vals;
+                              _selectedLangs = languages;
                             });
                           },
                         ),
