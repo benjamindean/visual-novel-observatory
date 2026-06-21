@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../models/visual_novel.dart';
 import '../../../widgets/detail_header.dart';
+import '../../../widgets/developers_section.dart';
 import '../../../widgets/languages_section.dart';
 import '../../../widgets/links_section.dart';
 import '../../../widgets/metadata_row.dart';
@@ -52,9 +53,7 @@ class VnDetailScaffold extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 16),
-
                   VnDetailActions(vn: vn),
-
                   const SizedBox(height: 24),
 
                   if (vn.devStatus == 2) ...[
@@ -71,6 +70,9 @@ class VnDetailScaffold extends StatelessWidget {
                     SynopsisSection(description: vn.description!),
                     const SizedBox(height: 24),
                   ],
+
+                  DevelopersSection(developers: vn.developers),
+                  if (vn.developers.isNotEmpty) const SizedBox(height: 24),
 
                   // Tags List
                   TagsSection(tags: vn.tags, initialLimit: 6),

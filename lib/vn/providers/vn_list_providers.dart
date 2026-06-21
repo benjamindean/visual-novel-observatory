@@ -260,3 +260,78 @@ final vnListByTagProvider =
     NotifierProvider.family<VnListByTagNotifier, VnListState, String>(
       VnListByTagNotifier.new,
     );
+
+class VnListByDeveloperNotifier extends Notifier<VnListState> {
+  final String _developerId;
+  int _requestGeneration = 0;
+
+  VnListByDeveloperNotifier(this._developerId);
+
+  @override
+  VnListState build() {
+    Future.microtask(() => fetchVns());
+
+    return VnListState.initial();
+  }
+
+  Future<void> fetchVns() async {
+    if (state.isLoading || state.isLoadMore || !state.hasMore) {
+      return;
+    }
+
+    final requestGeneration = _requestGeneration;
+    final isInitial = state.vns.isEmpty;
+
+    if (isInitial) {
+      state = state.copyWith(isLoading: true, errorMessage: null);
+    } else {
+      state = state.copyWith(isLoadMore: true);
+    }
+
+    final currentPage = state.page;
+    final repository = ref.read(vnRepositoryProvider);
+
+    try {
+      final response = await repository.getVisualNovelsByDeveloper(
+        developerId: _developerId,
+        page: currentPage,
+      );
+
+      if (requestGeneration != _requestGeneration) {
+        return;
+      }
+
+      final List<VisualNovel> allVns = response['vns'] as List<VisualNovel>;
+      final bool hasMore = response['hasMore'] as bool;
+
+      state = state.copyWith(
+        vns: isInitial ? allVns : [...state.vns, ...allVns],
+        isLoading: false,
+        isLoadMore: false,
+        hasMore: hasMore,
+        page: currentPage + 1,
+      );
+    } catch (e) {
+      if (requestGeneration != _requestGeneration) {
+        return;
+      }
+
+      state = state.copyWith(
+        isLoading: false,
+        isLoadMore: false,
+        errorMessage: cleanErrorMessage(e),
+      );
+    }
+  }
+
+  Future<void> resetAndFetch() async {
+    _requestGeneration++;
+    state = VnListState.initial();
+    await fetchVns();
+  }
+}
+
+final vnListByDeveloperProvider =
+    NotifierProvider.family<VnListByDeveloperNotifier, VnListState, String>(
+      VnListByDeveloperNotifier.new,
+    );

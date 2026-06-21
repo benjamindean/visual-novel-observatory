@@ -35,6 +35,18 @@ class VnRepository {
     );
   }
 
+  Future<Map<String, dynamic>> getVisualNovelsByDeveloper({
+    required String developerId,
+    required int page,
+    int resultsPerPage = 15,
+  }) {
+    return _client.getVisualNovelsByDeveloper(
+      developerId: developerId,
+      page: page,
+      resultsPerPage: resultsPerPage,
+    );
+  }
+
   Future<Map<String, dynamic>> getVisualNovels({
     required List<dynamic> filters,
     required int page,

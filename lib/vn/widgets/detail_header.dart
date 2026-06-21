@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/visual_novel.dart';
 import 'cached_app_image.dart';
-import 'rating_badge.dart';
 import 'image_placeholder.dart';
 import 'reveal_image_button.dart';
 import 'vn_titles_sheet.dart';
@@ -184,43 +183,12 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
                 if (vn.aliases.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
-                    'Aliases: ${vn.aliases.join(", ")}',
+                    vn.aliases.join(", "),
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: context.appTextSecondary,
                     ),
                   ),
                 ],
-                const SizedBox(height: 12),
-
-                // Rating Badge
-                if (vn.rating != null)
-                  Row(
-                    children: [
-                      RatingBadge(
-                        rating: vn.rating!,
-                        averageRating: vn.average,
-                        iconSize: 20,
-                        fontSize: 16,
-                      ),
-                      Visibility(
-                        visible: vn.votecount != null && vn.votecount! > 0,
-                        child: Row(
-                          children: [
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              'from ${vn.votecount} votes',
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                height: 1,
-                                color: theme.colorScheme.outline,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
               ],
             ),
           ),

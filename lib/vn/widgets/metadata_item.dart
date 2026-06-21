@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../theme/app_theme.dart';
 
 class MetadataItem extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final String label;
   final String value;
   final Color? iconColor;
+  final Color? valueColor;
   final String? tooltipMessage;
 
   const MetadataItem({
@@ -14,6 +16,7 @@ class MetadataItem extends StatelessWidget {
     required this.label,
     required this.value,
     this.iconColor,
+    this.valueColor,
     this.tooltipMessage,
   });
 
@@ -22,10 +25,10 @@ class MetadataItem extends StatelessWidget {
     final theme = Theme.of(context);
     final content = Column(
       children: [
-        Icon(
+        FaIcon(
           icon,
           color: iconColor ?? context.appTextMuted,
-          size: 20,
+          size: 18,
         ),
         const SizedBox(height: 6),
         Text(
@@ -40,7 +43,7 @@ class MetadataItem extends StatelessWidget {
           value,
           textAlign: TextAlign.center,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: context.appTextPrimary,
+            color: valueColor ?? context.appTextPrimary,
             fontWeight: FontWeight.bold,
           ),
           maxLines: 1,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../models/visual_novel.dart';
 import '../utils/vndb_date_display.dart';
 import '../../theme/app_theme.dart';
@@ -46,10 +47,13 @@ class MetadataRow extends StatelessWidget {
     }
 
     final formattedRelease = formatVndbDate(vn.released);
-
-    final developerName = vn.developers.isNotEmpty
-        ? vn.developers.first.name
-        : 'Unknown';
+    final rating = vn.rating?.toStringAsFixed(1) ?? 'N/A';
+    final ratingTooltip = vn.average == null && vn.votecount == null
+        ? null
+        : 'Weighted rating: $rating\n'
+              'Average rating: ${vn.average?.toStringAsFixed(1) ?? 'N/A'}\n'
+              'Votes: ${vn.votecount ?? 0}';
+    final valueColor = context.colorScheme.primary;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -60,26 +64,30 @@ class MetadataRow extends StatelessWidget {
         ),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           MetadataItem(
-            icon: Icons.calendar_today_rounded,
+            icon: FontAwesomeIcons.star,
+            label: 'RATING',
+            value: rating,
+            iconColor: context.colorScheme.tertiary,
+            valueColor: valueColor,
+            tooltipMessage: ratingTooltip,
+          ),
+          MetadataItem(
+            icon: FontAwesomeIcons.calendar,
             label: 'RELEASE DATE',
             value: formattedRelease,
             iconColor: context.colorScheme.tertiary,
+            valueColor: valueColor,
           ),
           MetadataItem(
-            icon: Icons.access_time_rounded,
+            icon: FontAwesomeIcons.clock,
             label: 'PLAYTIME',
             value: playtime,
             iconColor: context.colorScheme.tertiary,
+            valueColor: valueColor,
             tooltipMessage: playtimeTooltip,
-          ),
-          MetadataItem(
-            icon: Icons.business_rounded,
-            label: 'DEVELOPER',
-            value: developerName,
-            iconColor: context.colorScheme.tertiary,
           ),
         ],
       ),

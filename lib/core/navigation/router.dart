@@ -8,6 +8,7 @@ import '../../vn/screens/home/home_create_filter_screen.dart';
 import '../../vn/screens/search/search_screen.dart';
 import '../../vn/screens/library/library_screen.dart';
 import '../../vn/screens/vn_detail/vn_detail_screen.dart';
+import '../../vn/screens/vn_by_developer/vn_by_developer_screen.dart';
 import '../../vn/screens/vn_by_tag/vn_by_tag_screen.dart';
 import '../../vn/screens/vn_gallery/vn_gallery_screen.dart';
 import '../../settings/screens/settings/settings_screen.dart';
@@ -198,6 +199,34 @@ final goRouter = GoRouter(
         }
 
         return VnByTagScreen(tagId: tagId, tagName: tagName);
+      },
+    ),
+    GoRoute(
+      path: '/developer-list',
+      builder: (context, state) {
+        final extra = state.extra;
+
+        if (extra is! Map) {
+          return const InvalidRouteScreen(
+            title: 'Developer Not Found',
+            message: 'This developer page was opened without developer data.',
+          );
+        }
+
+        final developerId = extra['developerId'];
+        final developerName = extra['developerName'];
+
+        if (developerId is! String || developerName is! String) {
+          return const InvalidRouteScreen(
+            title: 'Developer Not Found',
+            message: 'This developer page was opened with invalid data.',
+          );
+        }
+
+        return VnByDeveloperScreen(
+          developerId: developerId,
+          developerName: developerName,
+        );
       },
     ),
     GoRoute(

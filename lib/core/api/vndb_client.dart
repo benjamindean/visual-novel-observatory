@@ -255,6 +255,38 @@ class VndbClient {
     return {'vns': vns, 'hasMore': hasMore};
   }
 
+  Future<Map<String, dynamic>> getVisualNovelsByDeveloper({
+    required String developerId,
+    required int page,
+    int resultsPerPage = 15,
+  }) async {
+    final body = {
+      'filters': [
+        'developer',
+        '=',
+        ['id', '=', developerId],
+      ],
+      'fields': _vnFields,
+      'sort': 'rating',
+      'reverse': true,
+      'results': resultsPerPage,
+      'page': page,
+      'count': true,
+    };
+
+    final data = await _postVnQuery(body);
+
+    final results = data['results'] as List? ?? [];
+
+    final vns = results
+        .map((e) => VisualNovel.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    final hasMore = data['more'] as bool? ?? false;
+
+    return {'vns': vns, 'hasMore': hasMore};
+  }
+
   int _normalizedTagSpoilerLevel(int spoilerLevel) {
     if (spoilerLevel < 0) {
       return 0;

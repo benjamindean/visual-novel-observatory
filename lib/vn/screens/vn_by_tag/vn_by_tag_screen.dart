@@ -57,7 +57,6 @@ class _VnByTagScreenState extends ConsumerState<VnByTagScreen> {
         ),
       ),
       body: SafeArea(
-        bottom: false,
         child: CustomScrollView(
           controller: _scrollController,
           slivers: [
