@@ -99,6 +99,7 @@ class PlatformFilterScreenState extends State<PlatformFilterScreen> {
       ),
       bottomNavigationBar: BottomActionBar(
         label: 'Save Platforms',
+        badgeCount: _selectedPlatformIds.length,
         onPressed: () {
           Navigator.of(context).pop(_orderedSelection());
         },

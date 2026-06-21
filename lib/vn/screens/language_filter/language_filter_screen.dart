@@ -101,6 +101,7 @@ class LanguageFilterScreenState extends State<LanguageFilterScreen> {
       ),
       bottomNavigationBar: BottomActionBar(
         label: 'Save Languages',
+        badgeCount: _selectedLanguageIds.length,
         onPressed: () {
           Navigator.of(context).pop(_orderedSelection());
         },

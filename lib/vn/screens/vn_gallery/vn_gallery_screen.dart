@@ -169,6 +169,16 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
     }
   }
 
+  double _screenshotAspectRatio(VnScreenshot screenshot) {
+    if (screenshot.dims.length >= 2 &&
+        screenshot.dims[0] > 0 &&
+        screenshot.dims[1] > 0) {
+      return screenshot.dims[0] / screenshot.dims[1];
+    }
+
+    return 16 / 9;
+  }
+
   @override
   Widget build(BuildContext context) {
     final contentSettings = ref.watch(
@@ -246,61 +256,78 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
                             minScale: 1.0,
                             maxScale: 4.0,
                             child: SizedBox.expand(
-                              child: Stack(
-                                children: [
-                                  Positioned.fill(
-                                    child: CachedAppImage(
-                                      imageUrl: screenshot.url,
-                                      fit: BoxFit.contain,
-                                      shouldBlur: shouldBlur,
-                                      blurSigma: 20.0,
-                                      placeholderIconSize: 64.0,
-                                      placeholderBackgroundColor:
-                                          Colors.transparent,
-                                      errorBackgroundColor: Colors.transparent,
-                                    ),
+                              child: Center(
+                                child: AspectRatio(
+                                  aspectRatio: _screenshotAspectRatio(
+                                    screenshot,
                                   ),
-                                  if (shouldBlur)
-                                    Positioned.fill(
-                                      child: Container(
-                                        color: context.appBackground.withValues(
-                                          alpha: 0.65,
+                                  child: ClipRect(
+                                    child: Stack(
+                                      children: [
+                                        Positioned.fill(
+                                          child: CachedAppImage(
+                                            imageUrl: screenshot.url,
+                                            fit: BoxFit.contain,
+                                            shouldBlur: shouldBlur,
+                                            blurSigma: 20.0,
+                                            placeholderIconSize: 64.0,
+                                            placeholderBackgroundColor:
+                                                Colors.transparent,
+                                            errorBackgroundColor:
+                                                Colors.transparent,
+                                          ),
                                         ),
-                                        alignment: Alignment.center,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.visibility_off_rounded,
-                                              color: context.appTextPrimary
+                                        if (shouldBlur)
+                                          Positioned.fill(
+                                            child: Container(
+                                              color: context.appBackground
                                                   .withValues(
-                                                    alpha: 0.7,
+                                                    alpha: 0.65,
                                                   ),
-                                              size: 48,
-                                            ),
-                                            const SizedBox(height: 12),
-                                            Text(
-                                              'Sensitive Content Hidden',
-                                              style: TextStyle(
-                                                color: context.appTextPrimary,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
+                                              alignment: Alignment.center,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons
+                                                        .visibility_off_rounded,
+                                                    color: context
+                                                        .appTextPrimary
+                                                        .withValues(
+                                                          alpha: 0.7,
+                                                        ),
+                                                    size: 48,
+                                                  ),
+                                                  const SizedBox(height: 12),
+                                                  Text(
+                                                    'Sensitive Content Hidden',
+                                                    style: TextStyle(
+                                                      color: context
+                                                          .appTextPrimary,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 16),
+                                                  RevealImageButton(
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        _revealedIndices.add(
+                                                          index,
+                                                        );
+                                                      });
+                                                    },
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                            const SizedBox(height: 16),
-                                            RevealImageButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  _revealedIndices.add(index);
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                          ),
+                                      ],
                                     ),
-                                ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),

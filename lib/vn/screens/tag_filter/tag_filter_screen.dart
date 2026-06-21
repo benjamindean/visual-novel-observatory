@@ -147,6 +147,7 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
           ? null
           : BottomActionBar(
               label: 'Save Tags',
+              badgeCount: _selectedTagIds.length,
               onPressed: () {
                 Navigator.of(context).pop(_selectedTags);
               },

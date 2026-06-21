@@ -64,35 +64,26 @@ class BottomActionBar extends StatelessWidget {
                 ),
                 if (visibleBadgeCount > 0) ...[
                   const SizedBox(width: 8.0),
-                  DecoratedBox(
+                  Container(
+                    width: 24.0,
+                    height: 24.0,
+                    alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: foregroundColor.withValues(alpha: 0.18),
-                      borderRadius: BorderRadius.circular(999.0),
+                      shape: BoxShape.circle,
                       border: Border.all(
                         color: foregroundColor.withValues(alpha: 0.28),
                       ),
                     ),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        minWidth: 24.0,
-                        minHeight: 22.0,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 7.0,
-                          vertical: 3.0,
-                        ),
-                        child: Text(
-                          '$visibleBadgeCount',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: foregroundColor,
-                            fontSize: 11.0,
-                            fontWeight: FontWeight.w800,
-                            height: 1.0,
-                            letterSpacing: 0,
-                          ),
-                        ),
+                    child: Text(
+                      '$visibleBadgeCount',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: foregroundColor,
+                        fontSize: 11.0,
+                        fontWeight: FontWeight.w800,
+                        height: 1.0,
+                        letterSpacing: 0,
                       ),
                     ),
                   ),

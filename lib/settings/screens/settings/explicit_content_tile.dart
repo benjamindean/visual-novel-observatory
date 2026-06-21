@@ -8,10 +8,12 @@ class ExplicitContentTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final showExplicitContent = ref.watch(
+      settingsProvider.select((settings) => settings.showExplicitContent),
+    );
 
     return SwitchListTile(
-      value: settings.showExplicitContent,
+      value: showExplicitContent,
       title: const Text(
         'Explicit Content',
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
