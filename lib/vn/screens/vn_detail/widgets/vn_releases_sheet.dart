@@ -32,7 +32,7 @@ class VnReleasesSheet extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 0.0, 12.0, 12.0),
+              padding: const EdgeInsets.fromLTRB(20.0, 16.0, 12.0, 12.0),
               child: Row(
                 children: [
                   Expanded(

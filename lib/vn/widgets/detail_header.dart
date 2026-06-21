@@ -202,7 +202,7 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      showDragHandle: true,
+      showDragHandle: false,
       backgroundColor: context.appBackground,
       builder: (context) {
         return VnTitlesSheet(titles: titles);

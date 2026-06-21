@@ -96,7 +96,7 @@ class VnReleasesContent extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      showDragHandle: true,
+      showDragHandle: false,
       backgroundColor: context.appBackground,
       builder: (context) {
         return VnReleasesSheet(
