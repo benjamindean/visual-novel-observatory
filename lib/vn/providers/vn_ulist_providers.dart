@@ -57,7 +57,14 @@ class UserUlistState {
 class UserUlistNotifier extends Notifier<UserUlistState> {
   @override
   UserUlistState build() {
-    final auth = ref.watch(authProvider);
+    final auth = ref.watch(
+      authProvider.select(
+        (auth) => (
+          isAuthenticated: auth.isAuthenticated,
+          userId: auth.userId,
+        ),
+      ),
+    );
 
     if (auth.isAuthenticated) {
       Future.microtask(() async {
@@ -352,7 +359,14 @@ final libraryVnCountByLabelProvider = Provider.autoDispose.family<int, int>((
 
 final ulistLabelsProvider = FutureProvider<List<VndbLabel>>((ref) async {
   final repository = ref.watch(vnRepositoryProvider);
-  final auth = ref.watch(authProvider);
+  final auth = ref.watch(
+    authProvider.select(
+      (auth) => (
+        isAuthenticated: auth.isAuthenticated,
+        userId: auth.userId,
+      ),
+    ),
+  );
 
   if (!auth.isAuthenticated) {
     return const [];

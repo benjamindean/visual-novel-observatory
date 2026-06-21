@@ -98,7 +98,15 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
     final showExplicitContent = ref.watch(
       settingsProvider.select((settings) => settings.showExplicitContent),
     );
-    final localTagsState = ref.watch(localTagsProvider);
+    final localTagsState = ref.watch(
+      localTagsProvider.select(
+        (state) => (
+          tags: state.tags,
+          isLoading: state.isLoading,
+          progress: state.progress,
+        ),
+      ),
+    );
     final initialTags = _searchController.text.isEmpty
         ? localTagsState.tags
         : _searchResults;

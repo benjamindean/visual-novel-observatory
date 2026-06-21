@@ -54,7 +54,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
+    final authState = ref.watch(
+      authProvider.select(
+        (state) => (
+          errorMessage: state.errorMessage,
+          isValidating: state.isValidating,
+        ),
+      ),
+    );
     final theme = Theme.of(context);
 
     return Scaffold(

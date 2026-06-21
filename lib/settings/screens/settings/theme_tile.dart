@@ -8,7 +8,9 @@ class ThemeTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final themeName = ref.watch(
+      settingsProvider.select((settings) => settings.themeName),
+    );
     final theme = Theme.of(context);
     final isDarkActive = theme.brightness == Brightness.dark;
 
@@ -37,7 +39,7 @@ class ThemeTile extends ConsumerWidget {
             ),
           ),
           DropdownButton<String>(
-            value: settings.themeName,
+            value: themeName,
             dropdownColor: context.appSurface,
             underline: const SizedBox(),
             alignment: Alignment.centerRight,

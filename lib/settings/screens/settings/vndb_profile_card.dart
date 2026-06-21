@@ -11,11 +11,19 @@ class VndbProfileCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final auth = ref.watch(authProvider);
-    final ulistState = ref.watch(userUlistProvider);
-    final tagsState = ref.watch(localTagsProvider);
+    final auth = ref.watch(
+      authProvider.select(
+        (state) => (username: state.username, userId: state.userId),
+      ),
+    );
+    final isUserListLoading = ref.watch(
+      userUlistProvider.select((state) => state.isLoading),
+    );
+    final areTagsLoading = ref.watch(
+      localTagsProvider.select((state) => state.isLoading),
+    );
     final theme = Theme.of(context);
-    final isSyncing = ulistState.isLoading || tagsState.isLoading;
+    final isSyncing = isUserListLoading || areTagsLoading;
 
     return Container(
       padding: const EdgeInsets.all(20.0),

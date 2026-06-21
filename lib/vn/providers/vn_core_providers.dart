@@ -5,9 +5,9 @@ import '../../auth/providers/auth_provider.dart';
 import '../models/visual_novel.dart';
 
 final vndbClientProvider = Provider<VndbClient>((ref) {
-  final auth = ref.watch(authProvider);
+  final token = ref.watch(authProvider.select((auth) => auth.token));
 
-  return VndbClient(token: auth.token);
+  return VndbClient(token: token);
 });
 
 final vnRepositoryProvider = Provider<VnRepository>((ref) {

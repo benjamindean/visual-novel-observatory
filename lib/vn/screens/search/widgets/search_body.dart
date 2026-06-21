@@ -15,11 +15,21 @@ class SearchBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searchState = ref.watch(vnSearchProvider);
-    final recentVns = ref.watch(recentlyOpenedSearchProvider);
     final query = ref.watch(searchScreenQueryProvider);
 
-    // 1. Loading State (when no vns are loaded yet)
+    if (query.trim().isEmpty) {
+      final recentVns = ref.watch(recentlyOpenedSearchProvider);
+
+      if (recentVns.isEmpty) {
+        return const SearchStatusScrollView(
+          child: SearchEmptyPlaceholder(),
+        );
+      }
+
+      return SearchRecentList(recentVns: recentVns);
+    }
+
+    final searchState = ref.watch(vnSearchProvider);
 
     if (searchState.isLoading && searchState.vns.isEmpty) {
       return const SearchStatusScrollView(
@@ -27,33 +37,18 @@ class SearchBody extends ConsumerWidget {
       );
     }
 
-    // 2. Error State (when no vns are loaded yet)
     if (searchState.errorMessage != null && searchState.vns.isEmpty) {
       return SearchStatusScrollView(
         child: SearchErrorView(errorMessage: searchState.errorMessage!),
       );
     }
 
-    // 3. Initial Empty State (when search query is empty)
-    if (query.trim().isEmpty) {
-      if (recentVns.isEmpty) {
-        return const SearchStatusScrollView(
-          child: SearchEmptyPlaceholder(),
-        );
-      }
-
-      // Recent searches list
-      return SearchRecentList(recentVns: recentVns);
-    }
-
-    // 4. No Results Found State
     if (searchState.vns.isEmpty) {
       return const SearchStatusScrollView(
         child: SearchNoResults(),
       );
     }
 
-    // 5. Results State
     return SearchResultsGrid(
       searchState: searchState,
     );

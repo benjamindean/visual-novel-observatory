@@ -8,7 +8,9 @@ class ThemeModeTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final themeMode = ref.watch(
+      settingsProvider.select((settings) => settings.themeMode),
+    );
     final modeLabels = {
       'system': 'Follow System',
       'light': 'Light',
@@ -40,7 +42,7 @@ class ThemeModeTile extends ConsumerWidget {
             ),
           ),
           DropdownButton<String>(
-            value: settings.themeMode,
+            value: themeMode,
             dropdownColor: context.appSurface,
             underline: const SizedBox(),
             alignment: Alignment.centerRight,

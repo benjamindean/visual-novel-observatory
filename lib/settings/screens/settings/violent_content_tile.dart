@@ -8,10 +8,12 @@ class ViolentContentTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final showViolentContent = ref.watch(
+      settingsProvider.select((settings) => settings.showViolentContent),
+    );
 
     return SwitchListTile(
-      value: settings.showViolentContent,
+      value: showViolentContent,
       title: const Text(
         'Violent Content',
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),

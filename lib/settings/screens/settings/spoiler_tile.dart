@@ -8,7 +8,9 @@ class SpoilerTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final spoilerLevel = ref.watch(
+      settingsProvider.select((settings) => settings.spoilerLevel),
+    );
     final spoilerLabels = {
       0: 'Hide Spoilers',
       1: 'Show Minor Spoilers',
@@ -40,7 +42,7 @@ class SpoilerTile extends ConsumerWidget {
             ),
           ),
           DropdownButton<int>(
-            value: settings.spoilerLevel,
+            value: spoilerLevel,
             dropdownColor: context.appSurface,
             underline: const SizedBox(),
             alignment: Alignment.centerRight,

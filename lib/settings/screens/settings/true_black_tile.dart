@@ -8,10 +8,12 @@ class TrueBlackTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final darkIsTrueBlack = ref.watch(
+      settingsProvider.select((settings) => settings.darkIsTrueBlack),
+    );
 
     return SwitchListTile(
-      value: settings.darkIsTrueBlack,
+      value: darkIsTrueBlack,
       title: Text(
         'True Black Background',
         style: TextStyle(

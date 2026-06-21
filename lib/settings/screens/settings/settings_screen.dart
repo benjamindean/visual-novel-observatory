@@ -20,7 +20,9 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authProvider);
+    final isAuthenticated = ref.watch(
+      authProvider.select((state) => state.isAuthenticated),
+    );
     final theme = Theme.of(context);
     final isDarkActive = theme.brightness == Brightness.dark;
 
@@ -39,7 +41,7 @@ class SettingsScreen extends ConsumerWidget {
         children: [
           const SettingsSectionHeader(title: 'VNDB Profile'),
           const SizedBox(height: 12),
-          if (authState.isAuthenticated)
+          if (isAuthenticated)
             const VndbProfileCard()
           else
             const VndbConnectCard(),
