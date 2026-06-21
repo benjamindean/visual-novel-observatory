@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -27,6 +30,7 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
   late PageController _pageController;
   late int _currentIndex;
   final Set<int> _revealedIndices = {};
+  final Set<String> _precachedImageUrls = {};
   final Map<int, TransformationController> _transformationControllers = {};
 
   TransformationController? _activeController;
@@ -54,6 +58,12 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
             _getController(_animatingIndex!).value = _zoomAnimation!.value;
           }
         });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _precacheNearbyScreenshots(_currentIndex);
+      }
+    });
   }
 
   @override
@@ -179,6 +189,32 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
     return 16 / 9;
   }
 
+  void _precacheNearbyScreenshots(int index) {
+    for (final offset in const [1, 2, -1]) {
+      _precacheScreenshot(index + offset);
+    }
+  }
+
+  void _precacheScreenshot(int index) {
+    if (index < 0 || index >= widget.screenshots.length) {
+      return;
+    }
+
+    final imageUrl = widget.screenshots[index].url;
+
+    if (imageUrl.isEmpty || !_precachedImageUrls.add(imageUrl)) {
+      return;
+    }
+
+    final imageProvider = CachedNetworkImageProvider(
+      imageUrl,
+    );
+
+    unawaited(
+      precacheImage(imageProvider, context).catchError((Object _) {}),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final contentSettings = ref.watch(
@@ -231,6 +267,7 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen>
                         });
 
                         _resetZoom(oldIndex);
+                        _precacheNearbyScreenshots(index);
                       },
                       itemBuilder: (context, index) {
                         final screenshot = widget.screenshots[index];
