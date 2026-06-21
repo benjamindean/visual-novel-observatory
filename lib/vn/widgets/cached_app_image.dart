@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:visual_novel_observatory/vn/utils/image_cache_size.dart';
 
 import '../../theme/app_theme.dart';
 import 'image_error_widget.dart';
@@ -50,6 +51,8 @@ class CachedAppImage extends StatelessWidget {
         fadeOutDuration: fadeOutDuration,
         placeholder: _buildPlaceholder,
         errorWidget: _buildError,
+        maxWidthDiskCache: coverImageMaxWidthDiskCache,
+        maxHeightDiskCache: coverImageMaxHeightDiskCache,
       );
     }
 
@@ -81,6 +84,8 @@ class CachedAppImage extends StatelessWidget {
       },
       placeholder: _buildPlaceholder,
       errorWidget: _buildError,
+      maxWidthDiskCache: coverImageMaxWidthDiskCache,
+      maxHeightDiskCache: coverImageMaxHeightDiskCache,
     );
   }
 

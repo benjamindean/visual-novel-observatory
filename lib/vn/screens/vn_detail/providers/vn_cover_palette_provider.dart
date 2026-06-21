@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:palette_generator_master/palette_generator_master.dart';
+import 'package:visual_novel_observatory/vn/utils/image_cache_size.dart';
 
 class VnCoverPalette {
   const VnCoverPalette({
@@ -89,12 +90,16 @@ final vnCoverPaletteProvider = FutureProvider.autoDispose
     });
 
 Future<VnCoverPalette> _generateCoverPalette(String imageUrl) async {
-  final imageProvider = CachedNetworkImageProvider(imageUrl);
+  final imageProvider = CachedNetworkImageProvider(
+    imageUrl,
+    maxWidth: coverImageMaxWidthDiskCache,
+    maxHeight: coverImageMaxHeightDiskCache,
+  );
   final generator = await PaletteGeneratorMaster.fromImageProvider(
     imageProvider,
     maximumColorCount: 12,
     generateHarmony: false,
-    timeout: const Duration(seconds: 12),
+    timeout: const Duration(seconds: 5),
   );
   final primary = _firstColor(
     generator.vibrantColor,
