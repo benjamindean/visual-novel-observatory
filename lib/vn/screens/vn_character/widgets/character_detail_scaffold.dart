@@ -5,6 +5,7 @@ import '../../../../settings/providers/settings_provider.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../models/vn_character.dart';
 import '../../../models/vn_staff.dart';
+import '../../../utils/vndb_content_sensitivity.dart';
 import 'character_about_section.dart';
 import 'character_fact.dart';
 import 'character_fact_grid.dart';
@@ -34,13 +35,12 @@ class CharacterDetailScaffold extends ConsumerWidget {
         ),
       ),
     );
-    final shouldBlur =
-        (!contentSettings.showExplicitContent &&
-            character.imageSexual != null &&
-            character.imageSexual! > 0.2) ||
-        (!contentSettings.showViolentContent &&
-            character.imageViolence != null &&
-            character.imageViolence! > 0.2);
+    final shouldBlur = shouldBlurVndbContent(
+      sexual: character.imageSexual,
+      violence: character.imageViolence,
+      showExplicitContent: contentSettings.showExplicitContent,
+      showViolentContent: contentSettings.showViolentContent,
+    );
     final facts = CharacterFact.fromCharacter(
       character: character,
       staff: staff,

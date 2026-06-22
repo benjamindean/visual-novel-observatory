@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../settings/providers/settings_provider.dart';
 import '../../../models/visual_novel.dart';
+import '../../../utils/vndb_content_sensitivity.dart';
 import '../providers/vn_cover_palette_provider.dart';
 
 class VnDetailPaletteTheme extends ConsumerWidget {
@@ -27,13 +28,12 @@ class VnDetailPaletteTheme extends ConsumerWidget {
       ),
     );
     final imageUrl = vn.imageUrl;
-    final isCoverSensitive =
-        (!settings.showExplicitContent &&
-            vn.imageSexual != null &&
-            vn.imageSexual! > 0.2) ||
-        (!settings.showViolentContent &&
-            vn.imageViolence != null &&
-            vn.imageViolence! > 0.2);
+    final isCoverSensitive = isSensitiveVndbContent(
+      sexual: vn.imageSexual,
+      violence: vn.imageViolence,
+      showExplicitContent: settings.showExplicitContent,
+      showViolentContent: settings.showViolentContent,
+    );
 
     if (!settings.useCoverColorScheme ||
         imageUrl == null ||

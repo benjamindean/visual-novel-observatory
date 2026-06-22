@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/visual_novel.dart';
+import '../utils/vndb_content_sensitivity.dart';
 import 'cached_app_image.dart';
 import 'image_placeholder.dart';
 import 'reveal_image_button.dart';
@@ -37,14 +38,13 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
     final vn = widget.vn;
     final hasMultipleTitles = vn.titles.length > 1;
 
-    final isSensitive =
-        (!contentSettings.showExplicitContent &&
-            vn.imageSexual != null &&
-            vn.imageSexual! > 0.2) ||
-        (!contentSettings.showViolentContent &&
-            vn.imageViolence != null &&
-            vn.imageViolence! > 0.2);
-    final shouldBlur = isSensitive && !_isImageRevealed;
+    final shouldBlur = shouldBlurVndbContent(
+      sexual: vn.imageSexual,
+      violence: vn.imageViolence,
+      showExplicitContent: contentSettings.showExplicitContent,
+      showViolentContent: contentSettings.showViolentContent,
+      isRevealed: _isImageRevealed,
+    );
 
     return SizedBox(
       width: double.infinity,

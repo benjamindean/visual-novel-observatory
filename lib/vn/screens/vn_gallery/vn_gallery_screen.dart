@@ -5,6 +5,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../models/vn_screenshot.dart';
+import '../../utils/vndb_content_sensitivity.dart';
 import '../../widgets/cached_app_image.dart';
 import '../../widgets/reveal_image_button.dart';
 import '../../../settings/providers/settings_provider.dart';
@@ -25,12 +26,18 @@ class VnGalleryScreen extends ConsumerStatefulWidget {
 }
 
 class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
+  static const double _dismissDistanceThreshold = 120.0;
+  static const double _dismissVelocityThreshold = 700.0;
+  static const Duration _snapBackDuration = Duration(milliseconds: 250);
+  static const Duration _dismissDuration = Duration(milliseconds: 250);
+
   late PageController _pageController;
   late int _currentIndex;
   final Set<int> _revealedIndices = {};
 
   double _dragOffset = 0.0;
   bool _isDragging = false;
+  bool _isDismissing = false;
 
   @override
   void initState() {
@@ -48,6 +55,10 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
   }
 
   void _onVerticalDragUpdate(DragUpdateDetails details) {
+    if (_isDismissing) {
+      return;
+    }
+
     setState(() {
       _dragOffset += details.primaryDelta ?? 0.0;
       _isDragging = true;
@@ -55,10 +66,23 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
   }
 
   void _onVerticalDragEnd(DragEndDetails details) {
-    const threshold = 120.0;
+    if (_isDismissing) {
+      return;
+    }
 
-    if (_dragOffset.abs() > threshold) {
-      context.pop();
+    final velocity = details.primaryVelocity ?? 0.0;
+    final hasDismissDistance = _dragOffset.abs() > _dismissDistanceThreshold;
+    final hasDismissVelocity = velocity.abs() > _dismissVelocityThreshold;
+
+    if (hasDismissDistance || hasDismissVelocity) {
+      final direction = hasDismissVelocity ? velocity.sign : _dragOffset.sign;
+      final screenHeight = MediaQuery.sizeOf(context).height;
+
+      setState(() {
+        _dragOffset = direction * (screenHeight + 120.0);
+        _isDragging = false;
+        _isDismissing = true;
+      });
     } else {
       setState(() {
         _dragOffset = 0.0;
@@ -78,22 +102,6 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
     }
 
     return const Size(16, 9);
-  }
-
-  bool _isSensitiveScreenshot({
-    required VnScreenshot screenshot,
-    required bool showExplicitContent,
-    required bool showViolentContent,
-    required bool isRevealed,
-  }) {
-    return (!showExplicitContent &&
-            screenshot.sexual != null &&
-            screenshot.sexual! > 0.2 &&
-            !isRevealed) ||
-        (!showViolentContent &&
-            screenshot.violence != null &&
-            screenshot.violence! > 0.2 &&
-            !isRevealed);
   }
 
   @override
@@ -121,8 +129,17 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
               child: AnimatedContainer(
                 duration: _isDragging
                     ? Duration.zero
-                    : const Duration(milliseconds: 250),
-                curve: Curves.easeOutCubic,
+                    : _isDismissing
+                    ? _dismissDuration
+                    : _snapBackDuration,
+                curve: _isDismissing ? Curves.decelerate : Curves.easeOutCubic,
+                onEnd: () {
+                  if (!_isDismissing || !mounted) {
+                    return;
+                  }
+
+                  context.pop();
+                },
                 transformAlignment: Alignment.center,
                 transform: Matrix4.translationValues(
                   0.0,
@@ -146,8 +163,9 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
                   builder: (context, index) {
                     final screenshot = widget.screenshots[index];
                     final isRevealed = _revealedIndices.contains(index);
-                    final shouldBlur = _isSensitiveScreenshot(
-                      screenshot: screenshot,
+                    final shouldBlur = shouldBlurVndbContent(
+                      sexual: screenshot.sexual,
+                      violence: screenshot.violence,
                       showExplicitContent: contentSettings.showExplicitContent,
                       showViolentContent: contentSettings.showViolentContent,
                       isRevealed: isRevealed,

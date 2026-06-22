@@ -18,9 +18,7 @@ class VnReleasesSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       expand: false,
-      initialChildSize: 0.82,
-      minChildSize: 0.45,
-      maxChildSize: 0.95,
+      maxChildSize: 0.90,
       builder: (context, scrollController) {
         final theme = Theme.of(context);
         final releaseCount = releases.length;

@@ -20,9 +20,7 @@ class VnTitlesSheet extends StatelessWidget {
 
     return DraggableScrollableSheet(
       expand: false,
-      initialChildSize: 0.72,
-      minChildSize: 0.35,
-      maxChildSize: 0.92,
+      maxChildSize: 0.90,
       builder: (context, scrollController) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,

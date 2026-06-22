@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../models/vn_character.dart';
 import '../models/vn_voice_actor.dart';
+import '../utils/vndb_content_sensitivity.dart';
 import '../../../theme/app_theme.dart';
 import '../../../settings/providers/settings_provider.dart';
 import 'character_avatar.dart';
@@ -58,13 +59,12 @@ class CharactersSection extends ConsumerWidget {
             itemBuilder: (context, index) {
               final association = displayedActors[index];
               final char = association.character;
-              final shouldBlur =
-                  (!contentSettings.showExplicitContent &&
-                      char.imageSexual != null &&
-                      char.imageSexual! > 0.2) ||
-                  (!contentSettings.showViolentContent &&
-                      char.imageViolence != null &&
-                      char.imageViolence! > 0.2);
+              final shouldBlur = shouldBlurVndbContent(
+                sexual: char.imageSexual,
+                violence: char.imageViolence,
+                showExplicitContent: contentSettings.showExplicitContent,
+                showViolentContent: contentSettings.showViolentContent,
+              );
 
               return Padding(
                 padding: const EdgeInsets.only(right: 16.0),

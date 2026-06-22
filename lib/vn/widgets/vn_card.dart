@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/visual_novel.dart';
+import '../utils/vndb_content_sensitivity.dart';
 import 'cached_app_image.dart';
 import 'rating_badge.dart';
 import 'image_placeholder.dart';
@@ -24,13 +25,12 @@ class VnCard extends ConsumerWidget {
       ),
     );
 
-    final shouldBlur =
-        (!contentSettings.showExplicitContent &&
-            vn.imageSexual != null &&
-            vn.imageSexual! > 0.2) ||
-        (!contentSettings.showViolentContent &&
-            vn.imageViolence != null &&
-            vn.imageViolence! > 0.2);
+    final shouldBlur = shouldBlurVndbContent(
+      sexual: vn.imageSexual,
+      violence: vn.imageViolence,
+      showExplicitContent: contentSettings.showExplicitContent,
+      showViolentContent: contentSettings.showViolentContent,
+    );
 
     return Card(
       clipBehavior: Clip.antiAlias,

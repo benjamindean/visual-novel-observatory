@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../models/vn_screenshot.dart';
+import '../utils/vndb_content_sensitivity.dart';
 import 'cached_app_image.dart';
 import '../../theme/app_theme.dart';
 import '../../settings/providers/settings_provider.dart';
@@ -50,13 +51,12 @@ class ScreenshotsSection extends ConsumerWidget {
             itemBuilder: (context, index) {
               final screen = screenshots[index];
 
-              final shouldBlur =
-                  (!contentSettings.showExplicitContent &&
-                      screen.sexual != null &&
-                      screen.sexual! > 0.2) ||
-                  (!contentSettings.showViolentContent &&
-                      screen.violence != null &&
-                      screen.violence! > 0.2);
+              final shouldBlur = shouldBlurVndbContent(
+                sexual: screen.sexual,
+                violence: screen.violence,
+                showExplicitContent: contentSettings.showExplicitContent,
+                showViolentContent: contentSettings.showViolentContent,
+              );
 
               return Padding(
                 padding: const EdgeInsets.only(right: 12.0),

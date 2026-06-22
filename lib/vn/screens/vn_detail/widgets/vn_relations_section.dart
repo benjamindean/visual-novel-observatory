@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../models/vn_relation.dart';
+import '../../../utils/vndb_content_sensitivity.dart';
 import '../../../widgets/cached_app_image.dart';
 import '../../../widgets/rating_badge.dart';
 import '../../../widgets/image_placeholder.dart';
@@ -74,13 +75,12 @@ class VnRelationCard extends ConsumerWidget {
       ),
     );
 
-    final shouldBlur =
-        (!contentSettings.showExplicitContent &&
-            vn.imageSexual != null &&
-            vn.imageSexual! > 0.2) ||
-        (!contentSettings.showViolentContent &&
-            vn.imageViolence != null &&
-            vn.imageViolence! > 0.2);
+    final shouldBlur = shouldBlurVndbContent(
+      sexual: vn.imageSexual,
+      violence: vn.imageViolence,
+      showExplicitContent: contentSettings.showExplicitContent,
+      showViolentContent: contentSettings.showViolentContent,
+    );
 
     final label = _getRelationLabel(relation.relation);
 
