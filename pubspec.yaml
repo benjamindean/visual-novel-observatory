@@ -40,13 +40,13 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path_android: "assets/icon/observatory_android.png"
-  image_path_ios: "assets/icon/observatory_ios.png"
+  image_path_ios: "assets/icon/observatory_android.png"
   adaptive_icon_background: "#161c2e"
   adaptive_icon_foreground: "assets/icon/observatory_android.png"
 
 flutter_native_splash:
   color: "#161c2e"
-  image: assets/icon/observatory_ios.png
+  image: assets/icon/observatory_android.png
   android: true
   ios: true
   fullscreen: true
