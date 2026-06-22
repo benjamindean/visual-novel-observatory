@@ -28,8 +28,8 @@ class VnGalleryScreen extends ConsumerStatefulWidget {
 class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
   static const double _dismissDistanceThreshold = 120.0;
   static const double _dismissVelocityThreshold = 700.0;
-  static const Duration _snapBackDuration = Duration(milliseconds: 250);
-  static const Duration _dismissDuration = Duration(milliseconds: 250);
+  static const Duration _snapBackDuration = Duration(milliseconds: 350);
+  static const Duration _dismissDuration = Duration(milliseconds: 350);
 
   late PageController _pageController;
   late int _currentIndex;
@@ -116,6 +116,12 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
     );
     final dragRatio = (_dragOffset.abs() / 300.0).clamp(0.0, 1.0);
     final bgOpacity = (1.0 - dragRatio).clamp(0.0, 1.0);
+    final controlsOpacity = (1.0 - dragRatio * 1.8).clamp(0.0, 1.0);
+    final chromeAnimationDuration = _isDragging
+        ? Duration.zero
+        : _isDismissing
+        ? _dismissDuration
+        : _snapBackDuration;
 
     return Theme(
       data: Theme.of(context).copyWith(brightness: Brightness.dark),
@@ -123,116 +129,122 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
         backgroundColor: Color.fromRGBO(0, 0, 0, bgOpacity),
         body: Stack(
           children: [
-            GestureDetector(
-              onVerticalDragUpdate: _onVerticalDragUpdate,
-              onVerticalDragEnd: _onVerticalDragEnd,
-              child: AnimatedContainer(
-                duration: _isDragging
-                    ? Duration.zero
-                    : _isDismissing
-                    ? _dismissDuration
-                    : _snapBackDuration,
-                curve: _isDismissing ? Curves.decelerate : Curves.easeOutCubic,
-                onEnd: () {
-                  if (!_isDismissing || !mounted) {
-                    return;
-                  }
+            Positioned.fill(
+              child: GestureDetector(
+                onVerticalDragUpdate: _onVerticalDragUpdate,
+                onVerticalDragEnd: _onVerticalDragEnd,
+                child: AnimatedContainer(
+                  duration: _isDragging
+                      ? Duration.zero
+                      : _isDismissing
+                      ? _dismissDuration
+                      : _snapBackDuration,
+                  curve: _isDismissing
+                      ? Curves.decelerate
+                      : Curves.easeOutCubic,
+                  onEnd: () {
+                    if (!_isDismissing || !mounted) {
+                      return;
+                    }
 
-                  context.pop();
-                },
-                transformAlignment: Alignment.center,
-                transform: Matrix4.translationValues(
-                  0.0,
-                  _dragOffset,
-                  0.0,
-                ),
-                child: PhotoViewGallery.builder(
-                  pageController: _pageController,
-                  itemCount: widget.screenshots.length,
-                  scrollPhysics: const BouncingScrollPhysics(),
-                  backgroundDecoration: const BoxDecoration(
-                    color: Colors.transparent,
-                  ),
-                  wantKeepAlive: true,
-                  allowImplicitScrolling: true,
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
+                    context.pop();
                   },
-                  builder: (context, index) {
-                    final screenshot = widget.screenshots[index];
-                    final isRevealed = _revealedIndices.contains(index);
-                    final shouldBlur = shouldBlurVndbContent(
-                      sexual: screenshot.sexual,
-                      violence: screenshot.violence,
-                      showExplicitContent: contentSettings.showExplicitContent,
-                      showViolentContent: contentSettings.showViolentContent,
-                      isRevealed: isRevealed,
-                    );
+                  transformAlignment: Alignment.center,
+                  transform: Matrix4.translationValues(
+                    0.0,
+                    _dragOffset,
+                    0.0,
+                  ),
+                  child: PhotoViewGallery.builder(
+                    pageController: _pageController,
+                    itemCount: widget.screenshots.length,
+                    scrollPhysics: const BouncingScrollPhysics(),
+                    backgroundDecoration: const BoxDecoration(
+                      color: Colors.transparent,
+                    ),
+                    wantKeepAlive: true,
+                    allowImplicitScrolling: true,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                    builder: (context, index) {
+                      final screenshot = widget.screenshots[index];
+                      final isRevealed = _revealedIndices.contains(index);
+                      final shouldBlur = shouldBlurVndbContent(
+                        sexual: screenshot.sexual,
+                        violence: screenshot.violence,
+                        showExplicitContent:
+                            contentSettings.showExplicitContent,
+                        showViolentContent: contentSettings.showViolentContent,
+                        isRevealed: isRevealed,
+                      );
 
-                    return PhotoViewGalleryPageOptions.customChild(
-                      childSize: _screenshotSize(screenshot),
-                      minScale: PhotoViewComputedScale.contained,
-                      initialScale: PhotoViewComputedScale.contained,
-                      maxScale: PhotoViewComputedScale.covered * 4.0,
-                      disableGestures: shouldBlur,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          Positioned.fill(
-                            child: CachedAppImage(
-                              imageUrl: screenshot.url,
-                              fit: BoxFit.cover,
-                              shouldBlur: shouldBlur,
-                              blurSigma: 20.0,
-                              placeholderIconSize: 64.0,
-                              placeholderBackgroundColor: Colors.transparent,
-                              errorBackgroundColor: Colors.transparent,
-                            ),
-                          ),
-                          if (shouldBlur)
+                      return PhotoViewGalleryPageOptions.customChild(
+                        childSize: _screenshotSize(screenshot),
+                        minScale: PhotoViewComputedScale.contained,
+                        initialScale: PhotoViewComputedScale.contained,
+                        maxScale: PhotoViewComputedScale.covered * 4.0,
+                        disableGestures: shouldBlur,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
                             Positioned.fill(
-                              child: Container(
-                                color: context.appBackground.withValues(
-                                  alpha: 0.65,
-                                ),
-                                alignment: Alignment.center,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.visibility_off_rounded,
-                                      color: context.appTextPrimary.withValues(
-                                        alpha: 0.7,
-                                      ),
-                                      size: 48,
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Text(
-                                      'Sensitive Content Hidden',
-                                      style: TextStyle(
-                                        color: context.appTextPrimary,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    RevealImageButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _revealedIndices.add(index);
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                ),
+                              child: CachedAppImage(
+                                imageUrl: screenshot.url,
+                                fit: BoxFit.cover,
+                                shouldBlur: shouldBlur,
+                                blurSigma: 20.0,
+                                placeholderIconSize: 64.0,
+                                placeholderBackgroundColor: Colors.transparent,
+                                errorBackgroundColor: Colors.transparent,
                               ),
                             ),
-                        ],
-                      ),
-                    );
-                  },
+                            if (shouldBlur)
+                              Positioned.fill(
+                                child: Container(
+                                  color: context.appBackground.withValues(
+                                    alpha: 0.65,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.visibility_off_rounded,
+                                        color: context.appTextPrimary
+                                            .withValues(
+                                              alpha: 0.7,
+                                            ),
+                                        size: 48,
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        'Sensitive Content Hidden',
+                                        style: TextStyle(
+                                          color: context.appTextPrimary,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      RevealImageButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _revealedIndices.add(index);
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
@@ -240,68 +252,77 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
               bottom: 0,
               left: 0,
               right: 0,
-              child: SafeArea(
-                top: false,
-                bottom: true,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 16.0,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: context.appBackground.withValues(
-                          alpha: 0.65,
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.close,
-                            color: context.appTextPrimary,
-                          ),
-                          onPressed: () => context.pop(),
-                        ),
+              child: IgnorePointer(
+                ignoring: _isDismissing,
+                child: AnimatedOpacity(
+                  opacity: controlsOpacity,
+                  duration: chromeAnimationDuration,
+                  curve: _isDismissing ? Curves.easeOutCubic : Curves.easeOut,
+                  child: SafeArea(
+                    top: false,
+                    bottom: true,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 16.0,
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: context.appBackground.withValues(
-                            alpha: 0.65,
-                          ),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Text(
-                          '${_currentIndex + 1} / ${widget.screenshots.length}',
-                          style: TextStyle(
-                            color: context.appTextPrimary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                      CircleAvatar(
-                        backgroundColor: context.appBackground.withValues(
-                          alpha: 0.65,
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.share_outlined,
-                            color: context.appTextPrimary,
-                          ),
-                          onPressed: () {
-                            SharePlus.instance.share(
-                              ShareParams(
-                                text: widget.screenshots[_currentIndex].url,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: context.appBackground.withValues(
+                              alpha: 0.65,
+                            ),
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: context.appTextPrimary,
                               ),
-                            );
-                          },
-                        ),
+                              onPressed: () => context.pop(),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: context.appBackground.withValues(
+                                alpha: 0.65,
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Text(
+                              '${_currentIndex + 1} / '
+                              '${widget.screenshots.length}',
+                              style: TextStyle(
+                                color: context.appTextPrimary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                          CircleAvatar(
+                            backgroundColor: context.appBackground.withValues(
+                              alpha: 0.65,
+                            ),
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.share_outlined,
+                                color: context.appTextPrimary,
+                              ),
+                              onPressed: () {
+                                SharePlus.instance.share(
+                                  ShareParams(
+                                    text: widget.screenshots[_currentIndex].url,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
