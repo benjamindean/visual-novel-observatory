@@ -358,6 +358,9 @@ final libraryVnCountByLabelProvider = Provider.autoDispose.family<int, int>((
 });
 
 final ulistLabelsProvider = FutureProvider<List<VndbLabel>>((ref) async {
+  // Prevent synchronous state updates during widget build phase
+  await Future.delayed(Duration.zero);
+
   final repository = ref.watch(vnRepositoryProvider);
   final auth = ref.watch(
     authProvider.select(

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:hive_ce/hive_ce.dart';
 import '../../vn/models/vn_ulist_entry.dart';
 import '../../vn/models/vndb_label.dart';
@@ -9,14 +10,17 @@ class VnUlistEntryAdapter extends TypeAdapter<VnUlistEntry> {
   @override
   VnUlistEntry read(BinaryReader reader) {
     final Map<dynamic, dynamic> rawMap = reader.readMap();
-    final Map<String, dynamic> json = Map<String, dynamic>.from(rawMap);
+    final Map<String, dynamic> json = jsonDecode(jsonEncode(rawMap));
 
     return VnUlistEntry.fromJson(json);
   }
 
   @override
-  void write(BinaryWriter writer, VnUlistEntry obj) {
-    writer.writeMap(obj.toJson());
+  void write(
+    BinaryWriter writer,
+    VnUlistEntry obj,
+  ) {
+    writer.writeMap(jsonDecode(jsonEncode(obj.toJson())));
   }
 }
 
@@ -27,7 +31,7 @@ class VndbLabelAdapter extends TypeAdapter<VndbLabel> {
   @override
   VndbLabel read(BinaryReader reader) {
     final Map<dynamic, dynamic> rawMap = reader.readMap();
-    final Map<String, dynamic> json = Map<String, dynamic>.from(rawMap);
+    final Map<String, dynamic> json = jsonDecode(jsonEncode(rawMap));
 
     return VndbLabel.fromJson(json);
   }
