@@ -38,6 +38,20 @@ class VnDetailLabelsSheet extends ConsumerStatefulWidget {
 class VnDetailLabelsSheetState extends ConsumerState<VnDetailLabelsSheet> {
   List<int>? tempLabels;
 
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      ref.read(ulistLabelsProvider.notifier).loadLabels();
+      ref.read(userUlistProvider.notifier).ensureEntriesLoaded();
+    });
+  }
+
   void _ensureTempLabels(VnUlistState ulistState) {
     if (tempLabels != null) {
       return;

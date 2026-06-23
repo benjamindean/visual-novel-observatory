@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async' show unawaited;
 import 'dart:developer' as developer;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,12 +39,30 @@ class LocalTagsState {
 class LocalTagsNotifier extends Notifier<LocalTagsState> {
   @override
   LocalTagsState build() {
-    Future.microtask(() => loadLocalTags());
+    final cachedTags = _readCachedTags();
 
-    return const LocalTagsState();
+    if (cachedTags != null) {
+      return LocalTagsState(tags: cachedTags);
+    }
+
+    unawaited(_fetchAndCacheAllTags(shouldSetLoading: false));
+
+    return const LocalTagsState(isLoading: true);
   }
 
   Future<void> loadLocalTags() async {
+    final cachedTags = _readCachedTags();
+
+    if (cachedTags != null) {
+      state = state.copyWith(tags: cachedTags, isLoading: false);
+
+      return;
+    }
+
+    await fetchAndCacheAllTags();
+  }
+
+  List<VnTag>? _readCachedTags() {
     try {
       final box = AppStorage.mainBox;
       final content = box.get('vndb_tags_cache') as String?;
@@ -54,9 +73,7 @@ class LocalTagsNotifier extends Notifier<LocalTagsState> {
             .map((e) => VnTag.fromJson(e as Map<String, dynamic>))
             .toList();
 
-        state = state.copyWith(tags: loadedTags, isLoading: false);
-
-        return;
+        return loadedTags;
       }
     } catch (error, stackTrace) {
       developer.log(
@@ -67,15 +84,23 @@ class LocalTagsNotifier extends Notifier<LocalTagsState> {
       );
     }
 
-    await fetchAndCacheAllTags();
+    return null;
   }
 
   Future<void> fetchAndCacheAllTags() async {
-    state = state.copyWith(
-      isLoading: true,
-      progress: 0.0,
-      errorMessage: () => null,
-    );
+    await _fetchAndCacheAllTags(shouldSetLoading: true);
+  }
+
+  Future<void> _fetchAndCacheAllTags({
+    required bool shouldSetLoading,
+  }) async {
+    if (shouldSetLoading) {
+      state = state.copyWith(
+        isLoading: true,
+        progress: 0.0,
+        errorMessage: () => null,
+      );
+    }
 
     final repository = ref.read(vnRepositoryProvider);
     final List<VnTag> allTags = [];

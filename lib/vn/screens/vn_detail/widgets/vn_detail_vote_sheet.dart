@@ -52,6 +52,19 @@ class VnDetailVoteSheetState extends ConsumerState<VnDetailVoteSheet> {
   int? tempVote;
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      ref.read(userUlistProvider.notifier).ensureEntriesLoaded();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final ulistState = ref.watch(vnUlistProvider(widget.vn.id));
     final originalVote = ulistState.entry?.vote != null

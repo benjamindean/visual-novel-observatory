@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/storage/app_storage.dart';
 import '../../../models/vndb_label.dart';
-import '../../../providers/vn_providers.dart';
 
-class LibraryTabChangeListener extends ConsumerStatefulWidget {
+class LibraryTabChangeListener extends StatefulWidget {
   const LibraryTabChangeListener({
     super.key,
     required this.activeLabels,
@@ -16,13 +14,12 @@ class LibraryTabChangeListener extends ConsumerStatefulWidget {
   final Widget child;
 
   @override
-  ConsumerState<LibraryTabChangeListener> createState() {
+  State<LibraryTabChangeListener> createState() {
     return LibraryTabChangeListenerState();
   }
 }
 
-class LibraryTabChangeListenerState
-    extends ConsumerState<LibraryTabChangeListener> {
+class LibraryTabChangeListenerState extends State<LibraryTabChangeListener> {
   TabController? _controller;
 
   @override
@@ -51,7 +48,6 @@ class LibraryTabChangeListenerState
         final labelId = widget.activeLabels[index].id;
 
         AppStorage.mainBox.put('settings_last_library_label_id', labelId);
-        ref.read(activeLibraryTabIdProvider.notifier).update(labelId);
       }
     }
   }

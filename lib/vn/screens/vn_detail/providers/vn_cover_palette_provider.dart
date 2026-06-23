@@ -86,8 +86,6 @@ class VnCoverPalette {
 
 final vnCoverPaletteProvider = FutureProvider.autoDispose
     .family<VnCoverPalette, String>((ref, imageUrl) async {
-      // Prevent synchronous state updates during widget build phase
-      await Future.delayed(Duration.zero);
       return _generateCoverPalette(imageUrl);
     });
 

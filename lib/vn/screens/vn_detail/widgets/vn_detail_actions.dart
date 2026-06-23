@@ -12,7 +12,7 @@ import 'vn_detail_labels_sheet.dart';
 import 'vn_detail_user_action_button.dart';
 import 'vn_detail_vote_sheet.dart';
 
-class VnDetailActions extends ConsumerWidget {
+class VnDetailActions extends ConsumerStatefulWidget {
   const VnDetailActions({
     super.key,
     required this.vn,
@@ -21,7 +21,44 @@ class VnDetailActions extends ConsumerWidget {
   final VisualNovel vn;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<VnDetailActions> createState() {
+    return VnDetailActionsState();
+  }
+}
+
+class VnDetailActionsState extends ConsumerState<VnDetailActions> {
+  @override
+  void initState() {
+    super.initState();
+    _scheduleUserListLoad();
+  }
+
+  @override
+  void didUpdateWidget(covariant VnDetailActions oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.vn.id != widget.vn.id) {
+      _scheduleUserListLoad();
+    }
+  }
+
+  void _scheduleUserListLoad() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      final auth = ref.read(authProvider);
+
+      if (auth.isAuthenticated) {
+        ref.read(userUlistProvider.notifier).ensureEntriesLoaded();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final vn = widget.vn;
     final ulistState = ref.watch(vnUlistProvider(vn.id));
     final isAuthenticated = ref.watch(
       authProvider.select((state) => state.isAuthenticated),

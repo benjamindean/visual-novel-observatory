@@ -55,6 +55,10 @@ class UserUlistState {
 }
 
 class UserUlistNotifier extends Notifier<UserUlistState> {
+  String? _activeUserId;
+  String? _loadedUserId;
+  String? _loadingUserId;
+
   @override
   UserUlistState build() {
     final auth = ref.watch(
@@ -66,26 +70,28 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
       ),
     );
 
-    if (auth.isAuthenticated) {
-      Future.microtask(() async {
-        await loadCachedUserList();
-        fetchAllEntries();
-      });
+    if (!auth.isAuthenticated || auth.userId == null) {
+      _activeUserId = null;
+      _loadedUserId = null;
+      _loadingUserId = null;
+
+      return const UserUlistState();
     }
 
-    return const UserUlistState();
+    if (_activeUserId != auth.userId) {
+      _activeUserId = auth.userId;
+      _loadedUserId = null;
+      _loadingUserId = null;
+    }
+
+    return UserUlistState(entries: _readCachedEntries());
   }
 
   Future<void> loadCachedUserList() async {
     try {
-      final box = AppStorage.libraryBox;
-      final cachedEntries = box.values.toList();
+      final entriesMap = _readCachedEntries();
 
-      if (cachedEntries.isNotEmpty) {
-        final Map<String, VnUlistEntry> entriesMap = {
-          for (final entry in cachedEntries) entry.id: entry,
-        };
-
+      if (entriesMap.isNotEmpty) {
         state = state.copyWith(entries: entriesMap);
       }
     } catch (error, stackTrace) {
@@ -98,9 +104,37 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
     }
   }
 
-  Future<void> fetchAllEntries() async {
-    state = state.copyWith(isLoading: true, errorMessage: () => null);
+  Map<String, VnUlistEntry> _readCachedEntries() {
+    try {
+      final box = AppStorage.libraryBox;
+      final cachedEntries = box.values.toList();
 
+      return {
+        for (final entry in cachedEntries) entry.id: entry,
+      };
+    } catch (error, stackTrace) {
+      developer.log(
+        'Failed to read cached user list.',
+        name: 'UserUlistNotifier',
+        error: error,
+        stackTrace: stackTrace,
+      );
+
+      return const {};
+    }
+  }
+
+  Future<void> ensureEntriesLoaded() async {
+    await _fetchEntriesForCurrentUser(forceRefresh: false);
+  }
+
+  Future<void> fetchAllEntries() async {
+    await _fetchEntriesForCurrentUser(forceRefresh: true);
+  }
+
+  Future<void> _fetchEntriesForCurrentUser({
+    required bool forceRefresh,
+  }) async {
     final auth = ref.read(authProvider);
 
     if (!auth.isAuthenticated) {
@@ -110,39 +144,65 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
     }
 
     final userId = auth.userId!;
-    final repository = ref.read(vnRepositoryProvider);
+
+    if (_loadingUserId == userId) {
+      return;
+    }
+
+    if (!forceRefresh && _loadedUserId == userId) {
+      return;
+    }
+
+    _loadingUserId = userId;
+    state = state.copyWith(isLoading: true, errorMessage: () => null);
 
     try {
-      final list = <VnUlistEntry>[];
+      final entriesMap = await _fetchEntriesForUser(userId);
+      final latestAuth = ref.read(authProvider);
 
-      int page = 1;
-      bool hasMore = true;
-
-      while (hasMore) {
-        final data = await repository.getUserList(user: userId, page: page);
-
-        final results = data['results'] as List? ?? [];
-
-        for (final item in results) {
-          list.add(VnUlistEntry.fromJson(item as Map<String, dynamic>));
-        }
-
-        hasMore = data['more'] as bool? ?? false;
-        page++;
+      if (latestAuth.userId != userId) {
+        return;
       }
 
-      final Map<String, VnUlistEntry> entriesMap = {
-        for (final entry in list) entry.id: entry,
-      };
       await _saveEntriesToCache(entriesMap);
 
+      _loadedUserId = userId;
       state = state.copyWith(entries: entriesMap, isLoading: false);
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: () => cleanErrorMessage(e),
       );
+    } finally {
+      if (_loadingUserId == userId) {
+        _loadingUserId = null;
+      }
     }
+  }
+
+  Future<Map<String, VnUlistEntry>> _fetchEntriesForUser(String userId) async {
+    final repository = ref.read(vnRepositoryProvider);
+    final list = <VnUlistEntry>[];
+
+    int page = 1;
+    bool hasMore = true;
+
+    while (hasMore) {
+      final data = await repository.getUserList(user: userId, page: page);
+
+      final results = data['results'] as List? ?? [];
+
+      for (final item in results) {
+        list.add(VnUlistEntry.fromJson(item as Map<String, dynamic>));
+      }
+
+      hasMore = data['more'] as bool? ?? false;
+      page++;
+    }
+
+    return {
+      for (final entry in list) entry.id: entry,
+    };
   }
 
   Future<void> syncUserListAndData() async {
@@ -168,7 +228,7 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
         for (final label in labels) label.id.toString(): label,
       });
 
-      ref.invalidate(ulistLabelsProvider);
+      ref.read(ulistLabelsProvider.notifier).setLabels(labels);
 
       final list = <VnUlistEntry>[];
 
@@ -357,55 +417,136 @@ final libraryVnCountByLabelProvider = Provider.autoDispose.family<int, int>((
   );
 });
 
-final ulistLabelsProvider = FutureProvider<List<VndbLabel>>((ref) async {
-  // Prevent synchronous state updates during widget build phase
-  await Future.delayed(Duration.zero);
+class UlistLabelsNotifier extends Notifier<AsyncValue<List<VndbLabel>>> {
+  String? _activeUserId;
+  String? _loadedUserId;
+  String? _loadingUserId;
 
-  final repository = ref.watch(vnRepositoryProvider);
-  final auth = ref.watch(
-    authProvider.select(
-      (auth) => (
-        isAuthenticated: auth.isAuthenticated,
-        userId: auth.userId,
+  @override
+  AsyncValue<List<VndbLabel>> build() {
+    final auth = ref.watch(
+      authProvider.select(
+        (auth) => (
+          isAuthenticated: auth.isAuthenticated,
+          userId: auth.userId,
+        ),
       ),
-    ),
-  );
+    );
 
-  if (!auth.isAuthenticated) {
-    return const [];
-  }
+    if (!auth.isAuthenticated || auth.userId == null) {
+      _activeUserId = null;
+      _loadedUserId = null;
+      _loadingUserId = null;
 
-  try {
-    final box = AppStorage.labelsBox;
-    final cached = box.values.toList();
-
-    if (cached.isNotEmpty) {
-      return cached;
+      return const AsyncValue.data([]);
     }
-  } catch (error, stackTrace) {
-    developer.log(
-      'Failed to read cached ulist labels.',
-      name: 'ulistLabelsProvider',
-      error: error,
-      stackTrace: stackTrace,
-    );
+
+    if (_activeUserId != auth.userId) {
+      _activeUserId = auth.userId;
+      _loadedUserId = null;
+      _loadingUserId = null;
+    }
+
+    final cached = _readCachedLabels();
+
+    if (cached.isEmpty) {
+      return const AsyncValue.loading();
+    }
+
+    return AsyncValue.data(cached);
   }
 
-  final list = await repository.getUserListLabels();
+  Future<void> loadLabels({bool forceRefresh = false}) async {
+    final auth = ref.read(authProvider);
 
-  try {
-    final box = AppStorage.labelsBox;
+    if (!auth.isAuthenticated || auth.userId == null) {
+      state = const AsyncValue.data([]);
 
-    await box.clear();
-    await box.putAll({for (final label in list) label.id.toString(): label});
-  } catch (error, stackTrace) {
-    developer.log(
-      'Failed to save cached ulist labels.',
-      name: 'ulistLabelsProvider',
-      error: error,
-      stackTrace: stackTrace,
-    );
+      return;
+    }
+
+    final userId = auth.userId!;
+
+    if (_loadingUserId == userId) {
+      return;
+    }
+
+    if (!forceRefresh && _loadedUserId == userId) {
+      return;
+    }
+
+    final currentLabels = state.value ?? const <VndbLabel>[];
+
+    _loadingUserId = userId;
+
+    if (currentLabels.isEmpty) {
+      state = const AsyncValue.loading();
+    }
+
+    try {
+      final repository = ref.read(vnRepositoryProvider);
+      final labels = await repository.getUserListLabels();
+      final latestAuth = ref.read(authProvider);
+
+      if (latestAuth.userId != userId) {
+        return;
+      }
+
+      await _saveLabelsToCache(labels);
+
+      _loadedUserId = userId;
+      state = AsyncValue.data(labels);
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    } finally {
+      if (_loadingUserId == userId) {
+        _loadingUserId = null;
+      }
+    }
   }
 
-  return list;
-});
+  void setLabels(List<VndbLabel> labels) {
+    _loadedUserId = ref.read(authProvider).userId;
+    state = AsyncValue.data(labels);
+  }
+
+  List<VndbLabel> _readCachedLabels() {
+    try {
+      final box = AppStorage.labelsBox;
+
+      return box.values.toList();
+    } catch (error, stackTrace) {
+      developer.log(
+        'Failed to read cached ulist labels.',
+        name: 'ulistLabelsProvider',
+        error: error,
+        stackTrace: stackTrace,
+      );
+
+      return const [];
+    }
+  }
+
+  Future<void> _saveLabelsToCache(List<VndbLabel> labels) async {
+    try {
+      final box = AppStorage.labelsBox;
+
+      await box.clear();
+      await box.putAll({
+        for (final label in labels) label.id.toString(): label,
+      });
+    } catch (error, stackTrace) {
+      developer.log(
+        'Failed to save cached ulist labels.',
+        name: 'ulistLabelsProvider',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+}
+
+final ulistLabelsProvider =
+    NotifierProvider<UlistLabelsNotifier, AsyncValue<List<VndbLabel>>>(
+      UlistLabelsNotifier.new,
+    );

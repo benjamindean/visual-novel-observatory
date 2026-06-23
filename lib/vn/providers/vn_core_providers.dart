@@ -20,8 +20,6 @@ final vnDetailProvider = FutureProvider.family<VisualNovel, String>((
   ref,
   vnId,
 ) async {
-  // Prevent synchronous state updates during widget build phase
-  await Future.delayed(Duration.zero);
   final repository = ref.watch(vnRepositoryProvider);
 
   return repository.getVisualNovelDetails(vnId);

@@ -11,8 +11,29 @@ import 'library_label_utils.dart';
 import 'library_status_scroll_view.dart';
 import 'library_tab_change_listener.dart';
 
-class LibraryContent extends ConsumerWidget {
+class LibraryContent extends ConsumerStatefulWidget {
   const LibraryContent({super.key});
+
+  @override
+  ConsumerState<LibraryContent> createState() {
+    return LibraryContentState();
+  }
+}
+
+class LibraryContentState extends ConsumerState<LibraryContent> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      ref.read(ulistLabelsProvider.notifier).loadLabels();
+      ref.read(userUlistProvider.notifier).ensureEntriesLoaded();
+    });
+  }
 
   int _initialIndexFor(List<VndbLabel> activeLabels) {
     final lastLabelId =
@@ -29,35 +50,14 @@ class LibraryContent extends ConsumerWidget {
     return savedIndex == -1 ? 0 : savedIndex;
   }
 
-  void _ensureActiveLabel(WidgetRef ref, List<VndbLabel> activeLabels) {
-    if (activeLabels.isEmpty) {
-      return;
-    }
-
-    final currentSelectedId = ref.read(activeLibraryTabIdProvider);
-    final hasCurrentLabel = activeLabels.any(
-      (label) => label.id == currentSelectedId,
-    );
-
-    if (currentSelectedId == null || !hasCurrentLabel) {
-      final initialLabelId = activeLabels[_initialIndexFor(activeLabels)].id;
-
-      Future.microtask(() {
-        ref.read(activeLibraryTabIdProvider.notifier).update(initialLabelId);
-      });
-    }
-  }
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final labelsAsync = ref.watch(ulistLabelsProvider);
     final activeLabels = filterVisibleLibraryLabels(
       labelsAsync.value ?? const <VndbLabel>[],
     );
     final initialIndex = _initialIndexFor(activeLabels);
     final tabKey = ValueKey(activeLabels.map((label) => label.id).join(','));
-
-    _ensureActiveLabel(ref, activeLabels);
 
     return DefaultTabController(
       key: tabKey,
@@ -103,7 +103,9 @@ class LibraryContent extends ConsumerWidget {
                         backgroundColor: context.appAccentTeal,
                         foregroundColor: context.colorScheme.onPrimary,
                       ),
-                      onPressed: () => ref.invalidate(ulistLabelsProvider),
+                      onPressed: () => ref
+                          .read(ulistLabelsProvider.notifier)
+                          .loadLabels(forceRefresh: true),
                       child: const Text('Retry'),
                     ),
                   ],

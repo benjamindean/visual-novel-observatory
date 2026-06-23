@@ -5,7 +5,7 @@ import '../../../providers/vn_providers.dart';
 import 'vn_releases_content.dart';
 import 'vn_releases_loading.dart';
 
-class VnReleasesSection extends ConsumerWidget {
+class VnReleasesSection extends ConsumerStatefulWidget {
   const VnReleasesSection({
     super.key,
     required this.vnId,
@@ -14,7 +14,40 @@ class VnReleasesSection extends ConsumerWidget {
   final String vnId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<VnReleasesSection> createState() {
+    return VnReleasesSectionState();
+  }
+}
+
+class VnReleasesSectionState extends ConsumerState<VnReleasesSection> {
+  @override
+  void initState() {
+    super.initState();
+    _scheduleReleasesLoad();
+  }
+
+  @override
+  void didUpdateWidget(covariant VnReleasesSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.vnId != widget.vnId) {
+      _scheduleReleasesLoad();
+    }
+  }
+
+  void _scheduleReleasesLoad() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      ref.read(vnReleasesProvider(widget.vnId).notifier).loadReleases();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final vnId = widget.vnId;
     final releasesAsync = ref.watch(vnReleasesProvider(vnId));
 
     return releasesAsync.when(

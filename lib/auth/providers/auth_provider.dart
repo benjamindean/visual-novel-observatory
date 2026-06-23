@@ -60,7 +60,6 @@ class AuthNotifier extends Notifier<AuthState> {
   Future<void> loadCachedAuth() async {
     final box = AppStorage.mainBox;
 
-    final legacyToken = box.get(_tokenKey) as String?;
     String? secureToken;
 
     try {
@@ -74,28 +73,13 @@ class AuthNotifier extends Notifier<AuthState> {
       );
     }
 
-    final cachedToken = secureToken ?? legacyToken;
     final cachedUsername = box.get(_usernameKey) as String?;
     final cachedUserId = box.get(_userIdKey) as String?;
     final cachedPermissions = box.get(_permissionsKey) as List<dynamic>?;
 
-    if (secureToken == null && legacyToken != null) {
-      try {
-        await _secureStorage.write(key: _tokenKey, value: legacyToken);
-        await box.delete(_tokenKey);
-      } catch (error, stackTrace) {
-        developer.log(
-          'Failed to migrate VNDB token to secure storage.',
-          name: 'AuthNotifier',
-          error: error,
-          stackTrace: stackTrace,
-        );
-      }
-    }
-
-    if (cachedToken != null && cachedUsername != null && cachedUserId != null) {
+    if (secureToken != null && cachedUsername != null && cachedUserId != null) {
       state = AuthState(
-        token: cachedToken,
+        token: secureToken,
         username: cachedUsername,
         userId: cachedUserId,
         permissions: cachedPermissions?.cast<String>() ?? const [],
@@ -120,7 +104,6 @@ class AuthNotifier extends Notifier<AuthState> {
       final box = AppStorage.mainBox;
 
       await _secureStorage.write(key: _tokenKey, value: token);
-      await box.delete(_tokenKey);
       await box.put(_usernameKey, username);
       await box.put(_userIdKey, userId);
       await box.put(_permissionsKey, permissions);
@@ -157,7 +140,6 @@ class AuthNotifier extends Notifier<AuthState> {
       );
     }
 
-    await box.delete(_tokenKey);
     await box.delete(_usernameKey);
     await box.delete(_userIdKey);
     await box.delete(_permissionsKey);
