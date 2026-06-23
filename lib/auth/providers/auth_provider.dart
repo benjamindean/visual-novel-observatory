@@ -32,11 +32,9 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
   static const FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
   @override
-  AuthState build() {
-    return ref.read(initialAuthStateProvider);
+  Future<AuthState> build() {
+    return _loadStoredAuth();
   }
-
-  static Future<AuthState> loadInitialState() => _loadStoredAuth();
 
   Future<void> connect(String token) async {
     final authState = await _authenticateToken(token);
@@ -150,7 +148,3 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
 final authProvider = AsyncNotifierProvider<AuthNotifier, AuthState>(
   AuthNotifier.new,
 );
-
-final initialAuthStateProvider = Provider<AuthState>((ref) {
-  return const AuthState();
-});

@@ -19,9 +19,7 @@ class VndbProfileCard extends ConsumerWidget {
         ),
       ),
     );
-    final isUserListLoading = ref.watch(
-      userUlistProvider.select((state) => state.isLoading),
-    );
+    final isUserListLoading = ref.watch(userUlistIsLoadingProvider);
     final areTagsLoading = ref.watch(
       localTagsProvider.select((state) => state.isLoading),
     );

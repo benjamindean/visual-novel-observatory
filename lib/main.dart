@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
-import 'auth/providers/auth_provider.dart';
 import 'theme/app_theme.dart';
 import 'settings/providers/settings_provider.dart';
 import 'core/storage/app_storage.dart';
 import 'core/navigation/router.dart';
-import 'core/widgets/app_startup_sync_listener.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,16 +13,9 @@ void main() async {
   await Hive.initFlutter();
   await AppStorage.init();
 
-  final initialAuthState = await AuthNotifier.loadInitialState();
-
   runApp(
-    ProviderScope(
-      overrides: [
-        initialAuthStateProvider.overrideWithValue(initialAuthState),
-      ],
-      child: const AppStartupSyncListener(
-        child: VisualNovelObservatoryApp(),
-      ),
+    const ProviderScope(
+      child: VisualNovelObservatoryApp(),
     ),
   );
 }

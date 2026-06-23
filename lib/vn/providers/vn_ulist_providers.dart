@@ -55,10 +55,19 @@ class UserUlistState {
   }
 }
 
-class UserUlistNotifier extends Notifier<UserUlistState> {
+class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
   @override
-  UserUlistState build() {
-    return UserUlistState(entries: _readCachedEntries());
+  Future<UserUlistState> build() async {
+    final auth = await ref.watch(authProvider.future);
+
+    if (!auth.isAuthenticated) {
+      return const UserUlistState();
+    }
+
+    return _syncUserListAndData(
+      userId: auth.userId!,
+      shouldFetchTags: true,
+    );
   }
 
   Map<String, VnUlistEntry> _readCachedEntries() {
@@ -81,15 +90,20 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
     }
   }
 
-  void clearLocalState() {
-    state = const UserUlistState();
-  }
-
   Future<void> fetchAllEntries() async {
-    await _syncUserListAndData(
-      shouldSetLoading: true,
-      shouldRethrow: false,
-    );
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      final auth = await ref.read(authProvider.future);
+
+      if (!auth.isAuthenticated) {
+        return const UserUlistState();
+      }
+
+      return _syncUserListAndData(
+        userId: auth.userId!,
+        shouldFetchTags: true,
+      );
+    });
   }
 
   Future<Map<String, VnUlistEntry>> _fetchEntriesForUser(
@@ -127,42 +141,50 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
   Future<void> syncUserListAndData({
     bool showLoading = true,
   }) async {
-    await _syncUserListAndData(
-      shouldSetLoading: showLoading,
-      shouldRethrow: true,
-    );
-  }
-
-  Future<void> _syncUserListAndData({
-    required bool shouldSetLoading,
-    bool shouldRethrow = false,
-  }) async {
-    if (shouldSetLoading) {
-      state = state.copyWith(isLoading: true, errorMessage: () => null);
+    if (showLoading) {
+      state = const AsyncValue.loading();
     }
 
-    final auth = ref.read(authProvider).value ?? const AuthState();
+    state = await AsyncValue.guard(() async {
+      final auth = await ref.read(authProvider.future);
 
-    if (!auth.isAuthenticated) {
-      if (shouldSetLoading) {
-        state = state.copyWith(isLoading: false);
+      if (!auth.isAuthenticated) {
+        return const UserUlistState();
       }
 
-      return;
+      return _syncUserListAndData(
+        userId: auth.userId!,
+        shouldFetchTags: true,
+      );
+    });
+
+    if (state.hasError) {
+      throw state.error!;
     }
 
-    final userId = auth.userId!;
+    final errorMessage = state.value?.errorMessage;
+
+    if (errorMessage != null) {
+      throw Exception(errorMessage);
+    }
+  }
+
+  Future<UserUlistState> _syncUserListAndData({
+    required String userId,
+    required bool shouldFetchTags,
+  }) async {
+    final cachedEntries = _readCachedEntries();
     final repository = ref.read(vnRepositoryProvider);
 
     try {
       final labels = await repository.getUserListLabels();
 
       if (!ref.mounted) {
-        return;
+        return UserUlistState(entries: cachedEntries);
       }
 
       if (!_isCurrentAuthenticatedUser(userId)) {
-        return;
+        return const UserUlistState();
       }
 
       final labelsBox = AppStorage.labelsBox;
@@ -180,43 +202,41 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
       );
 
       if (!ref.mounted) {
-        return;
+        return UserUlistState(entries: cachedEntries);
       }
 
       if (!_isCurrentAuthenticatedUser(userId)) {
-        return;
+        return const UserUlistState();
       }
 
       await _saveEntriesToCache(entriesMap);
 
       final tagsCache = AppStorage.mainBox.get('vndb_tags_cache') as String?;
 
-      if (tagsCache == null || tagsCache.isEmpty) {
+      if (shouldFetchTags && (tagsCache == null || tagsCache.isEmpty)) {
         if (!ref.mounted) {
-          return;
+          return UserUlistState(entries: cachedEntries);
         }
 
         await ref.read(localTagsProvider.notifier).fetchAndCacheAllTags();
       }
 
       if (!ref.mounted) {
-        return;
+        return UserUlistState(entries: cachedEntries);
       }
 
-      state = state.copyWith(entries: entriesMap, isLoading: false);
+      return UserUlistState(entries: entriesMap);
     } catch (e) {
-      if (!ref.mounted) {
-        return;
+      if (cachedEntries.isNotEmpty) {
+        return UserUlistState(
+          entries: cachedEntries,
+          errorMessage: cleanErrorMessage(e),
+        );
       }
 
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: () => cleanErrorMessage(e),
+      return UserUlistState(
+        errorMessage: cleanErrorMessage(e),
       );
-
-      if (shouldRethrow) {
-        rethrow;
-      }
     }
   }
 
@@ -243,7 +263,8 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
   }
 
   Future<void> updateVote(VisualNovel vn, int? voteScore) async {
-    final oldEntries = state.entries;
+    final currentState = state.value ?? const UserUlistState();
+    final oldEntries = currentState.entries;
     final currentEntry = oldEntries[vn.id];
     final currentLabels = currentEntry?.labels ?? const [];
     final added = currentEntry?.added ?? _currentUnixTimestamp();
@@ -259,7 +280,7 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
     final updatedEntries = Map<String, VnUlistEntry>.from(oldEntries);
 
     updatedEntries[vn.id] = newEntry;
-    state = state.copyWith(entries: updatedEntries);
+    state = AsyncValue.data(currentState.copyWith(entries: updatedEntries));
 
     await _saveEntriesToCache(updatedEntries);
 
@@ -272,9 +293,11 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
         updateVote: true,
       );
     } catch (e) {
-      state = state.copyWith(
-        entries: oldEntries,
-        errorMessage: () => cleanErrorMessage(e),
+      state = AsyncValue.data(
+        currentState.copyWith(
+          entries: oldEntries,
+          errorMessage: () => cleanErrorMessage(e),
+        ),
       );
       await _saveEntriesToCache(oldEntries);
     }
@@ -285,7 +308,8 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
     List<int> labels, {
     VisualNovel? vn,
   }) async {
-    final oldEntries = state.entries;
+    final currentState = state.value ?? const UserUlistState();
+    final oldEntries = currentState.entries;
     final currentEntry = oldEntries[vnId];
     final currentVote = currentEntry?.vote;
     final currentVn = vn ?? currentEntry?.vn;
@@ -302,7 +326,7 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
     final updatedEntries = Map<String, VnUlistEntry>.from(oldEntries);
 
     updatedEntries[vnId] = newEntry;
-    state = state.copyWith(entries: updatedEntries);
+    state = AsyncValue.data(currentState.copyWith(entries: updatedEntries));
     await _saveEntriesToCache(updatedEntries);
 
     final repository = ref.read(vnRepositoryProvider);
@@ -314,9 +338,11 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
         updateLabels: true,
       );
     } catch (e) {
-      state = state.copyWith(
-        entries: oldEntries,
-        errorMessage: () => cleanErrorMessage(e),
+      state = AsyncValue.data(
+        currentState.copyWith(
+          entries: oldEntries,
+          errorMessage: () => cleanErrorMessage(e),
+        ),
       );
       await _saveEntriesToCache(oldEntries);
     }
@@ -324,7 +350,7 @@ class UserUlistNotifier extends Notifier<UserUlistState> {
 }
 
 final userUlistProvider =
-    NotifierProvider.autoDispose<UserUlistNotifier, UserUlistState>(
+    AsyncNotifierProvider<UserUlistNotifier, UserUlistState>(
       UserUlistNotifier.new,
     );
 
@@ -332,32 +358,35 @@ final vnUlistProvider = Provider.autoDispose.family<VnUlistState, String>((
   ref,
   vnId,
 ) {
-  final entry = ref.watch(
-    userUlistProvider.select((state) => state.entries[vnId]),
-  );
-  final isLoading = ref.watch(
-    userUlistProvider.select((state) => state.isLoading),
-  );
-  final errorMessage = ref.watch(
-    userUlistProvider.select((state) => state.errorMessage),
-  );
+  final userListAsync = ref.watch(userUlistProvider);
 
-  return VnUlistState(
-    entry: entry,
-    isLoading: isLoading,
-    errorMessage: errorMessage,
+  return userListAsync.when(
+    data: (state) => VnUlistState(
+      entry: state.entries[vnId],
+      isLoading: state.isLoading,
+      errorMessage: state.errorMessage,
+    ),
+    loading: () => const VnUlistState(isLoading: true),
+    error: (error, stackTrace) => VnUlistState(
+      errorMessage: cleanErrorMessage(error),
+    ),
   );
 });
 
 final userUlistIsLoadingProvider = Provider.autoDispose<bool>((ref) {
-  return ref.watch(userUlistProvider.select((state) => state.isLoading));
+  final userListAsync = ref.watch(userUlistProvider);
+
+  return userListAsync.when(
+    data: (state) => state.isLoading,
+    loading: () => true,
+    error: (error, stackTrace) => false,
+  );
 });
 
 final libraryVnsByLabelProvider = Provider.autoDispose
     .family<List<VisualNovel>, int>((ref, labelId) {
-      final entries = ref.watch(
-        userUlistProvider.select((state) => state.entries),
-      );
+      final state = ref.watch(userUlistProvider).value;
+      final entries = state?.entries ?? const <String, VnUlistEntry>{};
 
       final sortedEntries =
           entries.values
