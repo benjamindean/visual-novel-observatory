@@ -118,7 +118,12 @@ class HomeVnTabViewState extends ConsumerState<HomeVnTabView> {
             )
           else ...[
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.fromLTRB(
+                16,
+                0,
+                16,
+                16,
+              ),
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,

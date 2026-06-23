@@ -26,7 +26,12 @@ class SearchRecentList extends ConsumerWidget {
         const SearchSliverAppBar(),
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 12.0, 16.0, 8.0),
+            padding: const EdgeInsets.fromLTRB(
+              20,
+              0,
+              20,
+              0,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

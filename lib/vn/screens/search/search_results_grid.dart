@@ -21,7 +21,12 @@ class SearchResultsGrid extends ConsumerWidget {
       slivers: [
         const SearchSliverAppBar(),
         SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          padding: const EdgeInsets.fromLTRB(
+            16,
+            0,
+            16,
+            16,
+          ),
           sliver: SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
@@ -63,7 +68,7 @@ class SearchResultsGrid extends ConsumerWidget {
           ),
         // Padding to ensure grid items scroll past the floating bottom bar
         const SliverToBoxAdapter(
-          child: SizedBox(height: 90),
+          child: SizedBox(height: 64),
         ),
       ],
     );
