@@ -52,7 +52,7 @@ const appStoreImageConfig = <String, Object?>{
           'fit': 'contain',
           'position': <String, Object?>{
             'x': 62,
-            'y': 850,
+            'y': 930,
             'width': 710,
             'height': 1544,
           },
@@ -63,7 +63,7 @@ const appStoreImageConfig = <String, Object?>{
           'fit': 'contain',
           'position': <String, Object?>{
             'x': 518,
-            'y': 725,
+            'y': 805,
             'width': 710,
             'height': 1544,
           },
@@ -107,7 +107,7 @@ const appStoreImageConfig = <String, Object?>{
           'fit': 'contain',
           'position': <String, Object?>{
             'x': 62,
-            'y': 850,
+            'y': 930,
             'width': 710,
             'height': 1544,
           },
@@ -118,7 +118,7 @@ const appStoreImageConfig = <String, Object?>{
           'fit': 'contain',
           'position': <String, Object?>{
             'x': 518,
-            'y': 725,
+            'y': 805,
             'width': 710,
             'height': 1544,
           },
@@ -160,7 +160,7 @@ const appStoreImageConfig = <String, Object?>{
           'fit': 'contain',
           'position': <String, Object?>{
             'x': 62,
-            'y': 850,
+            'y': 930,
             'width': 710,
             'height': 1544,
           },
@@ -171,7 +171,7 @@ const appStoreImageConfig = <String, Object?>{
           'fit': 'contain',
           'position': <String, Object?>{
             'x': 518,
-            'y': 725,
+            'y': 805,
             'width': 710,
             'height': 1544,
           },
@@ -215,7 +215,7 @@ const appStoreImageConfig = <String, Object?>{
           'fit': 'contain',
           'position': <String, Object?>{
             'x': 62,
-            'y': 850,
+            'y': 930,
             'width': 710,
             'height': 1544,
           },
@@ -226,7 +226,7 @@ const appStoreImageConfig = <String, Object?>{
           'fit': 'contain',
           'position': <String, Object?>{
             'x': 518,
-            'y': 725,
+            'y': 805,
             'width': 710,
             'height': 1544,
           },
