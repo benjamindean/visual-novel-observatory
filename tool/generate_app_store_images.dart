@@ -1,10 +1,14 @@
 import 'dart:io';
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
-import 'package:image/image.dart' as img;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Run with:
-/// dart run tool/generate_app_store_images.dart
+/// flutter test tool/generate_app_store_images.dart
 ///
 /// Edit this map to add images, text, background colors, and positions.
 /// Colors use #RRGGBB or #RRGGBBAA. Positions accept pixels or percentages.
@@ -22,7 +26,8 @@ const appStoreImageConfig = <String, Object?>{
           'text': 'Explore',
           'color': '#EAFBFF',
           'align': 'center',
-          'fontScale': 3.4,
+          'fontSize': 172,
+          'fontWeight': 600,
           'position': <String, Object?>{
             'x': 96,
             'y': 170,
@@ -34,7 +39,7 @@ const appStoreImageConfig = <String, Object?>{
           'text': 'Over 40K visual novels from VNDB',
           'color': '#9EDFE4',
           'align': 'center',
-          'fontScale': 1.5,
+          'fontSize': 76,
           'position': <String, Object?>{
             'x': 148,
             'y': 390,
@@ -46,10 +51,10 @@ const appStoreImageConfig = <String, Object?>{
           'path': 'screenshots/danganronpa-dark.png',
           'fit': 'contain',
           'position': <String, Object?>{
-            'x': 108,
-            'y': 760,
-            'width': 650,
-            'height': 1413,
+            'x': 62,
+            'y': 850,
+            'width': 710,
+            'height': 1544,
           },
         },
         <String, Object?>{
@@ -57,10 +62,10 @@ const appStoreImageConfig = <String, Object?>{
           'path': 'screenshots/mystery-dark.png',
           'fit': 'contain',
           'position': <String, Object?>{
-            'x': 508,
-            'y': 650,
-            'width': 650,
-            'height': 1413,
+            'x': 518,
+            'y': 725,
+            'width': 710,
+            'height': 1544,
           },
         },
       ],
@@ -74,7 +79,8 @@ const appStoreImageConfig = <String, Object?>{
           'text': 'Sort and Filter',
           'color': '#F9F0FF',
           'align': 'center',
-          'fontScale': 2.7,
+          'fontSize': 136,
+          'fontWeight': 600,
           'position': <String, Object?>{
             'x': 80,
             'y': 170,
@@ -88,7 +94,7 @@ const appStoreImageConfig = <String, Object?>{
               'length, rating, votes, etc.',
           'color': '#D8C2F4',
           'align': 'center',
-          'fontScale': 1.35,
+          'fontSize': 68,
           'position': <String, Object?>{
             'x': 126,
             'y': 370,
@@ -100,10 +106,10 @@ const appStoreImageConfig = <String, Object?>{
           'path': 'screenshots/search-dark.png',
           'fit': 'contain',
           'position': <String, Object?>{
-            'x': 108,
-            'y': 760,
-            'width': 650,
-            'height': 1413,
+            'x': 62,
+            'y': 850,
+            'width': 710,
+            'height': 1544,
           },
         },
         <String, Object?>{
@@ -111,10 +117,10 @@ const appStoreImageConfig = <String, Object?>{
           'path': 'screenshots/filters-screen-dark.png',
           'fit': 'contain',
           'position': <String, Object?>{
-            'x': 508,
-            'y': 650,
-            'width': 650,
-            'height': 1413,
+            'x': 518,
+            'y': 725,
+            'width': 710,
+            'height': 1544,
           },
         },
       ],
@@ -128,7 +134,8 @@ const appStoreImageConfig = <String, Object?>{
           'text': 'Theming',
           'color': '#05233B',
           'align': 'center',
-          'fontScale': 3.2,
+          'fontSize': 162,
+          'fontWeight': 600,
           'position': <String, Object?>{
             'x': 96,
             'y': 170,
@@ -137,10 +144,10 @@ const appStoreImageConfig = <String, Object?>{
         },
         <String, Object?>{
           'type': 'text',
-          'text': 'Colorful themes. Light and dark modes',
+          'text': 'Colorful themes with light and dark modes',
           'color': '#16496A',
           'align': 'center',
-          'fontScale': 1.45,
+          'fontSize': 74,
           'position': <String, Object?>{
             'x': 148,
             'y': 390,
@@ -152,10 +159,10 @@ const appStoreImageConfig = <String, Object?>{
           'path': 'screenshots/danganronpa-2-dark.png',
           'fit': 'contain',
           'position': <String, Object?>{
-            'x': 108,
-            'y': 760,
-            'width': 650,
-            'height': 1413,
+            'x': 62,
+            'y': 850,
+            'width': 710,
+            'height': 1544,
           },
         },
         <String, Object?>{
@@ -163,10 +170,10 @@ const appStoreImageConfig = <String, Object?>{
           'path': 'screenshots/saeko-light.png',
           'fit': 'contain',
           'position': <String, Object?>{
-            'x': 508,
-            'y': 650,
-            'width': 650,
-            'height': 1413,
+            'x': 518,
+            'y': 725,
+            'width': 710,
+            'height': 1544,
           },
         },
       ],
@@ -180,11 +187,12 @@ const appStoreImageConfig = <String, Object?>{
           'text': 'Library Management',
           'color': '#042A32',
           'align': 'center',
-          'fontScale': 2.35,
+          'fontSize': 100,
+          'fontWeight': 600,
           'position': <String, Object?>{
-            'x': 72,
+            'x': 45,
             'y': 170,
-            'width': 1146,
+            'width': 1200,
           },
         },
         <String, Object?>{
@@ -194,7 +202,7 @@ const appStoreImageConfig = <String, Object?>{
               'update labels, and record votes',
           'color': '#073F49',
           'align': 'center',
-          'fontScale': 1.3,
+          'fontSize': 66,
           'position': <String, Object?>{
             'x': 126,
             'y': 370,
@@ -206,10 +214,10 @@ const appStoreImageConfig = <String, Object?>{
           'path': 'screenshots/kugayama-shiori-dark.png',
           'fit': 'contain',
           'position': <String, Object?>{
-            'x': 108,
-            'y': 760,
-            'width': 650,
-            'height': 1413,
+            'x': 62,
+            'y': 850,
+            'width': 710,
+            'height': 1544,
           },
         },
         <String, Object?>{
@@ -217,10 +225,10 @@ const appStoreImageConfig = <String, Object?>{
           'path': 'screenshots/wishlist-dark.png',
           'fit': 'contain',
           'position': <String, Object?>{
-            'x': 508,
-            'y': 650,
-            'width': 650,
-            'height': 1413,
+            'x': 518,
+            'y': 725,
+            'width': 710,
+            'height': 1544,
           },
         },
       ],
@@ -228,16 +236,40 @@ const appStoreImageConfig = <String, Object?>{
   ],
 };
 
-Future<void> main(List<String> args) async {
-  final outputOverride = _argValue(args, '--output');
-  final onlyName = _argValue(args, '--only');
-  final generator = AppStoreImageGenerator(
-    config: appStoreImageConfig,
-    outputOverride: outputOverride,
-    onlyName: onlyName,
-  );
+Future<void> main() async {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  HttpOverrides.global = null;
+  _registerPathProviderMock();
 
-  await generator.run();
+  test('generates app store images', () async {
+    await AppStoreImageGenerator(
+      config: appStoreImageConfig,
+      outputOverride: Platform.environment['APP_STORE_OUTPUT'],
+      onlyName: Platform.environment['APP_STORE_ONLY'],
+    ).run();
+  });
+}
+
+void _registerPathProviderMock() {
+  const channel = MethodChannel('plugins.flutter.io/path_provider');
+
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockMethodCallHandler(channel, (call) async {
+        final directory = Directory(
+          '${Directory.systemTemp.path}/visual_novel_observatory_app_store',
+        );
+
+        if (!directory.existsSync()) {
+          directory.createSync(recursive: true);
+        }
+
+        return switch (call.method) {
+          'getApplicationSupportDirectory' => directory.path,
+          'getTemporaryDirectory' => directory.path,
+          'getApplicationDocumentsDirectory' => directory.path,
+          _ => null,
+        };
+      });
 }
 
 class AppStoreImageGenerator {
@@ -269,27 +301,28 @@ class AppStoreImageGenerator {
         continue;
       }
 
-      final image = _renderPage(page);
+      final bytes = await _renderPage(page);
       final outputFile = File('${outputDirectory.path}/$fileName');
 
-      outputFile.writeAsBytesSync(img.encodePng(image));
+      outputFile.writeAsBytesSync(bytes);
       stdout.writeln('Generated ${outputFile.path}');
     }
   }
 
-  img.Image _renderPage(Map<String, Object?> page) {
+  Future<List<int>> _renderPage(Map<String, Object?> page) async {
     final width = _int(page['width'], fallback: _int(config['defaultWidth']));
     final height = _int(
       page['height'],
       fallback: _int(config['defaultHeight']),
     );
-    final canvas = img.Image(
-      width: width,
-      height: height,
-      numChannels: 4,
-    );
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
 
-    _paintBackground(canvas, page['background'] ?? config['background']);
+    _paintBackground(
+      canvas: canvas,
+      size: Size(width.toDouble(), height.toDouble()),
+      background: page['background'] ?? config['background'],
+    );
 
     for (final layerConfig in _list(page['layers'])) {
       final layer = _map(layerConfig);
@@ -297,61 +330,49 @@ class AppStoreImageGenerator {
 
       switch (type) {
         case 'image':
-          _drawImageLayer(canvas, layer);
+          await _drawImageLayer(canvas, layer, width, height);
         case 'rect':
-          _drawRectLayer(canvas, layer);
+          _drawRectLayer(canvas, layer, width, height);
         case 'text':
-          _drawTextLayer(canvas, layer);
+          await _drawTextLayer(canvas, layer, width, height);
         default:
           throw ArgumentError('Unsupported layer type: $type');
       }
     }
 
-    return canvas;
+    final picture = recorder.endRecording();
+    final image = await picture.toImage(width, height);
+    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+    image.dispose();
+    picture.dispose();
+
+    if (byteData == null) {
+      throw StateError('Could not encode rendered image.');
+    }
+
+    return byteData.buffer.asUint8List();
   }
 
-  void _paintBackground(img.Image canvas, Object? background) {
-    if (background == null) {
-      img.fill(
-        canvas,
-        color: _color('#000000'),
-      );
-      return;
-    }
+  void _paintBackground({
+    required Canvas canvas,
+    required Size size,
+    required Object? background,
+  }) {
+    final paint = Paint()
+      ..color = background == null
+          ? _color('#000000')
+          : _color(_string(background));
 
-    if (background is String) {
-      img.fill(
-        canvas,
-        color: _color(background),
-      );
-      return;
-    }
-
-    final map = _map(background);
-    final type = _string(map['type']);
-
-    if (type != 'verticalGradient') {
-      throw ArgumentError('Unsupported background type: $type');
-    }
-
-    final from = _color(_string(map['from']));
-    final to = _color(_string(map['to']));
-
-    for (var y = 0; y < canvas.height; y += 1) {
-      final amount = canvas.height <= 1 ? 0.0 : y / (canvas.height - 1);
-
-      img.fillRect(
-        canvas,
-        x1: 0,
-        y1: y,
-        x2: canvas.width - 1,
-        y2: y,
-        color: _lerpColor(from, to, amount),
-      );
-    }
+    canvas.drawRect(Offset.zero & size, paint);
   }
 
-  void _drawImageLayer(img.Image canvas, Map<String, Object?> layer) {
+  Future<void> _drawImageLayer(
+    Canvas canvas,
+    Map<String, Object?> layer,
+    int canvasWidth,
+    int canvasHeight,
+  ) async {
     final path = _string(layer['path']);
     final sourceFile = File(path);
 
@@ -359,174 +380,162 @@ class AppStoreImageGenerator {
       throw ArgumentError('Image file does not exist: $path');
     }
 
-    final decoded = img.decodeImage(sourceFile.readAsBytesSync());
-
-    if (decoded == null) {
-      throw ArgumentError('Could not decode image: $path');
-    }
-
-    final source = img.bakeOrientation(decoded);
-    final position = _position(layer, canvas.width, canvas.height);
+    final image = await _decodeImage(sourceFile.readAsBytesSync());
+    final position = _position(layer, canvasWidth, canvasHeight);
     final fit = _string(layer['fit'], fallback: 'contain');
+    final destination = _fitRect(
+      sourceSize: Size(
+        image.width.toDouble(),
+        image.height.toDouble(),
+      ),
+      target: position.rect,
+      fit: fit,
+    );
+    final cornerRadius = _double(layer['cornerRadius'], fallback: 72);
+    final shadow = Paint()
+      ..color = Colors.black.withValues(alpha: 0.22)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 24);
 
-    switch (fit) {
-      case 'cover':
-        _drawCoverImage(canvas, source, position);
-      case 'fill':
-        img.compositeImage(
-          canvas,
-          source,
-          dstX: position.x,
-          dstY: position.y,
-          dstW: position.width,
-          dstH: position.height,
-        );
-      case 'contain':
-        _drawContainImage(canvas, source, position);
-      default:
-        throw ArgumentError('Unsupported image fit: $fit');
-    }
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        destination.shift(const Offset(0, 18)),
+        Radius.circular(cornerRadius),
+      ),
+      shadow,
+    );
+
+    canvas.save();
+    canvas.clipRRect(
+      RRect.fromRectAndRadius(
+        destination,
+        Radius.circular(cornerRadius),
+      ),
+      doAntiAlias: true,
+    );
+    canvas.drawImageRect(
+      image,
+      Rect.fromLTWH(
+        0,
+        0,
+        image.width.toDouble(),
+        image.height.toDouble(),
+      ),
+      destination,
+      Paint()..filterQuality = FilterQuality.high,
+    );
+    canvas.restore();
+    image.dispose();
   }
 
-  void _drawContainImage(
-    img.Image canvas,
-    img.Image source,
-    ResolvedPosition position,
+  void _drawRectLayer(
+    Canvas canvas,
+    Map<String, Object?> layer,
+    int canvasWidth,
+    int canvasHeight,
   ) {
-    final scale = math.min(
-      position.width / source.width,
-      position.height / source.height,
-    );
-    final width = math.max(1, (source.width * scale).round());
-    final height = math.max(1, (source.height * scale).round());
-    final x = position.x + ((position.width - width) / 2).round();
-    final y = position.y + ((position.height - height) / 2).round();
+    final position = _position(layer, canvasWidth, canvasHeight);
+    final radius = _double(layer['radius'], fallback: 0);
 
-    img.compositeImage(
-      canvas,
-      source,
-      dstX: x,
-      dstY: y,
-      dstW: width,
-      dstH: height,
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        position.rect,
+        Radius.circular(radius),
+      ),
+      Paint()..color = _color(_string(layer['color'])),
     );
   }
 
-  void _drawCoverImage(
-    img.Image canvas,
-    img.Image source,
-    ResolvedPosition position,
-  ) {
-    final targetAspect = position.width / position.height;
-    final sourceAspect = source.width / source.height;
-    var srcX = 0;
-    var srcY = 0;
-    var srcW = source.width;
-    var srcH = source.height;
-
-    if (sourceAspect > targetAspect) {
-      srcW = (source.height * targetAspect).round();
-      srcX = ((source.width - srcW) / 2).round();
-    } else {
-      srcH = (source.width / targetAspect).round();
-      srcY = ((source.height - srcH) / 2).round();
-    }
-
-    img.compositeImage(
-      canvas,
-      source,
-      dstX: position.x,
-      dstY: position.y,
-      dstW: position.width,
-      dstH: position.height,
-      srcX: srcX,
-      srcY: srcY,
-      srcW: srcW,
-      srcH: srcH,
-    );
-  }
-
-  void _drawRectLayer(img.Image canvas, Map<String, Object?> layer) {
-    final position = _position(layer, canvas.width, canvas.height);
-    final radius = _int(layer['radius'], fallback: 0);
-
-    img.fillRect(
-      canvas,
-      x1: position.x,
-      y1: position.y,
-      x2: position.x + position.width - 1,
-      y2: position.y + position.height - 1,
-      color: _color(_string(layer['color'])),
-      radius: radius,
-    );
-  }
-
-  void _drawTextLayer(img.Image canvas, Map<String, Object?> layer) {
-    final text = _string(layer['text']);
-    final color = _color(_string(layer['color'], fallback: '#FFFFFF'));
-    final align = _string(layer['align'], fallback: 'left');
-    final font = _fontForSize(_int(layer['fontSize'], fallback: 48));
-    final fontScale = _double(layer['fontScale'], fallback: 1);
-    final lineHeight = _double(layer['lineHeight'], fallback: 1.2);
+  Future<void> _drawTextLayer(
+    Canvas canvas,
+    Map<String, Object?> layer,
+    int canvasWidth,
+    int canvasHeight,
+  ) async {
     final position = _position(
       layer,
-      canvas.width,
-      canvas.height,
+      canvasWidth,
+      canvasHeight,
       requireHeight: false,
     );
-    final textWidth = math.max(1, (position.width / fontScale).round());
-    final lines = _wrapText(
-      text: text,
-      font: font,
-      maxWidth: textWidth,
+    final fontSize = _double(layer['fontSize'], fallback: 48);
+    final fontWeight = FontWeight.values.firstWhere(
+      (weight) => weight.value == _int(layer['fontWeight'], fallback: 400),
+      orElse: () => FontWeight.w400,
     );
-    final lineStep = math.max(1, (font.lineHeight * lineHeight).round());
-    final textHeight = math.max(font.lineHeight, lineStep * lines.length);
-    final textLayer = img.Image(
-      width: textWidth,
-      height: textHeight,
-      numChannels: 4,
+    final style = GoogleFonts.openSans(
+      color: _color(_string(layer['color'], fallback: '#FFFFFF')),
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      height: _double(layer['lineHeight'], fallback: 1.16),
+      letterSpacing: 0,
     );
+    final textAlign = switch (_string(layer['align'], fallback: 'left')) {
+      'center' => TextAlign.center,
+      'right' => TextAlign.right,
+      _ => TextAlign.left,
+    };
 
-    img.fill(
-      textLayer,
-      color: _color('#00000000'),
+    await GoogleFonts.pendingFonts();
+
+    final painter =
+        TextPainter(
+          text: TextSpan(
+            text: _string(layer['text']),
+            style: style,
+          ),
+          textAlign: textAlign,
+          textDirection: TextDirection.ltr,
+        )..layout(
+          minWidth: position.width.toDouble(),
+          maxWidth: position.width.toDouble(),
+        );
+
+    painter.paint(canvas, Offset(position.x.toDouble(), position.y.toDouble()));
+  }
+
+  Rect _fitRect({
+    required Size sourceSize,
+    required Rect target,
+    required String fit,
+  }) {
+    return switch (fit) {
+      'fill' => target,
+      'cover' => _coverRect(sourceSize: sourceSize, target: target),
+      'contain' => _containRect(sourceSize: sourceSize, target: target),
+      _ => throw ArgumentError('Unsupported image fit: $fit'),
+    };
+  }
+
+  Rect _containRect({
+    required Size sourceSize,
+    required Rect target,
+  }) {
+    final scale = math.min(
+      target.width / sourceSize.width,
+      target.height / sourceSize.height,
     );
+    final width = sourceSize.width * scale;
+    final height = sourceSize.height * scale;
+    final left = target.left + ((target.width - width) / 2);
+    final top = target.top + ((target.height - height) / 2);
 
-    for (var i = 0; i < lines.length; i += 1) {
-      final line = lines[i];
-      final lineWidth = _textWidth(line, font);
-      final x = switch (align) {
-        'center' => ((textWidth - lineWidth) / 2).round(),
-        'right' => textWidth - lineWidth,
-        _ => 0,
-      };
+    return Rect.fromLTWH(left, top, width, height);
+  }
 
-      img.drawString(
-        textLayer,
-        line,
-        font: font,
-        x: math.max(0, x),
-        y: i * lineStep,
-        color: color,
-      );
-    }
-
-    final scaled = fontScale == 1
-        ? textLayer
-        : img.copyResize(
-            textLayer,
-            width: math.max(1, (textLayer.width * fontScale).round()),
-            height: math.max(1, (textLayer.height * fontScale).round()),
-            interpolation: img.Interpolation.cubic,
-          );
-
-    img.compositeImage(
-      canvas,
-      scaled,
-      dstX: position.x,
-      dstY: position.y,
+  Rect _coverRect({
+    required Size sourceSize,
+    required Rect target,
+  }) {
+    final scale = math.max(
+      target.width / sourceSize.width,
+      target.height / sourceSize.height,
     );
+    final width = sourceSize.width * scale;
+    final height = sourceSize.height * scale;
+    final left = target.left + ((target.width - width) / 2);
+    final top = target.top + ((target.height - height) / 2);
+
+    return Rect.fromLTWH(left, top, width, height);
   }
 
   ResolvedPosition _position(
@@ -570,73 +579,25 @@ class ResolvedPosition {
   final int y;
   final int width;
   final int height;
+
+  Rect get rect => Rect.fromLTWH(
+    x.toDouble(),
+    y.toDouble(),
+    width.toDouble(),
+    height.toDouble(),
+  );
 }
 
-List<String> _wrapText({
-  required String text,
-  required img.BitmapFont font,
-  required int maxWidth,
-}) {
-  final lines = <String>[];
+Future<ui.Image> _decodeImage(List<int> bytes) async {
+  final codec = await ui.instantiateImageCodec(Uint8List.fromList(bytes));
+  final frame = await codec.getNextFrame();
 
-  for (final paragraph in text.split('\n')) {
-    final words = paragraph.split(RegExp(r'\s+'));
-    final currentLine = StringBuffer();
+  codec.dispose();
 
-    for (final word in words) {
-      if (word.isEmpty) {
-        continue;
-      }
-
-      final candidate = currentLine.isEmpty
-          ? word
-          : '${currentLine.toString()} $word';
-
-      if (_textWidth(candidate, font) <= maxWidth || currentLine.isEmpty) {
-        currentLine
-          ..clear()
-          ..write(candidate);
-      } else {
-        lines.add(currentLine.toString());
-        currentLine
-          ..clear()
-          ..write(word);
-      }
-    }
-
-    if (currentLine.isNotEmpty) {
-      lines.add(currentLine.toString());
-    }
-  }
-
-  return lines;
+  return frame.image;
 }
 
-int _textWidth(String value, img.BitmapFont font) {
-  var width = 0;
-
-  for (final codeUnit in value.codeUnits) {
-    final character = String.fromCharCode(codeUnit);
-
-    width += font.characterXAdvance(character);
-  }
-
-  return width;
-}
-
-img.BitmapFont _fontForSize(int size) {
-  if (size <= 14) {
-    return img.arial14;
-  }
-
-  if (size <= 24) {
-    return img.arial24;
-  }
-
-  return img.arial48;
-}
-
-img.ColorUint8 _color(String value) {
+Color _color(String value) {
   final normalized = value.trim().replaceFirst('#', '');
 
   if (normalized.length != 6 && normalized.length != 8) {
@@ -650,24 +611,7 @@ img.ColorUint8 _color(String value) {
       ? int.parse(normalized.substring(6, 8), radix: 16)
       : 255;
 
-  return img.ColorUint8.rgba(r, g, b, a);
-}
-
-img.ColorUint8 _lerpColor(
-  img.ColorUint8 from,
-  img.ColorUint8 to,
-  double amount,
-) {
-  int channel(num start, num end) {
-    return (start + ((end - start) * amount)).round().clamp(0, 255);
-  }
-
-  return img.ColorUint8.rgba(
-    channel(from.r, to.r),
-    channel(from.g, to.g),
-    channel(from.b, to.b),
-    channel(from.a, to.a),
-  );
+  return Color.fromARGB(a, r, g, b);
 }
 
 Map<String, Object?> _map(Object? value) {
@@ -756,14 +700,4 @@ int _dimension(Object? value, int total, {required int fallback}) {
   }
 
   throw ArgumentError('Expected pixel or percentage dimension, got $value');
-}
-
-String? _argValue(List<String> args, String name) {
-  for (final arg in args) {
-    if (arg.startsWith('$name=')) {
-      return arg.substring(name.length + 1);
-    }
-  }
-
-  return null;
 }
