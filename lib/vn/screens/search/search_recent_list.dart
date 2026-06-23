@@ -47,7 +47,9 @@ class SearchRecentList extends ConsumerWidget {
                     );
 
                     if (confirm) {
-                      ref.read(recentlyOpenedSearchProvider.notifier).clear();
+                      await ref
+                          .read(recentlyOpenedSearchProvider.notifier)
+                          .clear();
                     }
                   },
                   child: Text(

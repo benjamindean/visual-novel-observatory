@@ -9,6 +9,7 @@ part of 'vn_ulist_entry.dart';
 _VnUlistEntry _$VnUlistEntryFromJson(Map<String, dynamic> json) =>
     _VnUlistEntry(
       id: json['id'] as String,
+      added: (json['added'] as num?)?.toInt(),
       vote: (json['vote'] as num?)?.toInt(),
       labels:
           (json['labels'] as List<dynamic>?)
@@ -23,6 +24,7 @@ _VnUlistEntry _$VnUlistEntryFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$VnUlistEntryToJson(_VnUlistEntry instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'added': instance.added,
       'vote': instance.vote,
       'labels': instance.labels,
       'vn': instance.vn,

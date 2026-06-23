@@ -12,7 +12,7 @@ import 'vn_detail_labels_sheet.dart';
 import 'vn_detail_user_action_button.dart';
 import 'vn_detail_vote_sheet.dart';
 
-class VnDetailActions extends ConsumerStatefulWidget {
+class VnDetailActions extends ConsumerWidget {
   const VnDetailActions({
     super.key,
     required this.vn,
@@ -21,62 +21,10 @@ class VnDetailActions extends ConsumerStatefulWidget {
   final VisualNovel vn;
 
   @override
-  ConsumerState<VnDetailActions> createState() {
-    return VnDetailActionsState();
-  }
-}
-
-class VnDetailActionsState extends ConsumerState<VnDetailActions> {
-  @override
-  void initState() {
-    super.initState();
-    _scheduleUserListLoad();
-  }
-
-  @override
-  void didUpdateWidget(covariant VnDetailActions oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (oldWidget.vn.id != widget.vn.id) {
-      _scheduleUserListLoad();
-    }
-  }
-
-  void _scheduleUserListLoad() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-
-      final auth = ref.read(authProvider);
-
-      if (auth.isAuthenticated) {
-        ref.read(userUlistProvider.notifier).ensureEntriesLoaded();
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final vn = widget.vn;
-    final ulistState = ref.watch(vnUlistProvider(vn.id));
+  Widget build(BuildContext context, WidgetRef ref) {
     final isAuthenticated = ref.watch(
-      authProvider.select((state) => state.isAuthenticated),
+      authProvider.select((state) => state.value?.isAuthenticated ?? false),
     );
-    final activeLabelsCount =
-        ulistState.entry?.labels.where((id) => id != 0 && id != 7).length ?? 0;
-
-    ref.listen<VnUlistState>(vnUlistProvider(vn.id), (previous, next) {
-      if (next.errorMessage != null &&
-          next.errorMessage != previous?.errorMessage) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('VNDB Error: ${next.errorMessage}'),
-            backgroundColor: context.colorScheme.error,
-          ),
-        );
-      }
-    });
 
     if (!isAuthenticated) {
       return Row(
@@ -92,6 +40,22 @@ class VnDetailActionsState extends ConsumerState<VnDetailActions> {
         ],
       );
     }
+
+    final ulistState = ref.watch(vnUlistProvider(vn.id));
+    final activeLabelsCount =
+        ulistState.entry?.labels.where((id) => id != 0 && id != 7).length ?? 0;
+
+    ref.listen<VnUlistState>(vnUlistProvider(vn.id), (previous, next) {
+      if (next.errorMessage != null &&
+          next.errorMessage != previous?.errorMessage) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('VNDB Error: ${next.errorMessage}'),
+            backgroundColor: context.colorScheme.error,
+          ),
+        );
+      }
+    });
 
     return Row(
       children: [

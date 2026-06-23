@@ -21,7 +21,7 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isAuthenticated = ref.watch(
-      authProvider.select((state) => state.isAuthenticated),
+      authProvider.select((state) => state.value?.isAuthenticated ?? false),
     );
     final theme = Theme.of(context);
     final isDarkActive = theme.brightness == Brightness.dark;

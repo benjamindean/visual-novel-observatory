@@ -22,8 +22,20 @@ class ConnectVndbButton extends StatelessWidget {
         ),
         elevation: 0,
       ),
-      onPressed: () {
-        context.push('/login');
+      onPressed: () async {
+        final didConnect = await context.push<bool>('/login');
+
+        if (didConnect != true || !context.mounted) {
+          return;
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Successfully logged in!'),
+            backgroundColor: context.appAccentTeal,
+            duration: const Duration(seconds: 2),
+          ),
+        );
       },
       icon: Icon(
         Icons.login_rounded,

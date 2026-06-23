@@ -114,7 +114,7 @@ class VnListNotifier extends Notifier<VnListState> {
     );
     final sortState = ref.read(vnSortProvider);
     final currentPage = state.page;
-    final repository = ref.read(vnRepositoryProvider);
+    final repository = ref.read(publicVnRepositoryProvider);
 
     try {
       final apiFilters = <dynamic>[];
@@ -210,7 +210,7 @@ class VnListByTagNotifier extends Notifier<VnListState> {
     }
 
     final currentPage = state.page;
-    final repository = ref.read(vnRepositoryProvider);
+    final repository = ref.read(publicVnRepositoryProvider);
     final spoilerLevel = ref.read(
       settingsProvider.select((settings) => settings.spoilerLevel),
     );
@@ -289,7 +289,7 @@ class VnListByDeveloperNotifier extends Notifier<VnListState> {
     }
 
     final currentPage = state.page;
-    final repository = ref.read(vnRepositoryProvider);
+    final repository = ref.read(publicVnRepositoryProvider);
 
     try {
       final response = await repository.getVisualNovelsByDeveloper(

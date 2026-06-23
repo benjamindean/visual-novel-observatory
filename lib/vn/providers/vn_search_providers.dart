@@ -63,7 +63,7 @@ class VnSearchNotifier extends Notifier<VnListState> {
     }
 
     final currentPage = state.page;
-    final repository = ref.read(vnRepositoryProvider);
+    final repository = ref.read(publicVnRepositoryProvider);
 
     try {
       final response = await repository.searchVisualNovels(
@@ -114,11 +114,6 @@ class RecentlyOpenedSearchNotifier extends Notifier<List<VisualNovel>> {
 
   @override
   List<VisualNovel> build() {
-    Future.microtask(() => loadVns());
-    return const [];
-  }
-
-  Future<void> loadVns() async {
     try {
       final box = AppStorage.mainBox;
       final String? jsonStr = box.get(_key) as String?;
@@ -126,7 +121,7 @@ class RecentlyOpenedSearchNotifier extends Notifier<List<VisualNovel>> {
       if (jsonStr != null) {
         final List<dynamic> jsonList = jsonDecode(jsonStr);
 
-        state = jsonList
+        return jsonList
             .map((e) => VisualNovel.fromJson(e as Map<String, dynamic>))
             .toList();
       }
@@ -138,6 +133,8 @@ class RecentlyOpenedSearchNotifier extends Notifier<List<VisualNovel>> {
         stackTrace: stackTrace,
       );
     }
+
+    return const [];
   }
 
   Future<void> addVn(VisualNovel vn) async {

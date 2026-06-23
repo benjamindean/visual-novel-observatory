@@ -7,7 +7,7 @@ final vnCharacterProvider = FutureProvider.family<VnCharacter, String>((
   ref,
   characterId,
 ) async {
-  final repository = ref.watch(vnRepositoryProvider);
+  final repository = ref.read(publicVnRepositoryProvider);
 
   return repository.getCharacterDetails(characterId);
 });

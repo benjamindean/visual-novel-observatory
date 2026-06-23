@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../auth/providers/auth_provider.dart';
+import '../../../core/utils/error_utils.dart';
 import '../../../theme/app_theme.dart';
 import '../../../vn/widgets/vndb_source_note.dart';
 import 'login_header_icon.dart';
@@ -19,6 +20,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _tokenController = TextEditingController();
+  bool _isValidating = false;
+  String? _errorMessage;
 
   @override
   void dispose() {
@@ -26,7 +29,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-  void _handleLogin() async {
+  Future<void> _handleLogin() async {
     final token = _tokenController.text.trim();
 
     if (token.isEmpty) {
@@ -37,31 +40,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       return;
     }
 
-    final success = await ref.read(authProvider.notifier).login(token);
+    setState(() {
+      _isValidating = true;
+      _errorMessage = null;
+    });
 
-    if (success && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Successfully logged in!'),
-          backgroundColor: context.appAccentTeal,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+    var didConnect = false;
 
-      context.pop();
+    try {
+      await ref.read(authProvider.notifier).connect(token);
+
+      if (!mounted) {
+        return;
+      }
+
+      didConnect = true;
+      context.pop(true);
+    } catch (e) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _errorMessage = cleanErrorMessage(e);
+      });
+    } finally {
+      if (mounted && !didConnect) {
+        setState(() {
+          _isValidating = false;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(
-      authProvider.select(
-        (state) => (
-          errorMessage: state.errorMessage,
-          isValidating: state.isValidating,
-        ),
-      ),
-    );
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -92,12 +105,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox(height: 32),
               LoginTokenInput(controller: _tokenController),
               const SizedBox(height: 24),
-              if (authState.errorMessage != null) ...[
-                LoginErrorBanner(message: authState.errorMessage!),
+              if (_errorMessage != null) ...[
+                LoginErrorBanner(message: _errorMessage!),
                 const SizedBox(height: 24),
               ],
               LoginSubmitButton(
-                isValidating: authState.isValidating,
+                isValidating: _isValidating,
                 onPressed: _handleLogin,
               ),
               const SizedBox(height: 24.0),

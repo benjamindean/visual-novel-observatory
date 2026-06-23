@@ -363,7 +363,7 @@ class HomeVnListNotifier extends Notifier<VnListState> {
     }
 
     final currentPage = state.page;
-    final repository = ref.read(vnRepositoryProvider);
+    final repository = ref.read(publicVnRepositoryProvider);
     final spoilerLevel = ref.read(
       settingsProvider.select((settings) => settings.spoilerLevel),
     );

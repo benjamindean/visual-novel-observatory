@@ -4,8 +4,18 @@ import '../repository/vn_repository.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../models/visual_novel.dart';
 
+final publicVndbClientProvider = Provider<VndbClient>((ref) {
+  return VndbClient();
+});
+
+final publicVnRepositoryProvider = Provider<VnRepository>((ref) {
+  final client = ref.read(publicVndbClientProvider);
+
+  return VnRepository(client);
+});
+
 final vndbClientProvider = Provider<VndbClient>((ref) {
-  final token = ref.watch(authProvider.select((auth) => auth.token));
+  final token = ref.watch(authProvider.select((auth) => auth.value?.token));
 
   return VndbClient(token: token);
 });
@@ -20,7 +30,7 @@ final vnDetailProvider = FutureProvider.family<VisualNovel, String>((
   ref,
   vnId,
 ) async {
-  final repository = ref.watch(vnRepositoryProvider);
+  final repository = ref.read(publicVnRepositoryProvider);
 
   return repository.getVisualNovelDetails(vnId);
 });

@@ -13,7 +13,10 @@ class VndbProfileCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(
       authProvider.select(
-        (state) => (username: state.username, userId: state.userId),
+        (state) => (
+          username: state.value?.username,
+          userId: state.value?.userId,
+        ),
       ),
     );
     final isUserListLoading = ref.watch(
@@ -176,10 +179,10 @@ class VndbProfileCard extends ConsumerWidget {
       confirmLabel: 'Disconnect',
     );
 
-    if (!isConfirmed) {
+    if (!isConfirmed || !context.mounted) {
       return;
     }
 
-    ref.read(authProvider.notifier).logout();
+    await ref.read(authProvider.notifier).disconnect();
   }
 }

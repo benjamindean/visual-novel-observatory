@@ -394,7 +394,9 @@ class VndbClient {
         '/ulist',
         data: {
           'user': user,
-          'fields': 'id, vote, labels{id}, vn{$_vnFields}',
+          'fields': 'id, added, vote, labels{id}, vn{$_vnFields}',
+          'sort': 'added',
+          'reverse': true,
           'results': resultsPerPage,
           'page': page,
         },

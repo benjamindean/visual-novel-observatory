@@ -38,20 +38,6 @@ class VnDetailLabelsSheet extends ConsumerStatefulWidget {
 class VnDetailLabelsSheetState extends ConsumerState<VnDetailLabelsSheet> {
   List<int>? tempLabels;
 
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-
-      ref.read(ulistLabelsProvider.notifier).loadLabels();
-      ref.read(userUlistProvider.notifier).ensureEntriesLoaded();
-    });
-  }
-
   void _ensureTempLabels(VnUlistState ulistState) {
     if (tempLabels != null) {
       return;
@@ -129,95 +115,73 @@ class VnDetailLabelsSheetState extends ConsumerState<VnDetailLabelsSheet> {
             ),
             const SizedBox(height: 16.0),
             Flexible(
-              child: labelsAsync.when(
-                data: (allLabels) {
-                  final filteredLabels = allLabels
-                      .where((label) {
-                        return label.label != null && label.label!.isNotEmpty;
-                      })
-                      .where((label) => label.id != 0 && label.id != 7)
-                      .where((label) {
-                        final lowerLabel = label.label!.toLowerCase();
+              child: () {
+                final filteredLabels = labelsAsync
+                    .where((label) {
+                      return label.label != null && label.label!.isNotEmpty;
+                    })
+                    .where((label) => label.id != 0 && label.id != 7)
+                    .where((label) {
+                      final lowerLabel = label.label!.toLowerCase();
 
-                        return lowerLabel != 'no label' &&
-                            lowerLabel != 'voted';
-                      })
-                      .toList();
+                      return lowerLabel != 'no label' && lowerLabel != 'voted';
+                    })
+                    .toList();
 
-                  if (filteredLabels.isEmpty) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 32.0,
+                if (filteredLabels.isEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 32.0,
+                      horizontal: 20.0,
+                    ),
+                    child: Text(
+                      'No labels found.',
+                      style: TextStyle(color: context.appTextMuted),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: filteredLabels.length,
+                  itemBuilder: (context, index) {
+                    final label = filteredLabels[index];
+                    final isSelected = currentSelected.contains(label.id);
+
+                    return CheckboxListTile(
+                      activeColor: context.appAccentTeal,
+                      checkColor: context.colorScheme.onPrimary,
+                      contentPadding: const EdgeInsets.symmetric(
                         horizontal: 20.0,
                       ),
-                      child: Text(
-                        'No labels found.',
-                        style: TextStyle(color: context.appTextMuted),
-                        textAlign: TextAlign.center,
+                      title: Text(
+                        label.label ?? '',
+                        style: TextStyle(
+                          color: context.appTextPrimary,
+                          fontSize: 15,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
                       ),
+                      value: isSelected,
+                      onChanged: (val) {
+                        HapticFeedback.lightImpact();
+
+                        setState(() {
+                          if (val == true) {
+                            tempLabels!.add(label.id);
+                          } else {
+                            tempLabels!.remove(label.id);
+                          }
+                        });
+                      },
                     );
-                  }
-
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: filteredLabels.length,
-                    itemBuilder: (context, index) {
-                      final label = filteredLabels[index];
-                      final isSelected = currentSelected.contains(label.id);
-
-                      return CheckboxListTile(
-                        activeColor: context.appAccentTeal,
-                        checkColor: context.colorScheme.onPrimary,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 20.0,
-                        ),
-                        title: Text(
-                          label.label ?? '',
-                          style: TextStyle(
-                            color: context.appTextPrimary,
-                            fontSize: 15,
-                            fontWeight: isSelected
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                          ),
-                        ),
-                        value: isSelected,
-                        onChanged: (val) {
-                          HapticFeedback.lightImpact();
-
-                          setState(() {
-                            if (val == true) {
-                              tempLabels!.add(label.id);
-                            } else {
-                              tempLabels!.remove(label.id);
-                            }
-                          });
-                        },
-                      );
-                    },
-                  );
-                },
-                loading: () => const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 32.0),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-                error: (err, stack) => Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 32.0,
-                    horizontal: 20.0,
-                  ),
-                  child: Text(
-                    'Failed to load labels: $err',
-                    style: TextStyle(
-                      color: context.colorScheme.error,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
+                  },
+                );
+              }(),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),

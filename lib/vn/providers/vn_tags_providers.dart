@@ -102,7 +102,7 @@ class LocalTagsNotifier extends Notifier<LocalTagsState> {
       );
     }
 
-    final repository = ref.read(vnRepositoryProvider);
+    final repository = ref.read(publicVnRepositoryProvider);
     final List<VnTag> allTags = [];
 
     try {

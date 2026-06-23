@@ -8,6 +8,7 @@ part 'vn_ulist_entry.g.dart';
 abstract class VnUlistEntry with _$VnUlistEntry {
   const factory VnUlistEntry({
     required String id,
+    int? added,
     int? vote,
     @Default([]) List<int> labels,
     VisualNovel? vn,

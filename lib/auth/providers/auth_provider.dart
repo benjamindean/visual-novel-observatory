@@ -2,50 +2,29 @@ import 'dart:developer' as developer;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../../core/storage/app_storage.dart';
+
 import '../../core/api/vndb_client.dart';
-import '../../core/utils/error_utils.dart';
+import '../../core/storage/app_storage.dart';
 
 class AuthState {
-  final String? token;
-  final String? username;
-  final String? userId;
-  final List<String> permissions;
-  final bool isValidating;
-  final String? errorMessage;
-
-  AuthState({
+  const AuthState({
     this.token,
     this.username,
     this.userId,
     this.permissions = const [],
-    this.isValidating = false,
-    this.errorMessage,
   });
 
-  bool get isAuthenticated =>
-      token != null && username != null && userId != null;
+  final String? token;
+  final String? username;
+  final String? userId;
+  final List<String> permissions;
 
-  AuthState copyWith({
-    String? Function()? token,
-    String? Function()? username,
-    String? Function()? userId,
-    List<String>? permissions,
-    bool? isValidating,
-    String? Function()? errorMessage,
-  }) {
-    return AuthState(
-      token: token != null ? token() : this.token,
-      username: username != null ? username() : this.username,
-      userId: userId != null ? userId() : this.userId,
-      permissions: permissions ?? this.permissions,
-      isValidating: isValidating ?? this.isValidating,
-      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
-    );
+  bool get isAuthenticated {
+    return token != null && username != null && userId != null;
   }
 }
 
-class AuthNotifier extends Notifier<AuthState> {
+class AuthNotifier extends AsyncNotifier<AuthState> {
   static const String _tokenKey = 'vndb_api_token';
   static const String _usernameKey = 'vndb_username';
   static const String _userIdKey = 'vndb_user_id';
@@ -54,10 +33,31 @@ class AuthNotifier extends Notifier<AuthState> {
 
   @override
   AuthState build() {
-    return AuthState();
+    return ref.watch(initialAuthStateProvider);
   }
 
-  Future<void> loadCachedAuth() async {
+  static Future<AuthState> loadInitialState() => _loadStoredAuth();
+
+  Future<void> connect(String token) async {
+    final authState = await _authenticateToken(token);
+    final userId = authState.userId;
+
+    if (userId == null) {
+      throw StateError('VNDB did not return a user id for this token.');
+    }
+
+    await _saveAuth(authState);
+
+    state = AsyncData(authState);
+  }
+
+  Future<void> disconnect() async {
+    await _clearAuth();
+
+    state = const AsyncData(AuthState());
+  }
+
+  static Future<AuthState> _loadStoredAuth() async {
     final box = AppStorage.mainBox;
 
     String? secureToken;
@@ -77,56 +77,54 @@ class AuthNotifier extends Notifier<AuthState> {
     final cachedUserId = box.get(_userIdKey) as String?;
     final cachedPermissions = box.get(_permissionsKey) as List<dynamic>?;
 
-    if (secureToken != null && cachedUsername != null && cachedUserId != null) {
-      state = AuthState(
-        token: secureToken,
-        username: cachedUsername,
-        userId: cachedUserId,
-        permissions: cachedPermissions?.cast<String>() ?? const [],
-      );
+    if (secureToken == null || cachedUsername == null || cachedUserId == null) {
+      return const AuthState();
     }
+
+    return AuthState(
+      token: secureToken,
+      username: cachedUsername,
+      userId: cachedUserId,
+      permissions: cachedPermissions?.cast<String>() ?? const [],
+    );
   }
 
-  Future<bool> login(String token) async {
-    state = state.copyWith(isValidating: true, errorMessage: () => null);
-
+  Future<AuthState> _authenticateToken(String token) async {
     final client = VndbClient();
+    final authInfo = await client.validateToken(token);
 
-    try {
-      final authInfo = await client.validateToken(token);
+    final username = authInfo['username'] as String? ?? 'Unknown User';
+    final userId = authInfo['id'] as String?;
+    final permissions = List<String>.from(
+      authInfo['permissions'] as List? ?? [],
+    );
 
-      final username = authInfo['username'] as String? ?? 'Unknown User';
-      final userId = authInfo['id'] as String? ?? 'unknown';
-      final permissions = List<String>.from(
-        authInfo['permissions'] as List? ?? [],
-      );
-
-      final box = AppStorage.mainBox;
-
-      await _secureStorage.write(key: _tokenKey, value: token);
-      await box.put(_usernameKey, username);
-      await box.put(_userIdKey, userId);
-      await box.put(_permissionsKey, permissions);
-
-      state = AuthState(
-        token: token,
-        username: username,
-        userId: userId,
-        permissions: permissions,
-      );
-
-      return true;
-    } catch (e) {
-      state = state.copyWith(
-        isValidating: false,
-        errorMessage: () => cleanErrorMessage(e),
-      );
-
-      return false;
-    }
+    return AuthState(
+      token: token,
+      username: username,
+      userId: userId,
+      permissions: permissions,
+    );
   }
 
-  Future<void> logout() async {
+  Future<void> _saveAuth(AuthState authState) async {
+    final token = authState.token;
+    final username = authState.username;
+    final userId = authState.userId;
+
+    if (token == null || username == null || userId == null) {
+      throw StateError('Cannot persist an incomplete VNDB auth state.');
+    }
+
+    final box = AppStorage.mainBox;
+
+    await _secureStorage.write(key: _tokenKey, value: token);
+    await box.put(_usernameKey, username);
+    await box.put(_userIdKey, userId);
+    await box.put(_permissionsKey, authState.permissions);
+  }
+
+  Future<void> _clearAuth() async {
     final box = AppStorage.mainBox;
 
     try {
@@ -146,11 +144,13 @@ class AuthNotifier extends Notifier<AuthState> {
 
     await AppStorage.libraryBox.clear();
     await AppStorage.labelsBox.clear();
-
-    state = AuthState();
   }
 }
 
-final authProvider = NotifierProvider<AuthNotifier, AuthState>(
+final authProvider = AsyncNotifierProvider<AuthNotifier, AuthState>(
   AuthNotifier.new,
 );
+
+final initialAuthStateProvider = Provider<AuthState>((ref) {
+  return const AuthState();
+});

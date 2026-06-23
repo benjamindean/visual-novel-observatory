@@ -20,11 +20,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      final query = ref.read(searchScreenQueryProvider);
 
-      _searchController.text = query;
-    });
+    final query = ref.read(searchScreenQueryProvider);
+
+    _searchController.text = query;
   }
 
   @override

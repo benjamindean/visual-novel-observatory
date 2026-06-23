@@ -11,7 +11,7 @@ class LibraryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isAuthenticated = ref.watch(
-      authProvider.select((state) => state.isAuthenticated),
+      authProvider.select((state) => state.value?.isAuthenticated ?? false),
     );
 
     if (!isAuthenticated) {
