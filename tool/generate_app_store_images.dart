@@ -14,8 +14,8 @@ import 'package:google_fonts/google_fonts.dart';
 /// Colors use #RRGGBB or #RRGGBBAA. Positions accept pixels or percentages.
 const appStoreImageConfig = <String, Object?>{
   'outputDirectory': 'screenshots/app_store',
-  'defaultWidth': 1290,
-  'defaultHeight': 2796,
+  'defaultWidth': 1284,
+  'defaultHeight': 2778,
   'images': <Map<String, Object?>>[
     <String, Object?>{
       'fileName': '01_explore.png',
@@ -36,7 +36,7 @@ const appStoreImageConfig = <String, Object?>{
         },
         <String, Object?>{
           'type': 'text',
-          'text': 'Over 40K visual novels from VNDB',
+          'text': 'Over 60K visual novels from VNDB',
           'color': '#9EDFE4',
           'align': 'center',
           'fontSize': 76,
@@ -236,6 +236,13 @@ const appStoreImageConfig = <String, Object?>{
   ],
 };
 
+const _supportedAppStoreImageDimensions = <String>{
+  '1242x2688',
+  '2688x1242',
+  '1284x2778',
+  '2778x1284',
+};
+
 Future<void> main() async {
   TestWidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = null;
@@ -315,6 +322,9 @@ class AppStoreImageGenerator {
       page['height'],
       fallback: _int(config['defaultHeight']),
     );
+
+    _validateCanvasSize(width, height);
+
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
 
@@ -352,6 +362,19 @@ class AppStoreImageGenerator {
     }
 
     return byteData.buffer.asUint8List();
+  }
+
+  void _validateCanvasSize(int width, int height) {
+    final dimensions = '${width}x$height';
+
+    if (_supportedAppStoreImageDimensions.contains(dimensions)) {
+      return;
+    }
+
+    throw ArgumentError(
+      'Unsupported App Store image size: $width x $height. '
+      'Use one of: ${_supportedAppStoreImageDimensions.join(', ')}.',
+    );
   }
 
   void _paintBackground({
