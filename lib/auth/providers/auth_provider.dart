@@ -33,7 +33,7 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
 
   @override
   AuthState build() {
-    return ref.watch(initialAuthStateProvider);
+    return ref.read(initialAuthStateProvider);
   }
 
   static Future<AuthState> loadInitialState() => _loadStoredAuth();
