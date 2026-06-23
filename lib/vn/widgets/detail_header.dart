@@ -151,7 +151,7 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
 
           // Text & metadata details at the bottom of the poster
           Positioned(
-            bottom: 16,
+            bottom: 8,
             left: 20,
             right: 20,
             child: Column(
