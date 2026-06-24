@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../providers/vn_providers.dart';
 import '../../widgets/vn_card.dart';
-import '../../../theme/app_theme.dart';
+import '../../../core/widgets/sliver_bottom_padding.dart';
+import '../../../core/widgets/sliver_loading_indicator.dart';
 import 'widgets/search_sliver_app_bar.dart';
 
 class SearchResultsGrid extends ConsumerWidget {
@@ -50,26 +51,9 @@ class SearchResultsGrid extends ConsumerWidget {
             ),
           ),
         ),
-        if (searchState.hasMore)
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24.0),
-              child: Center(
-                child: SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    color: context.appAccentTeal,
-                  ),
-                ),
-              ),
-            ),
-          ),
+        if (searchState.hasMore) const SliverLoadingIndicator(),
         // Padding to ensure grid items scroll past the floating bottom bar
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 64),
-        ),
+        const SliverBottomPadding(height: 64),
       ],
     );
   }

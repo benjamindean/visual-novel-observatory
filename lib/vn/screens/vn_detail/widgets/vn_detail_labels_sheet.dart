@@ -205,6 +205,7 @@ class VnDetailLabelsSheetState extends ConsumerState<VnDetailLabelsSheet> {
                 ),
               ),
             ),
+            const SizedBox(height: 24.0),
           ],
         ),
       ),

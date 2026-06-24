@@ -72,11 +72,9 @@ class VnDetailVoteSheetState extends ConsumerState<VnDetailVoteSheet> {
       ),
       clipBehavior: Clip.antiAlias,
       child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          20.0,
-          16.0,
-          20.0,
-          MediaQuery.of(context).padding.bottom + 24.0,
+        padding: EdgeInsets.only(
+          top: 16.0,
+          bottom: MediaQuery.of(context).padding.bottom,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -93,25 +91,28 @@ class VnDetailVoteSheetState extends ConsumerState<VnDetailVoteSheet> {
               ),
             ),
             const SizedBox(height: 16.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Rate Visual Novel',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                if (originalVote != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   Text(
-                    'Current: $originalVote',
-                    style: TextStyle(
-                      color: context.appAccentTeal,
+                    'Rate Visual Novel',
+                    style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
-                      fontSize: 14,
                     ),
                   ),
-              ],
+                  if (originalVote != null)
+                    Text(
+                      'Current: $originalVote',
+                      style: TextStyle(
+                        color: context.appAccentTeal,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                ],
+              ),
             ),
             const SizedBox(height: 24.0),
             Center(
@@ -138,69 +139,36 @@ class VnDetailVoteSheetState extends ConsumerState<VnDetailVoteSheet> {
               ),
             ),
             const SizedBox(height: 24.0),
-            Slider(
-              value: selectedVote.toDouble(),
-              min: 1.0,
-              max: 10.0,
-              divisions: 9,
-              activeColor: context.appAccentTeal,
-              inactiveColor: context.appSurface,
-              onChanged: (val) {
-                HapticFeedback.selectionClick();
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Slider(
+                value: selectedVote.toDouble(),
+                min: 1.0,
+                max: 10.0,
+                divisions: 9,
+                activeColor: context.appAccentTeal,
+                inactiveColor: context.appSurface,
+                onChanged: (val) {
+                  HapticFeedback.selectionClick();
 
-                setState(() {
-                  tempVote = val.round();
-                });
-              },
+                  setState(() {
+                    tempVote = val.round();
+                  });
+                },
+              ),
             ),
             const SizedBox(height: 24.0),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.appAccentTeal,
-                foregroundColor: context.colorScheme.onPrimary,
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24.0),
-                ),
-                elevation: 0,
-              ),
-              onPressed: ulistState.isLoading
-                  ? null
-                  : () {
-                      HapticFeedback.lightImpact();
-
-                      ref
-                          .read(userUlistProvider.notifier)
-                          .updateVote(widget.vn, selectedVote * 10);
-                      context.pop();
-                    },
-              child: ulistState.isLoading
-                  ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: context.colorScheme.onPrimary,
-                      ),
-                    )
-                  : const Text(
-                      'Save Vote',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                      ),
-                    ),
-            ),
-            if (originalVote != null) ...[
-              const SizedBox(height: 12.0),
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: context.colorScheme.error,
-                  side: BorderSide(color: context.colorScheme.error),
-                  padding: const EdgeInsets.symmetric(vertical: 14.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: context.appAccentTeal,
+                  foregroundColor: context.colorScheme.onPrimary,
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24.0),
                   ),
+                  elevation: 0,
                 ),
                 onPressed: ulistState.isLoading
                     ? null
@@ -209,18 +177,61 @@ class VnDetailVoteSheetState extends ConsumerState<VnDetailVoteSheet> {
 
                         ref
                             .read(userUlistProvider.notifier)
-                            .updateVote(widget.vn, null);
+                            .updateVote(widget.vn, selectedVote * 10);
                         context.pop();
                       },
-                child: const Text(
-                  'Clear Vote',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15.0,
+                child: ulistState.isLoading
+                    ? SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: context.colorScheme.onPrimary,
+                        ),
+                      )
+                    : const Text(
+                        'Save Vote',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
+                      ),
+              ),
+            ),
+            if (originalVote != null) ...[
+              const SizedBox(height: 12.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: context.colorScheme.error,
+                    side: BorderSide(color: context.colorScheme.error),
+                    padding: const EdgeInsets.symmetric(vertical: 14.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24.0),
+                    ),
+                  ),
+                  onPressed: ulistState.isLoading
+                      ? null
+                      : () {
+                          HapticFeedback.lightImpact();
+
+                          ref
+                              .read(userUlistProvider.notifier)
+                              .updateVote(widget.vn, null);
+                          context.pop();
+                        },
+                  child: const Text(
+                    'Clear Vote',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15.0,
+                    ),
                   ),
                 ),
               ),
             ],
+            const SizedBox(height: 24.0),
           ],
         ),
       ),

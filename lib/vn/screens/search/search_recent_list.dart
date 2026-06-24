@@ -6,6 +6,7 @@ import '../../models/visual_novel.dart';
 import '../../providers/vn_providers.dart';
 import '../../widgets/vn_card.dart';
 import '../../../theme/app_theme.dart';
+import '../../../core/widgets/sliver_bottom_padding.dart';
 import 'widgets/search_sliver_app_bar.dart';
 
 class SearchRecentList extends ConsumerWidget {
@@ -91,9 +92,7 @@ class SearchRecentList extends ConsumerWidget {
           ),
         ),
         // Padding to ensure grid items scroll past the floating bottom bar
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 90),
-        ),
+        const SliverBottomPadding(height: 90),
       ],
     );
   }

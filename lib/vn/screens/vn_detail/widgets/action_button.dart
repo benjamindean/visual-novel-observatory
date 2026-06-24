@@ -13,19 +13,19 @@ class ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
+    return Material(
+      color: context.appSurface,
       borderRadius: BorderRadius.circular(24),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: context.appSurface,
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: Icon(
-          icon,
-          color: context.theme.colorScheme.secondary,
-          size: 22,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Icon(
+            icon,
+            color: context.theme.colorScheme.secondary,
+            size: 22,
+          ),
         ),
       ),
     );

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../theme/app_theme.dart';
 import '../../providers/vn_providers.dart';
 import '../../widgets/vn_card.dart';
+import '../../../core/widgets/sliver_loading_indicator.dart';
 
 class VnByDeveloperScreen extends ConsumerStatefulWidget {
   const VnByDeveloperScreen({
@@ -66,7 +67,9 @@ class _VnByDeveloperScreenState extends ConsumerState<VnByDeveloperScreen> {
         ),
       ),
       body: SafeArea(
+        bottom: false,
         child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
           controller: _scrollController,
           slivers: [
             if (listState.isLoading)
@@ -148,9 +151,11 @@ class _VnByDeveloperScreenState extends ConsumerState<VnByDeveloperScreen> {
               )
             else ...[
               SliverPadding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
+                padding: const EdgeInsets.fromLTRB(
+                  16,
+                  0,
+                  16,
+                  32,
                 ),
                 sliver: SliverGrid(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -171,22 +176,7 @@ class _VnByDeveloperScreenState extends ConsumerState<VnByDeveloperScreen> {
                   }, childCount: listState.vns.length),
                 ),
               ),
-              if (listState.hasMore)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24.0),
-                    child: Center(
-                      child: SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          color: context.appAccentTeal,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+              if (listState.hasMore) const SliverLoadingIndicator(),
             ],
           ],
         ),

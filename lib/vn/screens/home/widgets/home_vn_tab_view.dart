@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../providers/vn_providers.dart';
 import '../../../widgets/vn_card.dart';
+import '../../../../core/widgets/sliver_loading_indicator.dart';
 import 'home_sliver_app_bar.dart';
 
 class HomeVnTabView extends ConsumerStatefulWidget {
@@ -146,22 +147,7 @@ class HomeVnTabViewState extends ConsumerState<HomeVnTabView> {
                 ),
               ),
             ),
-            if (listState.hasMore)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24.0),
-                  child: Center(
-                    child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        color: context.appAccentTeal,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+            if (listState.hasMore) const SliverLoadingIndicator(),
           ],
         ],
       ),

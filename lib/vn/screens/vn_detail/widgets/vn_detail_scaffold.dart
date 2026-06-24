@@ -46,107 +46,99 @@ class VnDetailScaffold extends StatelessWidget {
               background: DetailHeader(vn: vn),
             ),
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 16),
-                  VnDetailActions(vn: vn),
-                  const SizedBox(height: 24),
+          SliverList.list(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
+                    VnDetailActions(vn: vn),
+                    const SizedBox(height: 24),
 
-                  if (vn.devStatus == 2) ...[
-                    VnDetailStatusNotice(vn: vn),
+                    if (vn.devStatus == 2) ...[
+                      VnDetailStatusNotice(vn: vn),
+                      const SizedBox(height: 20),
+                    ],
+
+                    // Metadata Row (Release, Playtime)
+                    MetadataRow(vn: vn),
                     const SizedBox(height: 20),
-                  ],
 
-                  // Metadata Row (Release, Playtime)
-                  MetadataRow(vn: vn),
-                  const SizedBox(height: 20),
+                    // Synopsis Section (Expandable description)
+                    if (vn.description != null &&
+                        vn.description!.isNotEmpty) ...[
+                      SynopsisSection(description: vn.description!),
+                      const SizedBox(height: 24),
+                    ],
 
-                  // Synopsis Section (Expandable description)
-                  if (vn.description != null && vn.description!.isNotEmpty) ...[
-                    SynopsisSection(description: vn.description!),
+                    DevelopersSection(developers: vn.developers),
+                    if (vn.developers.isNotEmpty) const SizedBox(height: 24),
+
+                    // Tags List
+                    TagsSection(tags: vn.tags, initialLimit: 6),
+                    if (vn.tags.isNotEmpty) const SizedBox(height: 24),
+
+                    // Platforms Section
+                    PlatformsSection(platforms: vn.platforms),
+                    if (vn.platforms.isNotEmpty) const SizedBox(height: 24),
+
+                    if (vn.originalLanguage != null || vn.languages.isNotEmpty)
+                      LanguagesSection(
+                        originalLanguage: vn.originalLanguage,
+                        languages: vn.languages,
+                      ),
                     const SizedBox(height: 24),
                   ],
-
-                  DevelopersSection(developers: vn.developers),
-                  if (vn.developers.isNotEmpty) const SizedBox(height: 24),
-
-                  // Tags List
-                  TagsSection(tags: vn.tags, initialLimit: 6),
-                  if (vn.tags.isNotEmpty) const SizedBox(height: 24),
-
-                  // Platforms Section
-                  PlatformsSection(platforms: vn.platforms),
-                  if (vn.platforms.isNotEmpty) const SizedBox(height: 24),
-
-                  if (vn.originalLanguage != null || vn.languages.isNotEmpty)
-                    LanguagesSection(
-                      originalLanguage: vn.originalLanguage,
-                      languages: vn.languages,
-                    ),
-                  const SizedBox(height: 24),
-                ],
-              ),
-            ),
-          ),
-          if (vn.screenshots.isNotEmpty)
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  ScreenshotsSection(screenshots: vn.screenshots),
-                  const SizedBox(height: 24),
-                ],
-              ),
-            ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // External Links Section
-                  LinksSection(
-                    vnId: vn.id,
-                    extLinks: vn.extLinks,
-                  ),
-                  const SizedBox(height: 24),
-                ],
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // if (vn.voiceActors.isNotEmpty) ...[
-                //   CharactersSection(
-                //     vnId: vn.id,
-                //     voiceActors: vn.voiceActors,
-                //   ),
-                //   const SizedBox(height: 24),
-                // ],
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: VnReleasesSection(vnId: vn.id),
                 ),
-                VnRelationsSection(relations: vn.relations),
+              ),
+              if (vn.screenshots.isNotEmpty) ...[
+                ScreenshotsSection(screenshots: vn.screenshots),
+                const SizedBox(height: 24),
               ],
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // External Links Section
+                    LinksSection(
+                      vnId: vn.id,
+                      extLinks: vn.extLinks,
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Center(child: VndbSourceNote()),
-                  const SizedBox(height: 48),
+                  // if (vn.voiceActors.isNotEmpty) ...[
+                  //   CharactersSection(
+                  //     vnId: vn.id,
+                  //     voiceActors: vn.voiceActors,
+                  //   ),
+                  //   const SizedBox(height: 24),
+                  // ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: VnReleasesSection(vnId: vn.id),
+                  ),
+                  VnRelationsSection(relations: vn.relations),
                 ],
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Center(child: VndbSourceNote()),
+                    const SizedBox(height: 48),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
