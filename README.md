@@ -6,6 +6,17 @@ Designed with celestial aesthetics, Observatory offers visual novel enthusiasts 
 
 ---
 
+## Screenshots
+
+<div align="center">
+  <img src="screenshots/app_store/01_explore.png" width="24%">
+  <img src="screenshots/app_store/02_sort_and_filter.png" width="24%">
+  <img src="screenshots/app_store/03_theming.png" width="24%">
+  <img src="screenshots/app_store/04_library_management.png" width="24%">
+</div>
+
+---
+
 ## Key Features
 
 - **VNDB Profile Sync**: Securely connect using your VNDB API Token. Sync and manage your visual novel lists (e.g., Playing, Finished, Stalled, Dropped, Wishlist) and save ratings.

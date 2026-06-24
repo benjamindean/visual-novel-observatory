@@ -77,7 +77,7 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
                         height: size.height * 0.6,
                         fit: BoxFit.cover,
                         shouldBlur: shouldBlur,
-                        blurSigma: 15.0,
+                        blurSigma: 40.0,
                         placeholderIconSize: 64.0,
                       ),
                     ),

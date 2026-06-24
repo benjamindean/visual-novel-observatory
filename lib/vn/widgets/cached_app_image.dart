@@ -17,7 +17,7 @@ class CachedAppImage extends StatelessWidget {
     this.fit = BoxFit.cover,
     this.alignment = Alignment.center,
     this.shouldBlur = false,
-    this.blurSigma = 12.0,
+    this.blurSigma = 60.0,
     this.fadeInDuration = const Duration(milliseconds: 200),
     this.fadeOutDuration = const Duration(milliseconds: 200),
     this.placeholderIconSize,

@@ -63,7 +63,7 @@ class VnGalleryImagePage extends StatelessWidget {
                       imageUrl: screenshot.url,
                       fit: BoxFit.cover,
                       shouldBlur: shouldBlur,
-                      blurSigma: 20.0,
+                      blurSigma: 100.0,
                       placeholderIconSize: 64.0,
                       placeholderBackgroundColor: Colors.transparent,
                       errorBackgroundColor: Colors.transparent,

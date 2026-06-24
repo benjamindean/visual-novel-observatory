@@ -80,7 +80,7 @@ class ScreenshotsSection extends ConsumerWidget {
                           width: 240,
                           height: 150,
                           shouldBlur: shouldBlur,
-                          blurSigma: 10.0,
+                          blurSigma: 40.0,
                         ),
                         if (shouldBlur)
                           Positioned.fill(
