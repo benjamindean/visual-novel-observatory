@@ -38,13 +38,13 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
     final vn = widget.vn;
     final hasMultipleTitles = vn.titles.length > 1;
 
-    final shouldBlur = shouldBlurVndbContent(
+    final hiddenReasons = vndbContentSensitivityReasons(
       sexual: vn.imageSexual,
       violence: vn.imageViolence,
       showExplicitContent: contentSettings.showExplicitContent,
       showViolentContent: contentSettings.showViolentContent,
-      isRevealed: _isImageRevealed,
     );
+    final shouldBlur = hiddenReasons.isNotEmpty && !_isImageRevealed;
 
     return SizedBox(
       width: double.infinity,
@@ -88,36 +88,13 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
                             alpha: 0.65,
                           ),
                           alignment: Alignment.center,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.visibility_off_rounded,
-                                color: context.appTextPrimary.withValues(
-                                  alpha: 0.7,
-                                ),
-                                size: 40,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Sensitive Image Hidden',
-                                style: TextStyle(
-                                  color: context.appTextPrimary.withValues(
-                                    alpha: 0.7,
-                                  ),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              RevealImageButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _isImageRevealed = true;
-                                  });
-                                },
-                              ),
-                            ],
+                          child: RevealImageButton(
+                            reasons: hiddenReasons,
+                            onPressed: () {
+                              setState(() {
+                                _isImageRevealed = true;
+                              });
+                            },
                           ),
                         ),
                       ),

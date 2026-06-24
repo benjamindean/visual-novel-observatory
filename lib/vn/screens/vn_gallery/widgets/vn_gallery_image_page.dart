@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 
 import '../../../../theme/app_theme.dart';
 import '../../../models/vn_screenshot.dart';
+import '../../../utils/vndb_content_sensitivity.dart';
 import '../../../widgets/cached_app_image.dart';
-import 'vn_gallery_sensitive_overlay.dart';
+import '../../../widgets/reveal_image_button.dart';
 
 class VnGalleryImagePage extends StatelessWidget {
   const VnGalleryImagePage({
     super.key,
     required this.screenshot,
     required this.shouldBlur,
+    required this.reasons,
     required this.onReveal,
   });
 
   final VnScreenshot screenshot;
   final bool shouldBlur;
+  final List<VndbContentSensitivityReason> reasons;
   final VoidCallback onReveal;
 
   Size get _screenshotSize {
@@ -81,8 +84,14 @@ class VnGalleryImagePage extends StatelessWidget {
           ),
         ),
         if (shouldBlur)
-          VnGallerySensitiveOverlay(
-            onReveal: onReveal,
+          Center(
+            child: SafeArea(
+              minimum: const EdgeInsets.symmetric(horizontal: 24),
+              child: RevealImageButton(
+                reasons: reasons,
+                onPressed: onReveal,
+              ),
+            ),
           ),
       ],
     );

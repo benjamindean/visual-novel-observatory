@@ -182,15 +182,17 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
                               final isRevealed = _revealedIndices.contains(
                                 index,
                               );
-                              final shouldBlur = shouldBlurVndbContent(
-                                sexual: screenshot.sexual,
-                                violence: screenshot.violence,
-                                showExplicitContent:
-                                    contentSettings.showExplicitContent,
-                                showViolentContent:
-                                    contentSettings.showViolentContent,
-                                isRevealed: isRevealed,
-                              );
+                              final hiddenReasons =
+                                  vndbContentSensitivityReasons(
+                                    sexual: screenshot.sexual,
+                                    violence: screenshot.violence,
+                                    showExplicitContent:
+                                        contentSettings.showExplicitContent,
+                                    showViolentContent:
+                                        contentSettings.showViolentContent,
+                                  );
+                              final shouldBlur =
+                                  hiddenReasons.isNotEmpty && !isRevealed;
                               final childSize = shouldBlur
                                   ? pageSize
                                   : _screenshotSize(screenshot);
@@ -204,6 +206,7 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
                                 child: VnGalleryImagePage(
                                   screenshot: screenshot,
                                   shouldBlur: shouldBlur,
+                                  reasons: hiddenReasons,
                                   onReveal: () {
                                     setState(() {
                                       _revealedIndices.add(index);
