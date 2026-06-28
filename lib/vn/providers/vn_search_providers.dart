@@ -4,6 +4,7 @@ import 'dart:developer' as developer;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/storage/app_storage.dart';
+import '../../settings/providers/settings_provider.dart';
 import '../models/visual_novel.dart';
 import 'vn_core_providers.dart';
 import 'vn_list_providers.dart';
@@ -35,6 +36,14 @@ class VnSearchNotifier extends Notifier<VnListState> {
       });
     });
 
+    ref.listen<bool>(
+      settingsProvider.select((settings) => settings.disableExplicitContent),
+      (previous, next) {
+        _requestGeneration++;
+        Future.microtask(() => resetAndFetch());
+      },
+    );
+
     ref.onDispose(() {
       _debounceTimer?.cancel();
     });
@@ -64,11 +73,15 @@ class VnSearchNotifier extends Notifier<VnListState> {
 
     final currentPage = state.page;
     final repository = ref.read(publicVnRepositoryProvider);
+    final disableExplicitContent = ref.read(
+      settingsProvider.select((settings) => settings.disableExplicitContent),
+    );
 
     try {
       final response = await repository.searchVisualNovels(
         query: query,
         page: currentPage,
+        disableExplicitContentFilter: disableExplicitContent,
       );
 
       if (requestGeneration != _requestGeneration) {
@@ -111,10 +124,22 @@ final vnSearchProvider = NotifierProvider<VnSearchNotifier, VnListState>(
 
 class RecentlyOpenedSearchNotifier extends Notifier<List<VisualNovel>> {
   static const String _key = 'recently_opened_search_vns';
+  static const String _disableExplicitContentKey =
+      'recently_opened_search_disable_explicit_content';
 
   @override
   List<VisualNovel> build() {
+    final disableExplicitContent = ref.watch(
+      settingsProvider.select((settings) => settings.disableExplicitContent),
+    );
+
     try {
+      if (!_canUseCachedRecents(
+        disableExplicitContent: disableExplicitContent,
+      )) {
+        return const [];
+      }
+
       final box = AppStorage.mainBox;
       final String? jsonStr = box.get(_key) as String?;
 
@@ -138,6 +163,9 @@ class RecentlyOpenedSearchNotifier extends Notifier<List<VisualNovel>> {
   }
 
   Future<void> addVn(VisualNovel vn) async {
+    final disableExplicitContent = ref.read(
+      settingsProvider.select((settings) => settings.disableExplicitContent),
+    );
     final list = List<VisualNovel>.from(state);
 
     list.removeWhere((item) => item.id == vn.id);
@@ -152,6 +180,7 @@ class RecentlyOpenedSearchNotifier extends Notifier<List<VisualNovel>> {
       final String jsonStr = jsonEncode(list.map((e) => e.toJson()).toList());
 
       await box.put(_key, jsonStr);
+      await box.put(_disableExplicitContentKey, disableExplicitContent);
     } catch (error, stackTrace) {
       developer.log(
         'Failed to save recently opened search VNs.',
@@ -168,6 +197,7 @@ class RecentlyOpenedSearchNotifier extends Notifier<List<VisualNovel>> {
       final box = AppStorage.mainBox;
 
       await box.delete(_key);
+      await box.delete(_disableExplicitContentKey);
     } catch (error, stackTrace) {
       developer.log(
         'Failed to clear recently opened search VNs.',
@@ -176,6 +206,17 @@ class RecentlyOpenedSearchNotifier extends Notifier<List<VisualNovel>> {
         stackTrace: stackTrace,
       );
     }
+  }
+
+  bool _canUseCachedRecents({
+    required bool disableExplicitContent,
+  }) {
+    if (!disableExplicitContent) {
+      return true;
+    }
+
+    return (AppStorage.mainBox.get(_disableExplicitContentKey) as bool?) ??
+        false;
   }
 }
 

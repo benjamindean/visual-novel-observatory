@@ -337,6 +337,14 @@ class HomeVnListNotifier extends Notifier<VnListState> {
       },
     );
 
+    ref.listen<bool>(
+      settingsProvider.select((settings) => settings.disableExplicitContent),
+      (previous, next) {
+        _requestGeneration++;
+        Future.microtask(() => resetAndFetch());
+      },
+    );
+
     Future.microtask(() => fetchVns());
 
     return VnListState.initial();
@@ -367,6 +375,9 @@ class HomeVnListNotifier extends Notifier<VnListState> {
     final spoilerLevel = ref.read(
       settingsProvider.select((settings) => settings.spoilerLevel),
     );
+    final disableExplicitContent = ref.read(
+      settingsProvider.select((settings) => settings.disableExplicitContent),
+    );
     final apiFilters = tab.filters.buildApiFilters(
       spoilerLevel: spoilerLevel,
     );
@@ -379,6 +390,7 @@ class HomeVnListNotifier extends Notifier<VnListState> {
         page: currentPage,
         sort: tab.sort.field,
         reverse: tab.sort.descending,
+        disableExplicitContentFilter: disableExplicitContent,
       );
 
       if (requestGeneration != _requestGeneration) {

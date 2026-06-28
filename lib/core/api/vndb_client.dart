@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import '../../vn/models/visual_novel.dart';
+import '../../vn/utils/vndb_safe_content_filter.dart';
 
 class VndbClient {
   static const String _baseUrl = 'https://api.vndb.org/kana';
@@ -138,9 +139,19 @@ class VndbClient {
     }
   }
 
-  Future<VisualNovel> getVisualNovelDetails(String vnId) async {
+  Future<VisualNovel> getVisualNovelDetails(
+    String vnId, {
+    bool disableExplicitContentFilter = false,
+  }) async {
     final body = {
-      'filters': ['id', '=', vnId],
+      'filters': applyVndbSafeContentFilters(
+        filters: [
+          'id',
+          '=',
+          vnId,
+        ],
+        disableExplicitContent: disableExplicitContentFilter,
+      ),
       'fields': _vnFields,
       'results': 1,
     };
@@ -195,9 +206,17 @@ class VndbClient {
     required String query,
     required int page,
     int resultsPerPage = 15,
+    bool disableExplicitContentFilter = false,
   }) async {
     final body = {
-      'filters': ['search', '=', query],
+      'filters': applyVndbSafeContentFilters(
+        filters: [
+          'search',
+          '=',
+          query,
+        ],
+        disableExplicitContent: disableExplicitContentFilter,
+      ),
       'fields': _vnFields,
       'results': resultsPerPage,
       'page': page,
@@ -208,9 +227,7 @@ class VndbClient {
 
     final results = data['results'] as List? ?? [];
 
-    final vns = results
-        .map((e) => VisualNovel.fromJson(e as Map<String, dynamic>))
-        .toList();
+    final vns = _parseVisualNovels(results);
 
     final hasMore = data['more'] as bool? ?? false;
 
@@ -223,17 +240,21 @@ class VndbClient {
     required int spoilerLevel,
     required int page,
     int resultsPerPage = 15,
+    bool disableExplicitContentFilter = false,
   }) async {
     final body = {
-      'filters': [
-        'tag',
-        '=',
-        [
-          tagId,
-          _normalizedTagSpoilerLevel(spoilerLevel),
-          0,
+      'filters': applyVndbSafeContentFilters(
+        filters: [
+          'tag',
+          '=',
+          [
+            tagId,
+            _normalizedTagSpoilerLevel(spoilerLevel),
+            0,
+          ],
         ],
-      ],
+        disableExplicitContent: disableExplicitContentFilter,
+      ),
       'fields': _vnFields,
       'sort': 'rating',
       'reverse': true,
@@ -246,9 +267,7 @@ class VndbClient {
 
     final results = data['results'] as List? ?? [];
 
-    final vns = results
-        .map((e) => VisualNovel.fromJson(e as Map<String, dynamic>))
-        .toList();
+    final vns = _parseVisualNovels(results);
 
     final hasMore = data['more'] as bool? ?? false;
 
@@ -259,13 +278,21 @@ class VndbClient {
     required String developerId,
     required int page,
     int resultsPerPage = 15,
+    bool disableExplicitContentFilter = false,
   }) async {
     final body = {
-      'filters': [
-        'developer',
-        '=',
-        ['id', '=', developerId],
-      ],
+      'filters': applyVndbSafeContentFilters(
+        filters: [
+          'developer',
+          '=',
+          [
+            'id',
+            '=',
+            developerId,
+          ],
+        ],
+        disableExplicitContent: disableExplicitContentFilter,
+      ),
       'fields': _vnFields,
       'sort': 'rating',
       'reverse': true,
@@ -278,9 +305,7 @@ class VndbClient {
 
     final results = data['results'] as List? ?? [];
 
-    final vns = results
-        .map((e) => VisualNovel.fromJson(e as Map<String, dynamic>))
-        .toList();
+    final vns = _parseVisualNovels(results);
 
     final hasMore = data['more'] as bool? ?? false;
 
@@ -305,9 +330,13 @@ class VndbClient {
     int resultsPerPage = 22,
     String? sort,
     bool reverse = true,
+    bool disableExplicitContentFilter = false,
   }) async {
     final body = {
-      'filters': filters,
+      'filters': applyVndbSafeContentFilters(
+        filters: filters,
+        disableExplicitContent: disableExplicitContentFilter,
+      ),
       'fields': _vnFields,
       'sort': sort,
       if (sort != null) 'reverse': reverse,
@@ -318,9 +347,7 @@ class VndbClient {
 
     final data = await _postVnQuery(body);
     final results = data['results'] as List? ?? [];
-    final vns = results
-        .map((e) => VisualNovel.fromJson(e as Map<String, dynamic>))
-        .toList();
+    final vns = _parseVisualNovels(results);
 
     final hasMore = data['more'] as bool? ?? false;
 
@@ -348,6 +375,12 @@ class VndbClient {
         'Failed to get ulist labels: ${e.message}\nBody: ${e.response?.data}',
       );
     }
+  }
+
+  List<VisualNovel> _parseVisualNovels(List<dynamic> results) {
+    return results
+        .map((e) => VisualNovel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<void> updateUserListEntry({
@@ -388,13 +421,20 @@ class VndbClient {
     required String user,
     required int page,
     int resultsPerPage = 100,
+    bool disableExplicitContentFilter = false,
   }) async {
+    final filters = applyVndbSafeContentFilters(
+      filters: const [],
+      disableExplicitContent: disableExplicitContentFilter,
+    );
+
     try {
       final response = await _dio.post<Map<String, dynamic>>(
         '/ulist',
         data: {
           'user': user,
           'fields': 'id, added, vote, labels{id}, vn{$_vnFields}',
+          if (filters.isNotEmpty) 'filters': filters,
           'sort': 'added',
           'reverse': true,
           'results': resultsPerPage,

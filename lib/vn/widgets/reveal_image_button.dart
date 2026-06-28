@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../settings/providers/settings_provider.dart';
 import '../../theme/app_theme.dart';
 import '../utils/vndb_content_sensitivity.dart';
 
-class RevealImageButton extends StatelessWidget {
+class RevealImageButton extends ConsumerWidget {
   const RevealImageButton({
     super.key,
     required this.onPressed,
@@ -14,7 +16,15 @@ class RevealImageButton extends StatelessWidget {
   final List<VndbContentSensitivityReason> reasons;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final disableExplicitContent = ref.watch(
+      settingsProvider.select((settings) => settings.disableExplicitContent),
+    );
+
+    if (disableExplicitContent) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [

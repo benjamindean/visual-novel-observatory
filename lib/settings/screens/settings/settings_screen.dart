@@ -12,6 +12,7 @@ import 'true_black_tile.dart';
 import 'theme_tile.dart';
 import 'cover_color_scheme_tile.dart';
 import 'spoiler_tile.dart';
+import 'disable_explicit_content_tile.dart';
 import 'explicit_content_tile.dart';
 import 'violent_content_tile.dart';
 
@@ -67,6 +68,8 @@ class SettingsScreen extends ConsumerWidget {
           const SettingsCard(
             children: [
               SpoilerTile(),
+              Divider(height: 1),
+              DisableExplicitContentTile(),
               Divider(height: 1),
               ExplicitContentTile(),
               Divider(height: 1),

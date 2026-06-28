@@ -13,11 +13,13 @@ class VnRepository {
     required String query,
     required int page,
     int resultsPerPage = 15,
+    bool disableExplicitContentFilter = false,
   }) {
     return _client.searchVisualNovels(
       query: query,
       page: page,
       resultsPerPage: resultsPerPage,
+      disableExplicitContentFilter: disableExplicitContentFilter,
     );
   }
 
@@ -26,12 +28,14 @@ class VnRepository {
     required int spoilerLevel,
     required int page,
     int resultsPerPage = 15,
+    bool disableExplicitContentFilter = false,
   }) {
     return _client.getVisualNovelsByTag(
       tagId: tagId,
       spoilerLevel: spoilerLevel,
       page: page,
       resultsPerPage: resultsPerPage,
+      disableExplicitContentFilter: disableExplicitContentFilter,
     );
   }
 
@@ -39,11 +43,13 @@ class VnRepository {
     required String developerId,
     required int page,
     int resultsPerPage = 15,
+    bool disableExplicitContentFilter = false,
   }) {
     return _client.getVisualNovelsByDeveloper(
       developerId: developerId,
       page: page,
       resultsPerPage: resultsPerPage,
+      disableExplicitContentFilter: disableExplicitContentFilter,
     );
   }
 
@@ -53,6 +59,7 @@ class VnRepository {
     int resultsPerPage = 15,
     String? sort,
     bool reverse = true,
+    bool disableExplicitContentFilter = false,
   }) {
     return _client.getVisualNovels(
       filters: filters,
@@ -60,11 +67,18 @@ class VnRepository {
       resultsPerPage: resultsPerPage,
       sort: sort,
       reverse: reverse,
+      disableExplicitContentFilter: disableExplicitContentFilter,
     );
   }
 
-  Future<VisualNovel> getVisualNovelDetails(String vnId) {
-    return _client.getVisualNovelDetails(vnId);
+  Future<VisualNovel> getVisualNovelDetails(
+    String vnId, {
+    bool disableExplicitContentFilter = false,
+  }) {
+    return _client.getVisualNovelDetails(
+      vnId,
+      disableExplicitContentFilter: disableExplicitContentFilter,
+    );
   }
 
   Future<VnCharacter> getCharacterDetails(String characterId) async {
@@ -99,11 +113,13 @@ class VnRepository {
     required String user,
     required int page,
     int resultsPerPage = 100,
+    bool disableExplicitContentFilter = false,
   }) {
     return _client.getUserList(
       user: user,
       page: page,
       resultsPerPage: resultsPerPage,
+      disableExplicitContentFilter: disableExplicitContentFilter,
     );
   }
 

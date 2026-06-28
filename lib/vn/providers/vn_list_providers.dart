@@ -86,6 +86,14 @@ class VnListNotifier extends Notifier<VnListState> {
       },
     );
 
+    ref.listen<bool>(
+      settingsProvider.select((settings) => settings.disableExplicitContent),
+      (previous, next) {
+        _requestGeneration++;
+        Future.microtask(() => resetAndFetch());
+      },
+    );
+
     ref.onDispose(() {
       _debounceTimer?.cancel();
     });
@@ -112,6 +120,9 @@ class VnListNotifier extends Notifier<VnListState> {
     final spoilerLevel = ref.read(
       settingsProvider.select((settings) => settings.spoilerLevel),
     );
+    final disableExplicitContent = ref.read(
+      settingsProvider.select((settings) => settings.disableExplicitContent),
+    );
     final sortState = ref.read(vnSortProvider);
     final currentPage = state.page;
     final repository = ref.read(publicVnRepositoryProvider);
@@ -134,6 +145,7 @@ class VnListNotifier extends Notifier<VnListState> {
         page: currentPage,
         sort: query.trim().isEmpty ? sortState.field : null,
         reverse: query.trim().isEmpty ? sortState.descending : true,
+        disableExplicitContentFilter: disableExplicitContent,
       );
 
       if (requestGeneration != _requestGeneration) {
@@ -192,6 +204,14 @@ class VnListByTagNotifier extends Notifier<VnListState> {
       },
     );
 
+    ref.listen<bool>(
+      settingsProvider.select((settings) => settings.disableExplicitContent),
+      (previous, next) {
+        _requestGeneration++;
+        Future.microtask(() => resetAndFetch());
+      },
+    );
+
     return VnListState.initial();
   }
 
@@ -214,12 +234,16 @@ class VnListByTagNotifier extends Notifier<VnListState> {
     final spoilerLevel = ref.read(
       settingsProvider.select((settings) => settings.spoilerLevel),
     );
+    final disableExplicitContent = ref.read(
+      settingsProvider.select((settings) => settings.disableExplicitContent),
+    );
 
     try {
       final response = await repository.getVisualNovelsByTag(
         tagId: _tagId,
         spoilerLevel: spoilerLevel,
         page: currentPage,
+        disableExplicitContentFilter: disableExplicitContent,
       );
 
       if (requestGeneration != _requestGeneration) {
@@ -271,6 +295,14 @@ class VnListByDeveloperNotifier extends Notifier<VnListState> {
   VnListState build() {
     Future.microtask(() => fetchVns());
 
+    ref.listen<bool>(
+      settingsProvider.select((settings) => settings.disableExplicitContent),
+      (previous, next) {
+        _requestGeneration++;
+        Future.microtask(() => resetAndFetch());
+      },
+    );
+
     return VnListState.initial();
   }
 
@@ -290,11 +322,15 @@ class VnListByDeveloperNotifier extends Notifier<VnListState> {
 
     final currentPage = state.page;
     final repository = ref.read(publicVnRepositoryProvider);
+    final disableExplicitContent = ref.read(
+      settingsProvider.select((settings) => settings.disableExplicitContent),
+    );
 
     try {
       final response = await repository.getVisualNovelsByDeveloper(
         developerId: _developerId,
         page: currentPage,
+        disableExplicitContentFilter: disableExplicitContent,
       );
 
       if (requestGeneration != _requestGeneration) {

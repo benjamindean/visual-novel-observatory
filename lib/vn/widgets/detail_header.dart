@@ -30,6 +30,7 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
     final contentSettings = ref.watch(
       settingsProvider.select(
         (settings) => (
+          disableExplicitContent: settings.disableExplicitContent,
           showExplicitContent: settings.showExplicitContent,
           showViolentContent: settings.showViolentContent,
         ),
@@ -44,7 +45,10 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
       showExplicitContent: contentSettings.showExplicitContent,
       showViolentContent: contentSettings.showViolentContent,
     );
-    final shouldBlur = hiddenReasons.isNotEmpty && !_isImageRevealed;
+    final canRevealHiddenImage = !contentSettings.disableExplicitContent;
+    final shouldBlur =
+        hiddenReasons.isNotEmpty &&
+        (!canRevealHiddenImage || !_isImageRevealed);
 
     return SizedBox(
       width: double.infinity,

@@ -108,6 +108,7 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
     final contentSettings = ref.watch(
       settingsProvider.select(
         (settings) => (
+          disableExplicitContent: settings.disableExplicitContent,
           showExplicitContent: settings.showExplicitContent,
           showViolentContent: settings.showViolentContent,
         ),
@@ -191,8 +192,11 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
                                     showViolentContent:
                                         contentSettings.showViolentContent,
                                   );
+                              final canRevealHiddenImage =
+                                  !contentSettings.disableExplicitContent;
                               final shouldBlur =
-                                  hiddenReasons.isNotEmpty && !isRevealed;
+                                  hiddenReasons.isNotEmpty &&
+                                  (!canRevealHiddenImage || !isRevealed);
                               final childSize = shouldBlur
                                   ? pageSize
                                   : _screenshotSize(screenshot);

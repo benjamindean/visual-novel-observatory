@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api/vndb_client.dart';
 import '../repository/vn_repository.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../settings/providers/settings_provider.dart';
 import '../models/visual_novel.dart';
 
 final publicVndbClientProvider = Provider<VndbClient>((ref) {
@@ -31,6 +32,12 @@ final vnDetailProvider = FutureProvider.family<VisualNovel, String>((
   vnId,
 ) async {
   final repository = ref.read(publicVnRepositoryProvider);
+  final disableExplicitContent = ref.watch(
+    settingsProvider.select((settings) => settings.disableExplicitContent),
+  );
 
-  return repository.getVisualNovelDetails(vnId);
+  return repository.getVisualNovelDetails(
+    vnId,
+    disableExplicitContentFilter: disableExplicitContent,
+  );
 });

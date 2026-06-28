@@ -11,24 +11,39 @@ class ViolentContentTile extends ConsumerWidget {
     final showViolentContent = ref.watch(
       settingsProvider.select((settings) => settings.showViolentContent),
     );
+    final disableExplicitContent = ref.watch(
+      settingsProvider.select((settings) => settings.disableExplicitContent),
+    );
+    final textColor = disableExplicitContent
+        ? context.appTextMuted
+        : context.appTextPrimary;
+    final subtitle = disableExplicitContent
+        ? 'Unavailable while violent visual novels are filtered out completely.'
+        : 'Include violent content in visual novel images and screenshots without blurring.';
 
     return SwitchListTile(
       value: showViolentContent,
-      title: const Text(
+      title: Text(
         'Violent Content',
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        style: TextStyle(
+          color: textColor,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
       ),
       subtitle: Text(
-        'Include violent content in visual novel images and screenshots without blurring.',
+        subtitle,
         style: TextStyle(fontSize: 12, color: context.appTextMuted),
       ),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 16.0,
         vertical: 4.0,
       ),
-      onChanged: (val) {
-        ref.read(settingsProvider.notifier).setShowViolentContent(val);
-      },
+      onChanged: disableExplicitContent
+          ? null
+          : (val) {
+              ref.read(settingsProvider.notifier).setShowViolentContent(val);
+            },
     );
   }
 }

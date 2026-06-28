@@ -11,24 +11,39 @@ class ExplicitContentTile extends ConsumerWidget {
     final showExplicitContent = ref.watch(
       settingsProvider.select((settings) => settings.showExplicitContent),
     );
+    final disableExplicitContent = ref.watch(
+      settingsProvider.select((settings) => settings.disableExplicitContent),
+    );
+    final textColor = disableExplicitContent
+        ? context.appTextMuted
+        : context.appTextPrimary;
+    final subtitle = disableExplicitContent
+        ? 'Unavailable while explicit content is filtered out completely.'
+        : 'Include 18+ sexual content in search results and uncover blurred images.';
 
     return SwitchListTile(
       value: showExplicitContent,
-      title: const Text(
+      title: Text(
         'Explicit Content',
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        style: TextStyle(
+          color: textColor,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
       ),
       subtitle: Text(
-        'Include 18+ sexual content in search results and uncover blurred images.',
+        subtitle,
         style: TextStyle(fontSize: 12, color: context.appTextMuted),
       ),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 16.0,
         vertical: 4.0,
       ),
-      onChanged: (val) {
-        ref.read(settingsProvider.notifier).setShowExplicitContent(val);
-      },
+      onChanged: disableExplicitContent
+          ? null
+          : (val) {
+              ref.read(settingsProvider.notifier).setShowExplicitContent(val);
+            },
     );
   }
 }
