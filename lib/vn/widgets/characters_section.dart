@@ -29,8 +29,8 @@ class CharactersSection extends ConsumerWidget {
     final contentSettings = ref.watch(
       settingsProvider.select(
         (settings) => (
-          showExplicitContent: settings.showExplicitContent,
-          showViolentContent: settings.showViolentContent,
+          blurSexualContent: settings.blurSexualContent,
+          blurViolentContent: settings.blurViolentContent,
         ),
       ),
     );
@@ -62,8 +62,8 @@ class CharactersSection extends ConsumerWidget {
               final shouldBlur = shouldBlurVndbContent(
                 sexual: char.imageSexual,
                 violence: char.imageViolence,
-                showExplicitContent: contentSettings.showExplicitContent,
-                showViolentContent: contentSettings.showViolentContent,
+                blurSexualContent: contentSettings.blurSexualContent,
+                blurViolentContent: contentSettings.blurViolentContent,
               );
 
               return Padding(

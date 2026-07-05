@@ -92,7 +92,7 @@ A predicate is a 3-element JSON array: `["field", "operator", value]`.
   - `"cont"`: Content tags
   - `"ero"`: Sexual/erotic tags
   - `"tech"`: Technical tags
-- When `settings.showExplicitContent` is disabled, any tags categorized as `"ero"` MUST be filtered out programmatically from all UI views (detail screens, searches, and selected filter summaries).
+- When `settings.blurSexualContent` is enabled, any tags categorized as `"ero"` MUST be filtered out programmatically from all UI views (detail screens, searches, and selected filter summaries).
 
 ## Theming & Color Guidelines
 - **Responsive Tokens**: Always use context extension color tokens (e.g. `context.appTextPrimary`, `context.appTextSecondary`, `context.appSurface`, etc.) rather than hardcoded colors (`Colors.white`, `Colors.white.withValues(...)`, `Colors.black`, `Colors.grey`, `Colors.redAccent`) to ensure full functionality in both Light Mode and Dark Mode.

@@ -32,7 +32,7 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
     final initial = widget.initialTags;
     final settings = ref.read(settingsProvider);
 
-    if (!settings.showExplicitContent) {
+    if (settings.blurSexualContent) {
       _selectedTags.addAll(
         initial.where((tag) => tag.category != 'ero').toList(),
       );
@@ -61,9 +61,9 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
     final lowercaseQuery = query.toLowerCase();
     final settings = ref.read(settingsProvider);
     final rawTags = ref.read(localTagsProvider).tags;
-    final allTags = settings.showExplicitContent
-        ? rawTags
-        : rawTags.where((tag) => tag.category != 'ero').toList();
+    final allTags = settings.blurSexualContent
+        ? rawTags.where((tag) => tag.category != 'ero').toList()
+        : rawTags;
 
     final results = allTags
         .where(
@@ -95,8 +95,8 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final showExplicitContent = ref.watch(
-      settingsProvider.select((settings) => settings.showExplicitContent),
+    final blurSexualContent = ref.watch(
+      settingsProvider.select((settings) => settings.blurSexualContent),
     );
     final localTagsState = ref.watch(
       localTagsProvider.select(
@@ -111,9 +111,9 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
         ? localTagsState.tags
         : _searchResults;
 
-    final filteredTags = showExplicitContent
-        ? initialTags
-        : initialTags.where((tag) => tag.category != 'ero').toList();
+    final filteredTags = blurSexualContent
+        ? initialTags.where((tag) => tag.category != 'ero').toList()
+        : initialTags;
 
     final displayTags = [
       ...filteredTags.where((tag) => _selectedTagIds.contains(tag.id)),

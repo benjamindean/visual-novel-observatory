@@ -113,13 +113,11 @@ class VnRepository {
     required String user,
     required int page,
     int resultsPerPage = 100,
-    bool disableExplicitContentFilter = false,
   }) {
     return _client.getUserList(
       user: user,
       page: page,
       resultsPerPage: resultsPerPage,
-      disableExplicitContentFilter: disableExplicitContentFilter,
     );
   }
 

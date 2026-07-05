@@ -13,8 +13,8 @@ import 'theme_tile.dart';
 import 'cover_color_scheme_tile.dart';
 import 'spoiler_tile.dart';
 import 'disable_explicit_content_tile.dart';
-import 'explicit_content_tile.dart';
-import 'violent_content_tile.dart';
+import 'blur_sexual_content_tile.dart';
+import 'blur_violent_content_tile.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -71,9 +71,9 @@ class SettingsScreen extends ConsumerWidget {
               Divider(height: 1),
               DisableExplicitContentTile(),
               Divider(height: 1),
-              ExplicitContentTile(),
+              BlurSexualContentTile(),
               Divider(height: 1),
-              ViolentContentTile(),
+              BlurViolentContentTile(),
             ],
           ),
           const SizedBox(height: 32),

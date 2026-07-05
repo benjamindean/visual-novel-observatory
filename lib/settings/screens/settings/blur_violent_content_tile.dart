@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/settings_provider.dart';
 import '../../../theme/app_theme.dart';
 
-class ViolentContentTile extends ConsumerWidget {
-  const ViolentContentTile({super.key});
+class BlurViolentContentTile extends ConsumerWidget {
+  const BlurViolentContentTile({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final showViolentContent = ref.watch(
-      settingsProvider.select((settings) => settings.showViolentContent),
+    final blurViolentContent = ref.watch(
+      settingsProvider.select((settings) => settings.blurViolentContent),
     );
     final disableExplicitContent = ref.watch(
       settingsProvider.select((settings) => settings.disableExplicitContent),
@@ -19,12 +19,12 @@ class ViolentContentTile extends ConsumerWidget {
         : context.appTextPrimary;
     final subtitle = disableExplicitContent
         ? 'Unavailable while violent visual novels are filtered out completely.'
-        : 'Include violent content in visual novel images and screenshots without blurring.';
+        : 'Blur violent images and screenshots unless you reveal them.';
 
     return SwitchListTile(
-      value: showViolentContent,
+      value: blurViolentContent,
       title: Text(
-        'Violent Content',
+        'Blur Violent Content',
         style: TextStyle(
           color: textColor,
           fontSize: 16,
@@ -42,7 +42,7 @@ class ViolentContentTile extends ConsumerWidget {
       onChanged: disableExplicitContent
           ? null
           : (val) {
-              ref.read(settingsProvider.notifier).setShowViolentContent(val);
+              ref.read(settingsProvider.notifier).setBlurViolentContent(val);
             },
     );
   }

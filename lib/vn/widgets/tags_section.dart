@@ -19,13 +19,13 @@ class TagsSection extends ConsumerStatefulWidget {
 class _TagsSectionState extends ConsumerState<TagsSection> {
   List<VnTag> _getDisplayTags({
     required int spoilerLevel,
-    required bool showExplicitContent,
+    required bool blurSexualContent,
   }) {
     final filtered = widget.tags.where((tag) {
       final isExplicit = tag.category == 'ero';
       final isAllowedSpoiler = tag.spoiler <= spoilerLevel;
 
-      return isAllowedSpoiler && (showExplicitContent || !isExplicit);
+      return isAllowedSpoiler && (!blurSexualContent || !isExplicit);
     }).toList();
 
     filtered.sort((a, b) => (b.rating ?? 0.0).compareTo(a.rating ?? 0.0));
@@ -40,13 +40,13 @@ class _TagsSectionState extends ConsumerState<TagsSection> {
       settingsProvider.select(
         (settings) => (
           spoilerLevel: settings.spoilerLevel,
-          showExplicitContent: settings.showExplicitContent,
+          blurSexualContent: settings.blurSexualContent,
         ),
       ),
     );
     final displayTagsList = _getDisplayTags(
       spoilerLevel: settings.spoilerLevel,
-      showExplicitContent: settings.showExplicitContent,
+      blurSexualContent: settings.blurSexualContent,
     );
 
     if (displayTagsList.isEmpty) {

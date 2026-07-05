@@ -421,20 +421,13 @@ class VndbClient {
     required String user,
     required int page,
     int resultsPerPage = 100,
-    bool disableExplicitContentFilter = false,
   }) async {
-    final filters = applyVndbSafeContentFilters(
-      filters: const [],
-      disableExplicitContent: disableExplicitContentFilter,
-    );
-
     try {
       final response = await _dio.post<Map<String, dynamic>>(
         '/ulist',
         data: {
           'user': user,
           'fields': 'id, added, vote, labels{id}, vn{$_vnFields}',
-          if (filters.isNotEmpty) 'filters': filters,
           'sort': 'added',
           'reverse': true,
           'results': resultsPerPage,

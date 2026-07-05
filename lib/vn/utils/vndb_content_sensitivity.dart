@@ -9,8 +9,8 @@ enum VndbContentSensitivityReason {
 List<VndbContentSensitivityReason> vndbContentSensitivityReasons({
   required double? sexual,
   required double? violence,
-  required bool showExplicitContent,
-  required bool showViolentContent,
+  required bool blurSexualContent,
+  required bool blurViolentContent,
   bool hasSpoiler = false,
 }) {
   final reasons = <VndbContentSensitivityReason>[];
@@ -23,11 +23,11 @@ List<VndbContentSensitivityReason> vndbContentSensitivityReasons({
     reasons.add(VndbContentSensitivityReason.spoiler);
   }
 
-  if (!showExplicitContent && hasSensitiveSexualContent) {
+  if (blurSexualContent && hasSensitiveSexualContent) {
     reasons.add(VndbContentSensitivityReason.sexual);
   }
 
-  if (!showViolentContent && hasSensitiveViolentContent) {
+  if (blurViolentContent && hasSensitiveViolentContent) {
     reasons.add(VndbContentSensitivityReason.violent);
   }
 
@@ -37,14 +37,14 @@ List<VndbContentSensitivityReason> vndbContentSensitivityReasons({
 bool isSensitiveVndbContent({
   required double? sexual,
   required double? violence,
-  required bool showExplicitContent,
-  required bool showViolentContent,
+  required bool blurSexualContent,
+  required bool blurViolentContent,
 }) {
   final reasons = vndbContentSensitivityReasons(
     sexual: sexual,
     violence: violence,
-    showExplicitContent: showExplicitContent,
-    showViolentContent: showViolentContent,
+    blurSexualContent: blurSexualContent,
+    blurViolentContent: blurViolentContent,
   );
 
   return reasons.isNotEmpty;
@@ -53,15 +53,15 @@ bool isSensitiveVndbContent({
 bool shouldBlurVndbContent({
   required double? sexual,
   required double? violence,
-  required bool showExplicitContent,
-  required bool showViolentContent,
+  required bool blurSexualContent,
+  required bool blurViolentContent,
   bool isRevealed = false,
 }) {
   final isSensitive = isSensitiveVndbContent(
     sexual: sexual,
     violence: violence,
-    showExplicitContent: showExplicitContent,
-    showViolentContent: showViolentContent,
+    blurSexualContent: blurSexualContent,
+    blurViolentContent: blurViolentContent,
   );
 
   return isSensitive && !isRevealed;

@@ -54,7 +54,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
     _selectedSortField = currentSort.field;
     _selectedSortDescending = currentSort.descending;
 
-    if (!settings.showExplicitContent) {
+    if (settings.blurSexualContent) {
       _selectedTags = tags.where((tag) => tag.category != 'ero').toList();
     } else {
       _selectedTags = List<VnTag>.from(tags);
@@ -79,9 +79,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
 
   void _applyFilters() {
     final settings = ref.read(settingsProvider);
-    final tags = settings.showExplicitContent
-        ? _selectedTags
-        : _selectedTags.where((tag) => tag.category != 'ero').toList();
+    final tags = settings.blurSexualContent
+        ? _selectedTags.where((tag) => tag.category != 'ero').toList()
+        : _selectedTags;
 
     ref
         .read(vnFilterProvider.notifier)

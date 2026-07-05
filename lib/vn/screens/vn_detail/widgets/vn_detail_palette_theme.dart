@@ -22,8 +22,8 @@ class VnDetailPaletteTheme extends ConsumerWidget {
       settingsProvider.select(
         (settings) => (
           useCoverColorScheme: settings.useCoverColorScheme,
-          showExplicitContent: settings.showExplicitContent,
-          showViolentContent: settings.showViolentContent,
+          blurSexualContent: settings.blurSexualContent,
+          blurViolentContent: settings.blurViolentContent,
         ),
       ),
     );
@@ -31,8 +31,8 @@ class VnDetailPaletteTheme extends ConsumerWidget {
     final isCoverSensitive = isSensitiveVndbContent(
       sexual: vn.imageSexual,
       violence: vn.imageViolence,
-      showExplicitContent: settings.showExplicitContent,
-      showViolentContent: settings.showViolentContent,
+      blurSexualContent: settings.blurSexualContent,
+      blurViolentContent: settings.blurViolentContent,
     );
 
     if (!settings.useCoverColorScheme ||

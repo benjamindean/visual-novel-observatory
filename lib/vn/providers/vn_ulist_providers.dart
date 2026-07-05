@@ -7,7 +7,6 @@ import '../models/vndb_label.dart';
 import '../models/vn_ulist_entry.dart';
 import '../repository/vn_repository.dart';
 import '../../auth/providers/auth_provider.dart';
-import '../../settings/providers/settings_provider.dart';
 import 'vn_core_providers.dart';
 import 'vn_tags_providers.dart';
 import '../../core/utils/error_utils.dart';
@@ -57,14 +56,8 @@ class UserUlistState {
 }
 
 class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
-  static const String _libraryCacheDisableExplicitContentKey =
-      'library_cache_disable_explicit_content';
-
   @override
   Future<UserUlistState> build() async {
-    final disableExplicitContent = ref.watch(
-      settingsProvider.select((settings) => settings.disableExplicitContent),
-    );
     final auth = await ref.watch(authProvider.future);
 
     if (!auth.isAuthenticated) {
@@ -74,20 +67,11 @@ class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
     return _syncUserListAndData(
       userId: auth.userId!,
       shouldFetchTags: true,
-      disableExplicitContent: disableExplicitContent,
     );
   }
 
-  Map<String, VnUlistEntry> _readCachedEntries({
-    required bool disableExplicitContent,
-  }) {
+  Map<String, VnUlistEntry> _readCachedEntries() {
     try {
-      if (!_canUseLibraryCache(
-        disableExplicitContent: disableExplicitContent,
-      )) {
-        return const {};
-      }
-
       final box = AppStorage.libraryBox;
       final cachedEntries = box.values.toList();
 
@@ -114,14 +98,10 @@ class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
       if (!auth.isAuthenticated) {
         return const UserUlistState();
       }
-      final disableExplicitContent = ref.read(
-        settingsProvider.select((settings) => settings.disableExplicitContent),
-      );
 
       return _syncUserListAndData(
         userId: auth.userId!,
         shouldFetchTags: true,
-        disableExplicitContent: disableExplicitContent,
       );
     });
   }
@@ -129,7 +109,6 @@ class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
   Future<Map<String, VnUlistEntry>> _fetchEntriesForUser(
     String userId, {
     VnRepository? repository,
-    required bool disableExplicitContent,
   }) async {
     final VnRepository activeRepository =
         repository ?? ref.read(vnRepositoryProvider);
@@ -142,7 +121,6 @@ class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
       final data = await activeRepository.getUserList(
         user: userId,
         page: page,
-        disableExplicitContentFilter: disableExplicitContent,
       );
 
       final results = data['results'] as List? ?? [];
@@ -175,14 +153,10 @@ class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
       if (!auth.isAuthenticated) {
         return const UserUlistState();
       }
-      final disableExplicitContent = ref.read(
-        settingsProvider.select((settings) => settings.disableExplicitContent),
-      );
 
       return _syncUserListAndData(
         userId: auth.userId!,
         shouldFetchTags: true,
-        disableExplicitContent: disableExplicitContent,
       );
     });
 
@@ -200,11 +174,8 @@ class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
   Future<UserUlistState> _syncUserListAndData({
     required String userId,
     required bool shouldFetchTags,
-    required bool disableExplicitContent,
   }) async {
-    final cachedEntries = _readCachedEntries(
-      disableExplicitContent: disableExplicitContent,
-    );
+    final cachedEntries = _readCachedEntries();
     final repository = ref.read(vnRepositoryProvider);
 
     try {
@@ -230,7 +201,6 @@ class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
       final entriesMap = await _fetchEntriesForUser(
         userId,
         repository: repository,
-        disableExplicitContent: disableExplicitContent,
       );
 
       if (!ref.mounted) {
@@ -241,10 +211,7 @@ class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
         return const UserUlistState();
       }
 
-      await _saveEntriesToCache(
-        entriesMap,
-        disableExplicitContent: disableExplicitContent,
-      );
+      await _saveEntriesToCache(entriesMap);
 
       final tagsCache = AppStorage.mainBox.get('vndb_tags_cache') as String?;
 
@@ -275,37 +242,18 @@ class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
     }
   }
 
-  bool _canUseLibraryCache({
-    required bool disableExplicitContent,
-  }) {
-    if (!disableExplicitContent) {
-      return true;
-    }
-
-    return (AppStorage.mainBox.get(_libraryCacheDisableExplicitContentKey)
-            as bool?) ??
-        false;
-  }
-
   bool _isCurrentAuthenticatedUser(String userId) {
     final auth = ref.read(authProvider).value ?? const AuthState();
 
     return auth.isAuthenticated && auth.userId == userId;
   }
 
-  Future<void> _saveEntriesToCache(
-    Map<String, VnUlistEntry> entries, {
-    required bool disableExplicitContent,
-  }) async {
+  Future<void> _saveEntriesToCache(Map<String, VnUlistEntry> entries) async {
     try {
       final box = AppStorage.libraryBox;
 
       await box.clear();
       await box.putAll({for (final entry in entries.values) entry.id: entry});
-      await AppStorage.mainBox.put(
-        _libraryCacheDisableExplicitContentKey,
-        disableExplicitContent,
-      );
     } catch (error, stackTrace) {
       developer.log(
         'Failed to save user list cache.',
@@ -322,9 +270,6 @@ class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
     final currentEntry = oldEntries[vn.id];
     final currentLabels = currentEntry?.labels ?? const [];
     final added = currentEntry?.added ?? _currentUnixTimestamp();
-    final disableExplicitContent = ref.read(
-      settingsProvider.select((settings) => settings.disableExplicitContent),
-    );
 
     final newEntry = VnUlistEntry(
       id: vn.id,
@@ -339,10 +284,7 @@ class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
     updatedEntries[vn.id] = newEntry;
     state = AsyncValue.data(currentState.copyWith(entries: updatedEntries));
 
-    await _saveEntriesToCache(
-      updatedEntries,
-      disableExplicitContent: disableExplicitContent,
-    );
+    await _saveEntriesToCache(updatedEntries);
 
     final repository = ref.read(vnRepositoryProvider);
 
@@ -359,10 +301,7 @@ class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
           errorMessage: () => cleanErrorMessage(e),
         ),
       );
-      await _saveEntriesToCache(
-        oldEntries,
-        disableExplicitContent: disableExplicitContent,
-      );
+      await _saveEntriesToCache(oldEntries);
     }
   }
 
@@ -377,9 +316,6 @@ class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
     final currentVote = currentEntry?.vote;
     final currentVn = vn ?? currentEntry?.vn;
     final added = currentEntry?.added ?? _currentUnixTimestamp();
-    final disableExplicitContent = ref.read(
-      settingsProvider.select((settings) => settings.disableExplicitContent),
-    );
 
     final newEntry = VnUlistEntry(
       id: vnId,
@@ -393,10 +329,7 @@ class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
 
     updatedEntries[vnId] = newEntry;
     state = AsyncValue.data(currentState.copyWith(entries: updatedEntries));
-    await _saveEntriesToCache(
-      updatedEntries,
-      disableExplicitContent: disableExplicitContent,
-    );
+    await _saveEntriesToCache(updatedEntries);
 
     final repository = ref.read(vnRepositoryProvider);
 
@@ -413,10 +346,7 @@ class UserUlistNotifier extends AsyncNotifier<UserUlistState> {
           errorMessage: () => cleanErrorMessage(e),
         ),
       );
-      await _saveEntriesToCache(
-        oldEntries,
-        disableExplicitContent: disableExplicitContent,
-      );
+      await _saveEntriesToCache(oldEntries);
     }
   }
 }

@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/settings_provider.dart';
 import '../../../theme/app_theme.dart';
 
-class ExplicitContentTile extends ConsumerWidget {
-  const ExplicitContentTile({super.key});
+class BlurSexualContentTile extends ConsumerWidget {
+  const BlurSexualContentTile({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final showExplicitContent = ref.watch(
-      settingsProvider.select((settings) => settings.showExplicitContent),
+    final blurSexualContent = ref.watch(
+      settingsProvider.select((settings) => settings.blurSexualContent),
     );
     final disableExplicitContent = ref.watch(
       settingsProvider.select((settings) => settings.disableExplicitContent),
@@ -19,12 +19,12 @@ class ExplicitContentTile extends ConsumerWidget {
         : context.appTextPrimary;
     final subtitle = disableExplicitContent
         ? 'Unavailable while explicit content is filtered out completely.'
-        : 'Include 18+ sexual content in search results and uncover blurred images.';
+        : 'Blur sexual images and hide sexual tags unless you reveal them.';
 
     return SwitchListTile(
-      value: showExplicitContent,
+      value: blurSexualContent,
       title: Text(
-        'Explicit Content',
+        'Blur Sexual Content',
         style: TextStyle(
           color: textColor,
           fontSize: 16,
@@ -42,7 +42,7 @@ class ExplicitContentTile extends ConsumerWidget {
       onChanged: disableExplicitContent
           ? null
           : (val) {
-              ref.read(settingsProvider.notifier).setShowExplicitContent(val);
+              ref.read(settingsProvider.notifier).setBlurSexualContent(val);
             },
     );
   }

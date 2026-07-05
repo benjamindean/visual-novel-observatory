@@ -31,8 +31,8 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
       settingsProvider.select(
         (settings) => (
           disableExplicitContent: settings.disableExplicitContent,
-          showExplicitContent: settings.showExplicitContent,
-          showViolentContent: settings.showViolentContent,
+          blurSexualContent: settings.blurSexualContent,
+          blurViolentContent: settings.blurViolentContent,
         ),
       ),
     );
@@ -42,8 +42,8 @@ class DetailHeaderState extends ConsumerState<DetailHeader> {
     final hiddenReasons = vndbContentSensitivityReasons(
       sexual: vn.imageSexual,
       violence: vn.imageViolence,
-      showExplicitContent: contentSettings.showExplicitContent,
-      showViolentContent: contentSettings.showViolentContent,
+      blurSexualContent: contentSettings.blurSexualContent,
+      blurViolentContent: contentSettings.blurViolentContent,
     );
     final canRevealHiddenImage = !contentSettings.disableExplicitContent;
     final shouldBlur =

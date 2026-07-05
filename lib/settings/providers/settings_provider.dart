@@ -4,8 +4,8 @@ import '../../core/storage/app_storage.dart';
 class SettingsState {
   final int spoilerLevel;
   final bool disableExplicitContent;
-  final bool showExplicitContent;
-  final bool showViolentContent;
+  final bool blurSexualContent;
+  final bool blurViolentContent;
   final String themeName;
   final String themeMode;
   final bool darkIsTrueBlack;
@@ -14,8 +14,8 @@ class SettingsState {
   SettingsState({
     this.spoilerLevel = 0,
     this.disableExplicitContent = true,
-    this.showExplicitContent = false,
-    this.showViolentContent = false,
+    this.blurSexualContent = true,
+    this.blurViolentContent = true,
     this.themeName = 'vndb',
     this.themeMode = 'system',
     this.darkIsTrueBlack = false,
@@ -25,8 +25,8 @@ class SettingsState {
   SettingsState copyWith({
     int? spoilerLevel,
     bool? disableExplicitContent,
-    bool? showExplicitContent,
-    bool? showViolentContent,
+    bool? blurSexualContent,
+    bool? blurViolentContent,
     String? themeName,
     String? themeMode,
     bool? darkIsTrueBlack,
@@ -36,8 +36,8 @@ class SettingsState {
       spoilerLevel: spoilerLevel ?? this.spoilerLevel,
       disableExplicitContent:
           disableExplicitContent ?? this.disableExplicitContent,
-      showExplicitContent: showExplicitContent ?? this.showExplicitContent,
-      showViolentContent: showViolentContent ?? this.showViolentContent,
+      blurSexualContent: blurSexualContent ?? this.blurSexualContent,
+      blurViolentContent: blurViolentContent ?? this.blurViolentContent,
       themeName: themeName ?? this.themeName,
       themeMode: themeMode ?? this.themeMode,
       darkIsTrueBlack: darkIsTrueBlack ?? this.darkIsTrueBlack,
@@ -49,8 +49,8 @@ class SettingsState {
 class SettingsNotifier extends Notifier<SettingsState> {
   static const String _spoilerKey = 'settings_spoiler_level';
   static const String _disableExplicitKey = 'settings_disable_explicit';
-  static const String _explicitKey = 'settings_show_explicit';
-  static const String _violentKey = 'settings_show_violent';
+  static const String _blurSexualKey = 'settings_blur_sexual_content';
+  static const String _blurViolentKey = 'settings_blur_violent_content';
   static const String _themeKey = 'settings_theme_name';
   static const String _themeModeKey = 'settings_theme_mode';
   static const String _darkIsTrueBlackKey = 'settings_dark_is_true_black';
@@ -63,12 +63,12 @@ class SettingsNotifier extends Notifier<SettingsState> {
 
     final spoiler = box.get(_spoilerKey) as int? ?? 0;
     final disableExplicit = box.get(_disableExplicitKey) as bool? ?? true;
-    final explicit = disableExplicit
-        ? false
-        : box.get(_explicitKey) as bool? ?? false;
-    final violent = disableExplicit
-        ? false
-        : box.get(_violentKey) as bool? ?? false;
+    final blurSexual = disableExplicit
+        ? true
+        : box.get(_blurSexualKey) as bool? ?? true;
+    final blurViolent = disableExplicit
+        ? true
+        : box.get(_blurViolentKey) as bool? ?? true;
     final theme = box.get(_themeKey) as String? ?? 'vndb';
     final mode = box.get(_themeModeKey) as String? ?? 'system';
     final isTrueBlack = box.get(_darkIsTrueBlackKey) as bool? ?? false;
@@ -78,8 +78,8 @@ class SettingsNotifier extends Notifier<SettingsState> {
     return SettingsState(
       spoilerLevel: spoiler,
       disableExplicitContent: disableExplicit,
-      showExplicitContent: explicit,
-      showViolentContent: violent,
+      blurSexualContent: blurSexual,
+      blurViolentContent: blurViolent,
       themeName: theme,
       themeMode: mode,
       darkIsTrueBlack: isTrueBlack,
@@ -136,38 +136,38 @@ class SettingsNotifier extends Notifier<SettingsState> {
     final box = AppStorage.mainBox;
 
     await box.put(_disableExplicitKey, value);
-    await box.put(_explicitKey, false);
-    await box.put(_violentKey, false);
+    await box.put(_blurSexualKey, true);
+    await box.put(_blurViolentKey, true);
 
     state = state.copyWith(
       disableExplicitContent: value,
-      showExplicitContent: false,
-      showViolentContent: false,
+      blurSexualContent: true,
+      blurViolentContent: true,
     );
   }
 
-  Future<void> setShowExplicitContent(bool value) async {
+  Future<void> setBlurSexualContent(bool value) async {
     if (state.disableExplicitContent) {
       return;
     }
 
     final box = AppStorage.mainBox;
 
-    await box.put(_explicitKey, value);
+    await box.put(_blurSexualKey, value);
 
-    state = state.copyWith(showExplicitContent: value);
+    state = state.copyWith(blurSexualContent: value);
   }
 
-  Future<void> setShowViolentContent(bool value) async {
+  Future<void> setBlurViolentContent(bool value) async {
     if (state.disableExplicitContent) {
       return;
     }
 
     final box = AppStorage.mainBox;
 
-    await box.put(_violentKey, value);
+    await box.put(_blurViolentKey, value);
 
-    state = state.copyWith(showViolentContent: value);
+    state = state.copyWith(blurViolentContent: value);
   }
 }
 

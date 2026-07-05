@@ -101,9 +101,9 @@ class HomeCreateFilterTabState extends ConsumerState<HomeCreateFilterTab> {
 
   Future<void> _submitTab() async {
     final settings = ref.read(settingsProvider);
-    final tags = settings.showExplicitContent
-        ? _selectedTags
-        : _selectedTags.where((tag) => tag.category != 'ero').toList();
+    final tags = settings.blurSexualContent
+        ? _selectedTags.where((tag) => tag.category != 'ero').toList()
+        : _selectedTags;
     final name = _nameController.text.trim();
 
     if (name.isEmpty) {

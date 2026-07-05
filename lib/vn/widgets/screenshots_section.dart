@@ -18,8 +18,8 @@ class ScreenshotsSection extends ConsumerWidget {
     final contentSettings = ref.watch(
       settingsProvider.select(
         (settings) => (
-          showExplicitContent: settings.showExplicitContent,
-          showViolentContent: settings.showViolentContent,
+          blurSexualContent: settings.blurSexualContent,
+          blurViolentContent: settings.blurViolentContent,
         ),
       ),
     );
@@ -54,8 +54,8 @@ class ScreenshotsSection extends ConsumerWidget {
               final shouldBlur = shouldBlurVndbContent(
                 sexual: screen.sexual,
                 violence: screen.violence,
-                showExplicitContent: contentSettings.showExplicitContent,
-                showViolentContent: contentSettings.showViolentContent,
+                blurSexualContent: contentSettings.blurSexualContent,
+                blurViolentContent: contentSettings.blurViolentContent,
               );
 
               return Padding(

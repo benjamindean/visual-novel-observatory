@@ -109,8 +109,8 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
       settingsProvider.select(
         (settings) => (
           disableExplicitContent: settings.disableExplicitContent,
-          showExplicitContent: settings.showExplicitContent,
-          showViolentContent: settings.showViolentContent,
+          blurSexualContent: settings.blurSexualContent,
+          blurViolentContent: settings.blurViolentContent,
         ),
       ),
     );
@@ -187,10 +187,10 @@ class _VnGalleryScreenState extends ConsumerState<VnGalleryScreen> {
                                   vndbContentSensitivityReasons(
                                     sexual: screenshot.sexual,
                                     violence: screenshot.violence,
-                                    showExplicitContent:
-                                        contentSettings.showExplicitContent,
-                                    showViolentContent:
-                                        contentSettings.showViolentContent,
+                                    blurSexualContent:
+                                        contentSettings.blurSexualContent,
+                                    blurViolentContent:
+                                        contentSettings.blurViolentContent,
                                   );
                               final canRevealHiddenImage =
                                   !contentSettings.disableExplicitContent;

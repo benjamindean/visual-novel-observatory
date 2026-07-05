@@ -29,8 +29,8 @@ class CharacterDetailScaffold extends ConsumerWidget {
     final contentSettings = ref.watch(
       settingsProvider.select(
         (settings) => (
-          showExplicitContent: settings.showExplicitContent,
-          showViolentContent: settings.showViolentContent,
+          blurSexualContent: settings.blurSexualContent,
+          blurViolentContent: settings.blurViolentContent,
           spoilerLevel: settings.spoilerLevel,
         ),
       ),
@@ -38,8 +38,8 @@ class CharacterDetailScaffold extends ConsumerWidget {
     final shouldBlur = shouldBlurVndbContent(
       sexual: character.imageSexual,
       violence: character.imageViolence,
-      showExplicitContent: contentSettings.showExplicitContent,
-      showViolentContent: contentSettings.showViolentContent,
+      blurSexualContent: contentSettings.blurSexualContent,
+      blurViolentContent: contentSettings.blurViolentContent,
     );
     final facts = CharacterFact.fromCharacter(
       character: character,
