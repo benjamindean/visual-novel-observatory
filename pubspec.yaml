@@ -1,6 +1,6 @@
 name: visual_novel_observatory
 description: A mobile client for VNDB.org built with Flutter.
-version: 1.0.1+1
+version: 1.0.2
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
