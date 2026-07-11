@@ -1,6 +1,6 @@
 # Visual Novel Observatory
 
-Visual novel tracking and discovery client for Android and iOS syncing seamlessly with [VNDB.org](https://vndb.org/). Bbrowse, search, filter, and catalog visual novels.
+Visual novel tracking and discovery client for Android and iOS syncing seamlessly with [VNDB.org](https://vndb.org/). Browse, search, filter, and catalog visual novels.
 
 ---
 
