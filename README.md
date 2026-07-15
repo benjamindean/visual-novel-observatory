@@ -1,8 +1,6 @@
-# Visual Novel Observatory 🌌
+# Visual Novel Observatory
 
-A premium, responsive, modern visual novel tracking and discovery client for Android, iOS, and Web, syncing seamlessly with [VNDB.org](https://vndb.org/) using the new v2 Kana HTTPS API.
-
-Designed with celestial aesthetics, Observatory offers visual novel enthusiasts a smooth, one-handed mobile experience to browse, search, filter, and catalog visual novels.
+Visual novel tracking and discovery client for Android and iOS syncing seamlessly with [VNDB.org](https://vndb.org/). Browse, search, filter, and catalog visual novels.
 
 ---
 
@@ -22,8 +20,7 @@ Designed with celestial aesthetics, Observatory offers visual novel enthusiasts 
 - **VNDB Profile Sync**: Securely connect using your VNDB API Token. Sync and manage your visual novel lists (e.g., Playing, Finished, Stalled, Dropped, Wishlist) and save ratings.
 - **Advanced Filtering & Sorting**: Filter visual novels by language, platform, development status, duration class, tags, and minimum rating or vote count.
 - **Sensitive Content Blurring**: NSFW/explicit images are programmatically blurred, and sexual/erotic tags are automatically filtered out when explicit content settings are disabled.
-- **Celestial Visual Design**: Sleek dark and light modes, customizable color themes (teal, gold, violet), and an OLED "True Black" option. Built with custom gradients and micro-animations.
-- **Zoomable Gallery**: Interactive pinch/pan gesture media viewer to browse full-resolution screenshots with vertical swipe-to-dismiss integration.
+- **Celestial Visual Design**: Sleek dark and light modes, customizable color themes (teal, gold, violet, etc.), and an OLED "True Black" option.
 - **Offline Cache**: Automatically caches user lists and label data locally using Hive for fast load times and offline availability.
 
 ---
@@ -36,33 +33,6 @@ Designed with celestial aesthetics, Observatory offers visual novel enthusiasts 
 - **Network Images Caching**: [Cached Network Image](https://pub.dev/packages/cached_network_image) for optimized image loading and bandwidth reduction.
 - **Data Serialization**: [Freezed](https://pub.dev/packages/freezed) and [Json Serializable](https://pub.dev/packages/json_serializable) for robust model codegen.
 - **URL Launcher & Sharing**: [Url Launcher](https://pub.dev/packages/url_launcher) and [Share Plus](https://pub.dev/packages/share_plus) for external integrations.
-
----
-
-## Directory Structure
-
-Observatory follows a feature-first, MVVM-based project structure:
-
-```
-lib/
-├── core/                       # Core routing, database storage, and API clients
-│   ├── api/                    # VNDB HTTPS client (Kana v2 API)
-│   ├── navigation/             # GoRouter routes and state transitions
-│   └── storage/                # Local Hive box initialization and setup
-├── auth/                       # Authentication feature logic
-│   └── providers/              # Auth state and token management
-├── theme/                      # Celestial design tokens and colors
-│   └── app_theme.dart          # Light/Dark and custom color schemes
-├── settings/                   # App configurations and preferences
-│   ├── providers/              # settings providers
-│   └── screens/                # settings and login views organized in folders
-└── vn/                         # Visual Novels (main feature area)
-    ├── models/                 # Data models (VisualNovel, Screenshot, Tag, VndbLabel, UlistEntry)
-    ├── providers/              # State management for lists, search, tags caching, details, and ulist updates
-    ├── repository/             # Database access and query builders
-    ├── screens/                # Screen-specific isolated directories (e.g., search, vn_detail, etc.)
-    └── widgets/                # Reusable focused atom widgets (e.g. VnCard, AppSearchInput, etc.)
-```
 
 ---
 
