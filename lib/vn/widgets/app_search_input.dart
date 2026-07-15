@@ -27,6 +27,18 @@ class _AppSearchInputState extends State<AppSearchInput> {
   }
 
   @override
+  void didUpdateWidget(covariant AppSearchInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.controller == widget.controller) {
+      return;
+    }
+
+    oldWidget.controller.removeListener(_onControllerChange);
+    widget.controller.addListener(_onControllerChange);
+  }
+
+  @override
   void dispose() {
     widget.controller.removeListener(_onControllerChange);
     super.dispose();

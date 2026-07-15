@@ -87,7 +87,7 @@ lib/
 
 3. Run code generation (for Freezed data models):
    ```bash
-   dart run build_runner build --delete-conflicting-outputs
+   dart run build_runner build
    ```
 
 4. Run the application locally in debug mode:
@@ -124,7 +124,15 @@ Before submitting your changes, verify that your code compiles, formats, and ana
    ```bash
    flutter analyze
    ```
-3. **Trigger Code Generation (if data models changed)**:
+3. **Run Tests**:
    ```bash
-   dart run build_runner build --delete-conflicting-outputs
+   flutter test
+   ```
+   Generate a local coverage report when changing important behavior:
+   ```bash
+   flutter test --coverage
+   ```
+4. **Trigger Code Generation (if data models changed)**:
+   ```bash
+   dart run build_runner build
    ```

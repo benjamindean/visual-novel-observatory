@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/vn_tag.dart';
@@ -23,6 +25,7 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
   final List<VnTag> _selectedTags = [];
   final Set<String> _selectedTagIds = {};
 
+  Timer? _searchDebounceTimer;
   List<VnTag> _searchResults = [];
 
   @override
@@ -45,8 +48,24 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
 
   @override
   void dispose() {
+    _searchDebounceTimer?.cancel();
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _scheduleSearch(String query) {
+    _searchDebounceTimer?.cancel();
+
+    if (query.trim().isEmpty) {
+      _performSearch(query);
+
+      return;
+    }
+
+    _searchDebounceTimer = Timer(
+      const Duration(milliseconds: 200),
+      () => _performSearch(query),
+    );
   }
 
   void _performSearch(String query) {
@@ -232,7 +251,7 @@ class _TagFilterScreenState extends ConsumerState<TagFilterScreen> {
                     padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
                     child: AppSearchInput(
                       controller: _searchController,
-                      onChanged: _performSearch,
+                      onChanged: _scheduleSearch,
                       hintText:
                           'Search tags (e.g. Magic, Female Protagonist)...',
                     ),

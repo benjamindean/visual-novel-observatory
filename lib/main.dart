@@ -23,8 +23,8 @@ void main() async {
 class VisualNovelObservatoryApp extends ConsumerWidget {
   const VisualNovelObservatoryApp({super.key});
 
-  ThemeMode getThemeMode(SettingsState settings) {
-    switch (settings.themeMode) {
+  ThemeMode getThemeMode(String themeMode) {
+    switch (themeMode) {
       case 'light':
         return ThemeMode.light;
       case 'dark':
@@ -36,17 +36,25 @@ class VisualNovelObservatoryApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final themeSettings = ref.watch(
+      settingsProvider.select(
+        (settings) => (
+          themeMode: settings.themeMode,
+          themeName: settings.themeName,
+          darkIsTrueBlack: settings.darkIsTrueBlack,
+        ),
+      ),
+    );
 
     return MaterialApp.router(
       title: 'Visual Novel Observatory',
       debugShowCheckedModeBanner: false,
-      themeMode: getThemeMode(settings),
-      theme: AppTheme.getTheme(settings.themeName, isDark: false),
+      themeMode: getThemeMode(themeSettings.themeMode),
+      theme: AppTheme.getTheme(themeSettings.themeName, isDark: false),
       darkTheme: AppTheme.getTheme(
-        settings.themeName,
+        themeSettings.themeName,
         isDark: true,
-        darkIsTrueBlack: settings.darkIsTrueBlack,
+        darkIsTrueBlack: themeSettings.darkIsTrueBlack,
       ),
       localizationsDelegates: const [
         LocaleNamesLocalizationsDelegate(),
