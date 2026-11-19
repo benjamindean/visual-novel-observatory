@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:visual_novel_observatory/settings/providers/settings_provider.dart';
 
 Widget testMaterialApp(Widget child) {

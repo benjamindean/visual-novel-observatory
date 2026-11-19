@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'vn_character.dart';
 import 'vn_staff.dart';
 

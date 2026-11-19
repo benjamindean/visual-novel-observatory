@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'vn_ulist_entry.dart';
@@ -9,6 +9,7 @@ part of 'vn_ulist_entry.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $VnUlistEntryCopyWith<VnUlistEntry> get copyWith => _$VnUlistEntryCopyWithImpl<V
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnUlistEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.added, added) || other.added == added)&&(identical(other.vote, vote) || other.vote == vote)&&const DeepCollectionEquality().equals(other.labels, labels)&&(identical(other.vn, vn) || other.vn == vn));
+  final _this = this as VnUlistEntry;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnUlistEntry&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.added, _this.added) || other.added == _this.added)&&(identical(other.vote, _this.vote) || other.vote == _this.vote)&&const DeepCollectionEquality().equals(other.labels, _this.labels)&&(identical(other.vn, _this.vn) || other.vn == _this.vn));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,added,vote,const DeepCollectionEquality().hash(labels),vn);
+int get hashCode {
+  final _this = this as VnUlistEntry;
+  return Object.hash(runtimeType,_this.id,_this.added,_this.vote,const DeepCollectionEquality().hash(_this.labels),_this.vn);
+}
 
 @override
 String toString() {
-  return 'VnUlistEntry(id: $id, added: $added, vote: $vote, labels: $labels, vn: $vn)';
+  final _this = this as VnUlistEntry;
+  return 'VnUlistEntry(id: ${_this.id}, added: ${_this.added}, vote: ${_this.vote}, labels: ${_this.labels}, vn: ${_this.vn})';
 }
 
 
@@ -66,7 +72,7 @@ class _$VnUlistEntryCopyWithImpl<$Res>
 /// Create a copy of VnUlistEntry
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? added = freezed,Object? vote = freezed,Object? labels = null,Object? vn = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(VnUlistEntry(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,added: freezed == added ? _self.added : added // ignore: cast_nullable_to_non_nullable
 as int?,vote: freezed == vote ? _self.vote : vote // ignore: cast_nullable_to_non_nullable
@@ -225,7 +231,7 @@ return $default(_that.id,_that.added,_that.vote,_that.labels,_that.vn);case _:
 @JsonSerializable()
 
 class _VnUlistEntry implements VnUlistEntry {
-  const _VnUlistEntry({required this.id, this.added, this.vote, final  List<int> labels = const [], this.vn}): _labels = labels;
+  const _VnUlistEntry({required this.id, this.added, this.vote,  List<int> labels = const [], this.vn}): _labels = labels;
   factory _VnUlistEntry.fromJson(Map<String, dynamic> json) => _$VnUlistEntryFromJson(json);
 
 @override final  String id;
@@ -253,16 +259,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnUlistEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.added, added) || other.added == added)&&(identical(other.vote, vote) || other.vote == vote)&&const DeepCollectionEquality().equals(other._labels, _labels)&&(identical(other.vn, vn) || other.vn == vn));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnUlistEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.added, added) || other.added == added)&&(identical(other.vote, vote) || other.vote == vote)&&const DeepCollectionEquality().equals(other.labels, _labels)&&(identical(other.vn, vn) || other.vn == vn));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,added,vote,const DeepCollectionEquality().hash(_labels),vn);
+int get hashCode {
+    return Object.hash(runtimeType,id,added,vote,const DeepCollectionEquality().hash(_labels),vn);
+}
 
 @override
 String toString() {
-  return 'VnUlistEntry(id: $id, added: $added, vote: $vote, labels: $labels, vn: $vn)';
+    return 'VnUlistEntry(id: $id, added: $added, vote: $vote, labels: $labels, vn: $vn)';
 }
 
 

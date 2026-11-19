@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../vn/models/visual_novel.dart';
 import '../../vn/models/vn_screenshot.dart';
 import '../../vn/screens/home/home_screen.dart';

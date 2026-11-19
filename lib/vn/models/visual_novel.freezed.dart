@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'visual_novel.dart';
@@ -9,6 +9,7 @@ part of 'visual_novel.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $VisualNovelCopyWith<VisualNovel> get copyWith => _$VisualNovelCopyWithImpl<Visu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VisualNovel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.altTitle, altTitle) || other.altTitle == altTitle)&&const DeepCollectionEquality().equals(other.titles, titles)&&(identical(other.description, description) || other.description == description)&&(identical(other.average, average) || other.average == average)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.votecount, votecount) || other.votecount == votecount)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other.imageDims, imageDims)&&(identical(other.imageSexual, imageSexual) || other.imageSexual == imageSexual)&&(identical(other.imageViolence, imageViolence) || other.imageViolence == imageViolence)&&(identical(other.released, released) || other.released == released)&&(identical(other.originalLanguage, originalLanguage) || other.originalLanguage == originalLanguage)&&(identical(other.devStatus, devStatus) || other.devStatus == devStatus)&&(identical(other.length, length) || other.length == length)&&(identical(other.lengthMinutes, lengthMinutes) || other.lengthMinutes == lengthMinutes)&&(identical(other.lengthVotes, lengthVotes) || other.lengthVotes == lengthVotes)&&const DeepCollectionEquality().equals(other.tags, tags)&&const DeepCollectionEquality().equals(other.developers, developers)&&const DeepCollectionEquality().equals(other.screenshots, screenshots)&&const DeepCollectionEquality().equals(other.platforms, platforms)&&const DeepCollectionEquality().equals(other.languages, languages)&&const DeepCollectionEquality().equals(other.aliases, aliases)&&const DeepCollectionEquality().equals(other.extLinks, extLinks)&&const DeepCollectionEquality().equals(other.voiceActors, voiceActors)&&const DeepCollectionEquality().equals(other.relations, relations));
+  final _this = this as VisualNovel;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VisualNovel&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.altTitle, _this.altTitle) || other.altTitle == _this.altTitle)&&const DeepCollectionEquality().equals(other.titles, _this.titles)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.average, _this.average) || other.average == _this.average)&&(identical(other.rating, _this.rating) || other.rating == _this.rating)&&(identical(other.votecount, _this.votecount) || other.votecount == _this.votecount)&&(identical(other.imageUrl, _this.imageUrl) || other.imageUrl == _this.imageUrl)&&const DeepCollectionEquality().equals(other.imageDims, _this.imageDims)&&(identical(other.imageSexual, _this.imageSexual) || other.imageSexual == _this.imageSexual)&&(identical(other.imageViolence, _this.imageViolence) || other.imageViolence == _this.imageViolence)&&(identical(other.released, _this.released) || other.released == _this.released)&&(identical(other.originalLanguage, _this.originalLanguage) || other.originalLanguage == _this.originalLanguage)&&(identical(other.devStatus, _this.devStatus) || other.devStatus == _this.devStatus)&&(identical(other.length, _this.length) || other.length == _this.length)&&(identical(other.lengthMinutes, _this.lengthMinutes) || other.lengthMinutes == _this.lengthMinutes)&&(identical(other.lengthVotes, _this.lengthVotes) || other.lengthVotes == _this.lengthVotes)&&const DeepCollectionEquality().equals(other.tags, _this.tags)&&const DeepCollectionEquality().equals(other.developers, _this.developers)&&const DeepCollectionEquality().equals(other.screenshots, _this.screenshots)&&const DeepCollectionEquality().equals(other.platforms, _this.platforms)&&const DeepCollectionEquality().equals(other.languages, _this.languages)&&const DeepCollectionEquality().equals(other.aliases, _this.aliases)&&const DeepCollectionEquality().equals(other.extLinks, _this.extLinks)&&const DeepCollectionEquality().equals(other.voiceActors, _this.voiceActors)&&const DeepCollectionEquality().equals(other.relations, _this.relations));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,title,altTitle,const DeepCollectionEquality().hash(titles),description,average,rating,votecount,imageUrl,const DeepCollectionEquality().hash(imageDims),imageSexual,imageViolence,released,originalLanguage,devStatus,length,lengthMinutes,lengthVotes,const DeepCollectionEquality().hash(tags),const DeepCollectionEquality().hash(developers),const DeepCollectionEquality().hash(screenshots),const DeepCollectionEquality().hash(platforms),const DeepCollectionEquality().hash(languages),const DeepCollectionEquality().hash(aliases),const DeepCollectionEquality().hash(extLinks),const DeepCollectionEquality().hash(voiceActors),const DeepCollectionEquality().hash(relations)]);
+int get hashCode {
+  final _this = this as VisualNovel;
+  return Object.hashAll([runtimeType,_this.id,_this.title,_this.altTitle,const DeepCollectionEquality().hash(_this.titles),_this.description,_this.average,_this.rating,_this.votecount,_this.imageUrl,const DeepCollectionEquality().hash(_this.imageDims),_this.imageSexual,_this.imageViolence,_this.released,_this.originalLanguage,_this.devStatus,_this.length,_this.lengthMinutes,_this.lengthVotes,const DeepCollectionEquality().hash(_this.tags),const DeepCollectionEquality().hash(_this.developers),const DeepCollectionEquality().hash(_this.screenshots),const DeepCollectionEquality().hash(_this.platforms),const DeepCollectionEquality().hash(_this.languages),const DeepCollectionEquality().hash(_this.aliases),const DeepCollectionEquality().hash(_this.extLinks),const DeepCollectionEquality().hash(_this.voiceActors),const DeepCollectionEquality().hash(_this.relations)]);
+}
 
 @override
 String toString() {
-  return 'VisualNovel(id: $id, title: $title, altTitle: $altTitle, titles: $titles, description: $description, average: $average, rating: $rating, votecount: $votecount, imageUrl: $imageUrl, imageDims: $imageDims, imageSexual: $imageSexual, imageViolence: $imageViolence, released: $released, originalLanguage: $originalLanguage, devStatus: $devStatus, length: $length, lengthMinutes: $lengthMinutes, lengthVotes: $lengthVotes, tags: $tags, developers: $developers, screenshots: $screenshots, platforms: $platforms, languages: $languages, aliases: $aliases, extLinks: $extLinks, voiceActors: $voiceActors, relations: $relations)';
+  final _this = this as VisualNovel;
+  return 'VisualNovel(id: ${_this.id}, title: ${_this.title}, altTitle: ${_this.altTitle}, titles: ${_this.titles}, description: ${_this.description}, average: ${_this.average}, rating: ${_this.rating}, votecount: ${_this.votecount}, imageUrl: ${_this.imageUrl}, imageDims: ${_this.imageDims}, imageSexual: ${_this.imageSexual}, imageViolence: ${_this.imageViolence}, released: ${_this.released}, originalLanguage: ${_this.originalLanguage}, devStatus: ${_this.devStatus}, length: ${_this.length}, lengthMinutes: ${_this.lengthMinutes}, lengthVotes: ${_this.lengthVotes}, tags: ${_this.tags}, developers: ${_this.developers}, screenshots: ${_this.screenshots}, platforms: ${_this.platforms}, languages: ${_this.languages}, aliases: ${_this.aliases}, extLinks: ${_this.extLinks}, voiceActors: ${_this.voiceActors}, relations: ${_this.relations})';
 }
 
 
@@ -66,7 +72,7 @@ class _$VisualNovelCopyWithImpl<$Res>
 /// Create a copy of VisualNovel
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? altTitle = freezed,Object? titles = null,Object? description = freezed,Object? average = freezed,Object? rating = freezed,Object? votecount = freezed,Object? imageUrl = freezed,Object? imageDims = freezed,Object? imageSexual = freezed,Object? imageViolence = freezed,Object? released = freezed,Object? originalLanguage = freezed,Object? devStatus = freezed,Object? length = freezed,Object? lengthMinutes = freezed,Object? lengthVotes = freezed,Object? tags = null,Object? developers = null,Object? screenshots = null,Object? platforms = null,Object? languages = null,Object? aliases = null,Object? extLinks = null,Object? voiceActors = null,Object? relations = null,}) {
-  return _then(_self.copyWith(
+  return _then(VisualNovel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,altTitle: freezed == altTitle ? _self.altTitle : altTitle // ignore: cast_nullable_to_non_nullable
@@ -235,7 +241,7 @@ return $default(_that.id,_that.title,_that.altTitle,_that.titles,_that.descripti
 @JsonSerializable()
 
 class _VisualNovel extends VisualNovel {
-  const _VisualNovel({required this.id, required this.title, @JsonKey(name: 'alttitle') this.altTitle, final  List<VnTitle> titles = const [], this.description, this.average, this.rating, this.votecount, this.imageUrl, final  List<int>? imageDims, this.imageSexual, this.imageViolence, this.released, @JsonKey(name: 'olang') this.originalLanguage, @JsonKey(name: 'devstatus') this.devStatus, this.length, @JsonKey(name: 'length_minutes') this.lengthMinutes, @JsonKey(name: 'length_votes') this.lengthVotes, final  List<VnTag> tags = const [], final  List<VnDeveloper> developers = const [], final  List<VnScreenshot> screenshots = const [], final  List<String> platforms = const [], final  List<String> languages = const [], final  List<String> aliases = const [], @JsonKey(name: 'extlinks') final  List<VnExternalLink> extLinks = const [], @JsonKey(name: 'va') final  List<VnVoiceActorAssociation> voiceActors = const [], final  List<VnRelation> relations = const []}): _titles = titles,_imageDims = imageDims,_tags = tags,_developers = developers,_screenshots = screenshots,_platforms = platforms,_languages = languages,_aliases = aliases,_extLinks = extLinks,_voiceActors = voiceActors,_relations = relations,super._();
+  const _VisualNovel({required this.id, required this.title, @JsonKey(name: 'alttitle') this.altTitle,  List<VnTitle> titles = const [], this.description, this.average, this.rating, this.votecount, this.imageUrl,  List<int>? imageDims, this.imageSexual, this.imageViolence, this.released, @JsonKey(name: 'olang') this.originalLanguage, @JsonKey(name: 'devstatus') this.devStatus, this.length, @JsonKey(name: 'length_minutes') this.lengthMinutes, @JsonKey(name: 'length_votes') this.lengthVotes,  List<VnTag> tags = const [],  List<VnDeveloper> developers = const [],  List<VnScreenshot> screenshots = const [],  List<String> platforms = const [],  List<String> languages = const [],  List<String> aliases = const [], @JsonKey(name: 'extlinks')  List<VnExternalLink> extLinks = const [], @JsonKey(name: 'va')  List<VnVoiceActorAssociation> voiceActors = const [],  List<VnRelation> relations = const []}): _titles = titles,_imageDims = imageDims,_tags = tags,_developers = developers,_screenshots = screenshots,_platforms = platforms,_languages = languages,_aliases = aliases,_extLinks = extLinks,_voiceActors = voiceActors,_relations = relations,super._();
   factory _VisualNovel.fromJson(Map<String, dynamic> json) => _$VisualNovelFromJson(json);
 
 @override final  String id;
@@ -347,16 +353,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VisualNovel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.altTitle, altTitle) || other.altTitle == altTitle)&&const DeepCollectionEquality().equals(other._titles, _titles)&&(identical(other.description, description) || other.description == description)&&(identical(other.average, average) || other.average == average)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.votecount, votecount) || other.votecount == votecount)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other._imageDims, _imageDims)&&(identical(other.imageSexual, imageSexual) || other.imageSexual == imageSexual)&&(identical(other.imageViolence, imageViolence) || other.imageViolence == imageViolence)&&(identical(other.released, released) || other.released == released)&&(identical(other.originalLanguage, originalLanguage) || other.originalLanguage == originalLanguage)&&(identical(other.devStatus, devStatus) || other.devStatus == devStatus)&&(identical(other.length, length) || other.length == length)&&(identical(other.lengthMinutes, lengthMinutes) || other.lengthMinutes == lengthMinutes)&&(identical(other.lengthVotes, lengthVotes) || other.lengthVotes == lengthVotes)&&const DeepCollectionEquality().equals(other._tags, _tags)&&const DeepCollectionEquality().equals(other._developers, _developers)&&const DeepCollectionEquality().equals(other._screenshots, _screenshots)&&const DeepCollectionEquality().equals(other._platforms, _platforms)&&const DeepCollectionEquality().equals(other._languages, _languages)&&const DeepCollectionEquality().equals(other._aliases, _aliases)&&const DeepCollectionEquality().equals(other._extLinks, _extLinks)&&const DeepCollectionEquality().equals(other._voiceActors, _voiceActors)&&const DeepCollectionEquality().equals(other._relations, _relations));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VisualNovel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.altTitle, altTitle) || other.altTitle == altTitle)&&const DeepCollectionEquality().equals(other.titles, _titles)&&(identical(other.description, description) || other.description == description)&&(identical(other.average, average) || other.average == average)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.votecount, votecount) || other.votecount == votecount)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other.imageDims, _imageDims)&&(identical(other.imageSexual, imageSexual) || other.imageSexual == imageSexual)&&(identical(other.imageViolence, imageViolence) || other.imageViolence == imageViolence)&&(identical(other.released, released) || other.released == released)&&(identical(other.originalLanguage, originalLanguage) || other.originalLanguage == originalLanguage)&&(identical(other.devStatus, devStatus) || other.devStatus == devStatus)&&(identical(other.length, length) || other.length == length)&&(identical(other.lengthMinutes, lengthMinutes) || other.lengthMinutes == lengthMinutes)&&(identical(other.lengthVotes, lengthVotes) || other.lengthVotes == lengthVotes)&&const DeepCollectionEquality().equals(other.tags, _tags)&&const DeepCollectionEquality().equals(other.developers, _developers)&&const DeepCollectionEquality().equals(other.screenshots, _screenshots)&&const DeepCollectionEquality().equals(other.platforms, _platforms)&&const DeepCollectionEquality().equals(other.languages, _languages)&&const DeepCollectionEquality().equals(other.aliases, _aliases)&&const DeepCollectionEquality().equals(other.extLinks, _extLinks)&&const DeepCollectionEquality().equals(other.voiceActors, _voiceActors)&&const DeepCollectionEquality().equals(other.relations, _relations));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,title,altTitle,const DeepCollectionEquality().hash(_titles),description,average,rating,votecount,imageUrl,const DeepCollectionEquality().hash(_imageDims),imageSexual,imageViolence,released,originalLanguage,devStatus,length,lengthMinutes,lengthVotes,const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_developers),const DeepCollectionEquality().hash(_screenshots),const DeepCollectionEquality().hash(_platforms),const DeepCollectionEquality().hash(_languages),const DeepCollectionEquality().hash(_aliases),const DeepCollectionEquality().hash(_extLinks),const DeepCollectionEquality().hash(_voiceActors),const DeepCollectionEquality().hash(_relations)]);
+int get hashCode {
+    return Object.hashAll([runtimeType,id,title,altTitle,const DeepCollectionEquality().hash(_titles),description,average,rating,votecount,imageUrl,const DeepCollectionEquality().hash(_imageDims),imageSexual,imageViolence,released,originalLanguage,devStatus,length,lengthMinutes,lengthVotes,const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_developers),const DeepCollectionEquality().hash(_screenshots),const DeepCollectionEquality().hash(_platforms),const DeepCollectionEquality().hash(_languages),const DeepCollectionEquality().hash(_aliases),const DeepCollectionEquality().hash(_extLinks),const DeepCollectionEquality().hash(_voiceActors),const DeepCollectionEquality().hash(_relations)]);
+}
 
 @override
 String toString() {
-  return 'VisualNovel(id: $id, title: $title, altTitle: $altTitle, titles: $titles, description: $description, average: $average, rating: $rating, votecount: $votecount, imageUrl: $imageUrl, imageDims: $imageDims, imageSexual: $imageSexual, imageViolence: $imageViolence, released: $released, originalLanguage: $originalLanguage, devStatus: $devStatus, length: $length, lengthMinutes: $lengthMinutes, lengthVotes: $lengthVotes, tags: $tags, developers: $developers, screenshots: $screenshots, platforms: $platforms, languages: $languages, aliases: $aliases, extLinks: $extLinks, voiceActors: $voiceActors, relations: $relations)';
+    return 'VisualNovel(id: $id, title: $title, altTitle: $altTitle, titles: $titles, description: $description, average: $average, rating: $rating, votecount: $votecount, imageUrl: $imageUrl, imageDims: $imageDims, imageSexual: $imageSexual, imageViolence: $imageViolence, released: $released, originalLanguage: $originalLanguage, devStatus: $devStatus, length: $length, lengthMinutes: $lengthMinutes, lengthVotes: $lengthVotes, tags: $tags, developers: $developers, screenshots: $screenshots, platforms: $platforms, languages: $languages, aliases: $aliases, extLinks: $extLinks, voiceActors: $voiceActors, relations: $relations)';
 }
 
 
@@ -437,16 +445,21 @@ $VnTitleCopyWith<VnTitle> get copyWith => _$VnTitleCopyWithImpl<VnTitle>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnTitle&&(identical(other.lang, lang) || other.lang == lang)&&(identical(other.title, title) || other.title == title)&&(identical(other.latin, latin) || other.latin == latin)&&(identical(other.official, official) || other.official == official)&&(identical(other.main, main) || other.main == main));
+  final _this = this as VnTitle;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnTitle&&(identical(other.lang, _this.lang) || other.lang == _this.lang)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.latin, _this.latin) || other.latin == _this.latin)&&(identical(other.official, _this.official) || other.official == _this.official)&&(identical(other.main, _this.main) || other.main == _this.main));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,lang,title,latin,official,main);
+int get hashCode {
+  final _this = this as VnTitle;
+  return Object.hash(runtimeType,_this.lang,_this.title,_this.latin,_this.official,_this.main);
+}
 
 @override
 String toString() {
-  return 'VnTitle(lang: $lang, title: $title, latin: $latin, official: $official, main: $main)';
+  final _this = this as VnTitle;
+  return 'VnTitle(lang: ${_this.lang}, title: ${_this.title}, latin: ${_this.latin}, official: ${_this.official}, main: ${_this.main})';
 }
 
 
@@ -475,7 +488,7 @@ class _$VnTitleCopyWithImpl<$Res>
 /// Create a copy of VnTitle
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? lang = null,Object? title = null,Object? latin = freezed,Object? official = null,Object? main = null,}) {
-  return _then(_self.copyWith(
+  return _then(VnTitle(
 lang: null == lang ? _self.lang : lang // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,latin: freezed == latin ? _self.latin : latin // ignore: cast_nullable_to_non_nullable
@@ -644,16 +657,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnTitle&&(identical(other.lang, lang) || other.lang == lang)&&(identical(other.title, title) || other.title == title)&&(identical(other.latin, latin) || other.latin == latin)&&(identical(other.official, official) || other.official == official)&&(identical(other.main, main) || other.main == main));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnTitle&&(identical(other.lang, lang) || other.lang == lang)&&(identical(other.title, title) || other.title == title)&&(identical(other.latin, latin) || other.latin == latin)&&(identical(other.official, official) || other.official == official)&&(identical(other.main, main) || other.main == main));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,lang,title,latin,official,main);
+int get hashCode {
+    return Object.hash(runtimeType,lang,title,latin,official,main);
+}
 
 @override
 String toString() {
-  return 'VnTitle(lang: $lang, title: $title, latin: $latin, official: $official, main: $main)';
+    return 'VnTitle(lang: $lang, title: $title, latin: $latin, official: $official, main: $main)';
 }
 
 

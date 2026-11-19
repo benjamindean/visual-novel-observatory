@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'visual_novel.dart';
 
 part 'vn_ulist_entry.freezed.dart';

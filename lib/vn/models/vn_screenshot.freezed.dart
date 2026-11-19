@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'vn_screenshot.dart';
@@ -9,6 +9,7 @@ part of 'vn_screenshot.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $VnScreenshotCopyWith<VnScreenshot> get copyWith => _$VnScreenshotCopyWithImpl<V
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnScreenshot&&(identical(other.url, url) || other.url == url)&&const DeepCollectionEquality().equals(other.dims, dims)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.sexual, sexual) || other.sexual == sexual)&&(identical(other.violence, violence) || other.violence == violence));
+  final _this = this as VnScreenshot;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnScreenshot&&(identical(other.url, _this.url) || other.url == _this.url)&&const DeepCollectionEquality().equals(other.dims, _this.dims)&&(identical(other.thumbnail, _this.thumbnail) || other.thumbnail == _this.thumbnail)&&(identical(other.sexual, _this.sexual) || other.sexual == _this.sexual)&&(identical(other.violence, _this.violence) || other.violence == _this.violence));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,url,const DeepCollectionEquality().hash(dims),thumbnail,sexual,violence);
+int get hashCode {
+  final _this = this as VnScreenshot;
+  return Object.hash(runtimeType,_this.url,const DeepCollectionEquality().hash(_this.dims),_this.thumbnail,_this.sexual,_this.violence);
+}
 
 @override
 String toString() {
-  return 'VnScreenshot(url: $url, dims: $dims, thumbnail: $thumbnail, sexual: $sexual, violence: $violence)';
+  final _this = this as VnScreenshot;
+  return 'VnScreenshot(url: ${_this.url}, dims: ${_this.dims}, thumbnail: ${_this.thumbnail}, sexual: ${_this.sexual}, violence: ${_this.violence})';
 }
 
 
@@ -66,7 +72,7 @@ class _$VnScreenshotCopyWithImpl<$Res>
 /// Create a copy of VnScreenshot
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? url = null,Object? dims = null,Object? thumbnail = freezed,Object? sexual = freezed,Object? violence = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(VnScreenshot(
 url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
 as String,dims: null == dims ? _self.dims : dims // ignore: cast_nullable_to_non_nullable
 as List<int>,thumbnail: freezed == thumbnail ? _self.thumbnail : thumbnail // ignore: cast_nullable_to_non_nullable
@@ -213,7 +219,7 @@ return $default(_that.url,_that.dims,_that.thumbnail,_that.sexual,_that.violence
 @JsonSerializable()
 
 class _VnScreenshot implements VnScreenshot {
-  const _VnScreenshot({this.url = '', final  List<int> dims = const [0, 0], this.thumbnail, this.sexual, this.violence}): _dims = dims;
+  const _VnScreenshot({this.url = '',  List<int> dims = const [0, 0], this.thumbnail, this.sexual, this.violence}): _dims = dims;
   factory _VnScreenshot.fromJson(Map<String, dynamic> json) => _$VnScreenshotFromJson(json);
 
 @override@JsonKey() final  String url;
@@ -241,16 +247,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnScreenshot&&(identical(other.url, url) || other.url == url)&&const DeepCollectionEquality().equals(other._dims, _dims)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.sexual, sexual) || other.sexual == sexual)&&(identical(other.violence, violence) || other.violence == violence));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnScreenshot&&(identical(other.url, url) || other.url == url)&&const DeepCollectionEquality().equals(other.dims, _dims)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.sexual, sexual) || other.sexual == sexual)&&(identical(other.violence, violence) || other.violence == violence));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,url,const DeepCollectionEquality().hash(_dims),thumbnail,sexual,violence);
+int get hashCode {
+    return Object.hash(runtimeType,url,const DeepCollectionEquality().hash(_dims),thumbnail,sexual,violence);
+}
 
 @override
 String toString() {
-  return 'VnScreenshot(url: $url, dims: $dims, thumbnail: $thumbnail, sexual: $sexual, violence: $violence)';
+    return 'VnScreenshot(url: $url, dims: $dims, thumbnail: $thumbnail, sexual: $sexual, violence: $violence)';
 }
 
 

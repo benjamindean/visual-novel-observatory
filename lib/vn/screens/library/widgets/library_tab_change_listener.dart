@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/storage/app_storage.dart';
 import '../../../models/vndb_label.dart';

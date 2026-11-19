@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../models/visual_novel.dart';
 import '../../providers/vn_providers.dart';
 import '../../../theme/app_theme.dart';

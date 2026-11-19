@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:visual_novel_observatory/vn/widgets/vndb_source_note.dart';
+
 import '../../../auth/providers/auth_provider.dart';
 import '../../../theme/app_theme.dart';
 import 'settings_section_header.dart';

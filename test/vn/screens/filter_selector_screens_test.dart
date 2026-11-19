@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:visual_novel_observatory/vn/screens/language_filter/language_filter_screen.dart';
 import 'package:visual_novel_observatory/vn/screens/platform_filter/platform_filter_screen.dart';

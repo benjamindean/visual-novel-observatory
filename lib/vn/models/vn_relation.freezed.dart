@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'vn_relation.dart';
@@ -9,6 +9,7 @@ part of 'vn_relation.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $VnRelationCopyWith<VnRelation> get copyWith => _$VnRelationCopyWithImpl<VnRelat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnRelation&&(identical(other.relation, relation) || other.relation == relation)&&(identical(other.relationOfficial, relationOfficial) || other.relationOfficial == relationOfficial)&&(identical(other.vn, vn) || other.vn == vn));
+  final _this = this as VnRelation;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnRelation&&(identical(other.relation, _this.relation) || other.relation == _this.relation)&&(identical(other.relationOfficial, _this.relationOfficial) || other.relationOfficial == _this.relationOfficial)&&(identical(other.vn, _this.vn) || other.vn == _this.vn));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,relation,relationOfficial,vn);
+int get hashCode {
+  final _this = this as VnRelation;
+  return Object.hash(runtimeType,_this.relation,_this.relationOfficial,_this.vn);
+}
 
 @override
 String toString() {
-  return 'VnRelation(relation: $relation, relationOfficial: $relationOfficial, vn: $vn)';
+  final _this = this as VnRelation;
+  return 'VnRelation(relation: ${_this.relation}, relationOfficial: ${_this.relationOfficial}, vn: ${_this.vn})';
 }
 
 
@@ -66,7 +72,7 @@ class _$VnRelationCopyWithImpl<$Res>
 /// Create a copy of VnRelation
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? relation = null,Object? relationOfficial = null,Object? vn = null,}) {
-  return _then(_self.copyWith(
+  return _then(VnRelation(
 relation: null == relation ? _self.relation : relation // ignore: cast_nullable_to_non_nullable
 as String,relationOfficial: null == relationOfficial ? _self.relationOfficial : relationOfficial // ignore: cast_nullable_to_non_nullable
 as bool,vn: null == vn ? _self.vn : vn // ignore: cast_nullable_to_non_nullable
@@ -240,16 +246,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnRelation&&(identical(other.relation, relation) || other.relation == relation)&&(identical(other.relationOfficial, relationOfficial) || other.relationOfficial == relationOfficial)&&(identical(other.vn, vn) || other.vn == vn));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnRelation&&(identical(other.relation, relation) || other.relation == relation)&&(identical(other.relationOfficial, relationOfficial) || other.relationOfficial == relationOfficial)&&(identical(other.vn, vn) || other.vn == vn));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,relation,relationOfficial,vn);
+int get hashCode {
+    return Object.hash(runtimeType,relation,relationOfficial,vn);
+}
 
 @override
 String toString() {
-  return 'VnRelation(relation: $relation, relationOfficial: $relationOfficial, vn: $vn)';
+    return 'VnRelation(relation: $relation, relationOfficial: $relationOfficial, vn: $vn)';
 }
 
 

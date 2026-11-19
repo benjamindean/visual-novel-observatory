@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'app_chip.dart';
 import 'chip_overflow_wrap.dart';
 import '../../theme/app_theme.dart';

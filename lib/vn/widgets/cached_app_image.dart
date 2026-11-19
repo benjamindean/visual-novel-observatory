@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:visual_novel_observatory/vn/utils/image_cache_size.dart';
 
 import '../../theme/app_theme.dart';

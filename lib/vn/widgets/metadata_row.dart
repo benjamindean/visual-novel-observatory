@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import '../models/visual_novel.dart';
 import '../utils/vndb_date_display.dart';
 import '../../theme/app_theme.dart';

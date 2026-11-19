@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../auth/providers/auth_provider.dart';
 import '../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../theme/app_theme.dart';
@@ -172,8 +173,7 @@ class VndbProfileCard extends ConsumerWidget {
     final isConfirmed = await showAppConfirmationDialog(
       context: context,
       title: 'Disconnect Account',
-      message:
-          'Are you sure you want to disconnect your VNDB account? Your local data sync will be disabled.',
+      message: 'Are you sure you want to disconnect your VNDB account? Your local data sync will be disabled.',
       confirmLabel: 'Disconnect',
     );
 
