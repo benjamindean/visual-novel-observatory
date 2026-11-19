@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class FilterSectionHeader extends StatelessWidget {
   final String title;

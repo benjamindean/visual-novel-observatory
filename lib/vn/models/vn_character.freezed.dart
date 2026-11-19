@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'vn_character.dart';
@@ -9,6 +9,7 @@ part of 'vn_character.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $VnCharacterCopyWith<VnCharacter> get copyWith => _$VnCharacterCopyWithImpl<VnCh
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnCharacter&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.original, original) || other.original == original)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.gender, gender)&&(identical(other.bloodType, bloodType) || other.bloodType == bloodType)&&const DeepCollectionEquality().equals(other.birthday, birthday)&&(identical(other.height, height) || other.height == height)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.bust, bust) || other.bust == bust)&&(identical(other.waist, waist) || other.waist == waist)&&(identical(other.hips, hips) || other.hips == hips)&&(identical(other.cup, cup) || other.cup == cup)&&const DeepCollectionEquality().equals(other.age, age)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other.imageDims, imageDims)&&(identical(other.imageSexual, imageSexual) || other.imageSexual == imageSexual)&&(identical(other.imageViolence, imageViolence) || other.imageViolence == imageViolence)&&const DeepCollectionEquality().equals(other.vns, vns)&&const DeepCollectionEquality().equals(other.traits, traits));
+  final _this = this as VnCharacter;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnCharacter&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.original, _this.original) || other.original == _this.original)&&(identical(other.description, _this.description) || other.description == _this.description)&&const DeepCollectionEquality().equals(other.gender, _this.gender)&&(identical(other.bloodType, _this.bloodType) || other.bloodType == _this.bloodType)&&const DeepCollectionEquality().equals(other.birthday, _this.birthday)&&(identical(other.height, _this.height) || other.height == _this.height)&&(identical(other.weight, _this.weight) || other.weight == _this.weight)&&(identical(other.bust, _this.bust) || other.bust == _this.bust)&&(identical(other.waist, _this.waist) || other.waist == _this.waist)&&(identical(other.hips, _this.hips) || other.hips == _this.hips)&&(identical(other.cup, _this.cup) || other.cup == _this.cup)&&const DeepCollectionEquality().equals(other.age, _this.age)&&(identical(other.imageUrl, _this.imageUrl) || other.imageUrl == _this.imageUrl)&&const DeepCollectionEquality().equals(other.imageDims, _this.imageDims)&&(identical(other.imageSexual, _this.imageSexual) || other.imageSexual == _this.imageSexual)&&(identical(other.imageViolence, _this.imageViolence) || other.imageViolence == _this.imageViolence)&&const DeepCollectionEquality().equals(other.vns, _this.vns)&&const DeepCollectionEquality().equals(other.traits, _this.traits));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,name,original,description,const DeepCollectionEquality().hash(gender),bloodType,const DeepCollectionEquality().hash(birthday),height,weight,bust,waist,hips,cup,const DeepCollectionEquality().hash(age),imageUrl,const DeepCollectionEquality().hash(imageDims),imageSexual,imageViolence,const DeepCollectionEquality().hash(vns),const DeepCollectionEquality().hash(traits)]);
+int get hashCode {
+  final _this = this as VnCharacter;
+  return Object.hashAll([runtimeType,_this.id,_this.name,_this.original,_this.description,const DeepCollectionEquality().hash(_this.gender),_this.bloodType,const DeepCollectionEquality().hash(_this.birthday),_this.height,_this.weight,_this.bust,_this.waist,_this.hips,_this.cup,const DeepCollectionEquality().hash(_this.age),_this.imageUrl,const DeepCollectionEquality().hash(_this.imageDims),_this.imageSexual,_this.imageViolence,const DeepCollectionEquality().hash(_this.vns),const DeepCollectionEquality().hash(_this.traits)]);
+}
 
 @override
 String toString() {
-  return 'VnCharacter(id: $id, name: $name, original: $original, description: $description, gender: $gender, bloodType: $bloodType, birthday: $birthday, height: $height, weight: $weight, bust: $bust, waist: $waist, hips: $hips, cup: $cup, age: $age, imageUrl: $imageUrl, imageDims: $imageDims, imageSexual: $imageSexual, imageViolence: $imageViolence, vns: $vns, traits: $traits)';
+  final _this = this as VnCharacter;
+  return 'VnCharacter(id: ${_this.id}, name: ${_this.name}, original: ${_this.original}, description: ${_this.description}, gender: ${_this.gender}, bloodType: ${_this.bloodType}, birthday: ${_this.birthday}, height: ${_this.height}, weight: ${_this.weight}, bust: ${_this.bust}, waist: ${_this.waist}, hips: ${_this.hips}, cup: ${_this.cup}, age: ${_this.age}, imageUrl: ${_this.imageUrl}, imageDims: ${_this.imageDims}, imageSexual: ${_this.imageSexual}, imageViolence: ${_this.imageViolence}, vns: ${_this.vns}, traits: ${_this.traits})';
 }
 
 
@@ -66,7 +72,7 @@ class _$VnCharacterCopyWithImpl<$Res>
 /// Create a copy of VnCharacter
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? original = freezed,Object? description = freezed,Object? gender = freezed,Object? bloodType = freezed,Object? birthday = freezed,Object? height = freezed,Object? weight = freezed,Object? bust = freezed,Object? waist = freezed,Object? hips = freezed,Object? cup = freezed,Object? age = freezed,Object? imageUrl = freezed,Object? imageDims = freezed,Object? imageSexual = freezed,Object? imageViolence = freezed,Object? vns = null,Object? traits = null,}) {
-  return _then(_self.copyWith(
+  return _then(VnCharacter(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,original: freezed == original ? _self.original : original // ignore: cast_nullable_to_non_nullable
@@ -228,7 +234,7 @@ return $default(_that.id,_that.name,_that.original,_that.description,_that.gende
 @JsonSerializable()
 
 class _VnCharacter extends VnCharacter {
-  const _VnCharacter({required this.id, required this.name, this.original, this.description, final  List<String?>? gender, @JsonKey(name: 'blood_type') this.bloodType, final  List<int?>? birthday, this.height, this.weight, this.bust, this.waist, this.hips, this.cup, this.age, this.imageUrl, final  List<int>? imageDims, this.imageSexual, this.imageViolence, final  List<VnCharacterVn> vns = const [], final  List<VnCharacterTrait> traits = const []}): _gender = gender,_birthday = birthday,_imageDims = imageDims,_vns = vns,_traits = traits,super._();
+  const _VnCharacter({required this.id, required this.name, this.original, this.description,  List<String?>? gender, @JsonKey(name: 'blood_type') this.bloodType,  List<int?>? birthday, this.height, this.weight, this.bust, this.waist, this.hips, this.cup, this.age, this.imageUrl,  List<int>? imageDims, this.imageSexual, this.imageViolence,  List<VnCharacterVn> vns = const [],  List<VnCharacterTrait> traits = const []}): _gender = gender,_birthday = birthday,_imageDims = imageDims,_vns = vns,_traits = traits,super._();
   factory _VnCharacter.fromJson(Map<String, dynamic> json) => _$VnCharacterFromJson(json);
 
 @override final  String id;
@@ -301,16 +307,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnCharacter&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.original, original) || other.original == original)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._gender, _gender)&&(identical(other.bloodType, bloodType) || other.bloodType == bloodType)&&const DeepCollectionEquality().equals(other._birthday, _birthday)&&(identical(other.height, height) || other.height == height)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.bust, bust) || other.bust == bust)&&(identical(other.waist, waist) || other.waist == waist)&&(identical(other.hips, hips) || other.hips == hips)&&(identical(other.cup, cup) || other.cup == cup)&&const DeepCollectionEquality().equals(other.age, age)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other._imageDims, _imageDims)&&(identical(other.imageSexual, imageSexual) || other.imageSexual == imageSexual)&&(identical(other.imageViolence, imageViolence) || other.imageViolence == imageViolence)&&const DeepCollectionEquality().equals(other._vns, _vns)&&const DeepCollectionEquality().equals(other._traits, _traits));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnCharacter&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.original, original) || other.original == original)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.gender, _gender)&&(identical(other.bloodType, bloodType) || other.bloodType == bloodType)&&const DeepCollectionEquality().equals(other.birthday, _birthday)&&(identical(other.height, height) || other.height == height)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.bust, bust) || other.bust == bust)&&(identical(other.waist, waist) || other.waist == waist)&&(identical(other.hips, hips) || other.hips == hips)&&(identical(other.cup, cup) || other.cup == cup)&&const DeepCollectionEquality().equals(other.age, age)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other.imageDims, _imageDims)&&(identical(other.imageSexual, imageSexual) || other.imageSexual == imageSexual)&&(identical(other.imageViolence, imageViolence) || other.imageViolence == imageViolence)&&const DeepCollectionEquality().equals(other.vns, _vns)&&const DeepCollectionEquality().equals(other.traits, _traits));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,name,original,description,const DeepCollectionEquality().hash(_gender),bloodType,const DeepCollectionEquality().hash(_birthday),height,weight,bust,waist,hips,cup,const DeepCollectionEquality().hash(age),imageUrl,const DeepCollectionEquality().hash(_imageDims),imageSexual,imageViolence,const DeepCollectionEquality().hash(_vns),const DeepCollectionEquality().hash(_traits)]);
+int get hashCode {
+    return Object.hashAll([runtimeType,id,name,original,description,const DeepCollectionEquality().hash(_gender),bloodType,const DeepCollectionEquality().hash(_birthday),height,weight,bust,waist,hips,cup,const DeepCollectionEquality().hash(age),imageUrl,const DeepCollectionEquality().hash(_imageDims),imageSexual,imageViolence,const DeepCollectionEquality().hash(_vns),const DeepCollectionEquality().hash(_traits)]);
+}
 
 @override
 String toString() {
-  return 'VnCharacter(id: $id, name: $name, original: $original, description: $description, gender: $gender, bloodType: $bloodType, birthday: $birthday, height: $height, weight: $weight, bust: $bust, waist: $waist, hips: $hips, cup: $cup, age: $age, imageUrl: $imageUrl, imageDims: $imageDims, imageSexual: $imageSexual, imageViolence: $imageViolence, vns: $vns, traits: $traits)';
+    return 'VnCharacter(id: $id, name: $name, original: $original, description: $description, gender: $gender, bloodType: $bloodType, birthday: $birthday, height: $height, weight: $weight, bust: $bust, waist: $waist, hips: $hips, cup: $cup, age: $age, imageUrl: $imageUrl, imageDims: $imageDims, imageSexual: $imageSexual, imageViolence: $imageViolence, vns: $vns, traits: $traits)';
 }
 
 
@@ -384,16 +392,21 @@ $VnCharacterVnCopyWith<VnCharacterVn> get copyWith => _$VnCharacterVnCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnCharacterVn&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.role, role) || other.role == role)&&(identical(other.spoiler, spoiler) || other.spoiler == spoiler));
+  final _this = this as VnCharacterVn;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnCharacterVn&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.role, _this.role) || other.role == _this.role)&&(identical(other.spoiler, _this.spoiler) || other.spoiler == _this.spoiler));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,role,spoiler);
+int get hashCode {
+  final _this = this as VnCharacterVn;
+  return Object.hash(runtimeType,_this.id,_this.title,_this.role,_this.spoiler);
+}
 
 @override
 String toString() {
-  return 'VnCharacterVn(id: $id, title: $title, role: $role, spoiler: $spoiler)';
+  final _this = this as VnCharacterVn;
+  return 'VnCharacterVn(id: ${_this.id}, title: ${_this.title}, role: ${_this.role}, spoiler: ${_this.spoiler})';
 }
 
 
@@ -422,7 +435,7 @@ class _$VnCharacterVnCopyWithImpl<$Res>
 /// Create a copy of VnCharacterVn
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = freezed,Object? role = freezed,Object? spoiler = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(VnCharacterVn(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
@@ -589,16 +602,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnCharacterVn&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.role, role) || other.role == role)&&(identical(other.spoiler, spoiler) || other.spoiler == spoiler));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnCharacterVn&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.role, role) || other.role == role)&&(identical(other.spoiler, spoiler) || other.spoiler == spoiler));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,role,spoiler);
+int get hashCode {
+    return Object.hash(runtimeType,id,title,role,spoiler);
+}
 
 @override
 String toString() {
-  return 'VnCharacterVn(id: $id, title: $title, role: $role, spoiler: $spoiler)';
+    return 'VnCharacterVn(id: $id, title: $title, role: $role, spoiler: $spoiler)';
 }
 
 
@@ -656,16 +671,21 @@ $VnCharacterTraitCopyWith<VnCharacterTrait> get copyWith => _$VnCharacterTraitCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnCharacterTrait&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.spoiler, spoiler) || other.spoiler == spoiler));
+  final _this = this as VnCharacterTrait;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnCharacterTrait&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.spoiler, _this.spoiler) || other.spoiler == _this.spoiler));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,spoiler);
+int get hashCode {
+  final _this = this as VnCharacterTrait;
+  return Object.hash(runtimeType,_this.id,_this.name,_this.spoiler);
+}
 
 @override
 String toString() {
-  return 'VnCharacterTrait(id: $id, name: $name, spoiler: $spoiler)';
+  final _this = this as VnCharacterTrait;
+  return 'VnCharacterTrait(id: ${_this.id}, name: ${_this.name}, spoiler: ${_this.spoiler})';
 }
 
 
@@ -694,7 +714,7 @@ class _$VnCharacterTraitCopyWithImpl<$Res>
 /// Create a copy of VnCharacterTrait
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? spoiler = null,}) {
-  return _then(_self.copyWith(
+  return _then(VnCharacterTrait(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,spoiler: null == spoiler ? _self.spoiler : spoiler // ignore: cast_nullable_to_non_nullable
@@ -859,16 +879,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnCharacterTrait&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.spoiler, spoiler) || other.spoiler == spoiler));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnCharacterTrait&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.spoiler, spoiler) || other.spoiler == spoiler));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,spoiler);
+int get hashCode {
+    return Object.hash(runtimeType,id,name,spoiler);
+}
 
 @override
 String toString() {
-  return 'VnCharacterTrait(id: $id, name: $name, spoiler: $spoiler)';
+    return 'VnCharacterTrait(id: $id, name: $name, spoiler: $spoiler)';
 }
 
 

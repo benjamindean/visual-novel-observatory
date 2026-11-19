@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../../../theme/app_theme.dart';
 import 'widgets/login_step_row.dart';
 
@@ -39,8 +40,7 @@ class LoginInstructionsCard extends StatelessWidget {
             const SizedBox(height: 12),
             const LoginStepRow(
               stepNumber: '2',
-              text:
-                  'Create a token named "Observatory" with at least listread (listwrite is required to modify list entries).',
+              text: 'Create a token named "Observatory" with at least listread (listwrite is required to modify list entries).',
             ),
             const SizedBox(height: 12),
             const LoginStepRow(

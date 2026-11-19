@@ -1,18 +1,18 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+
 import '../../vn/models/visual_novel.dart';
 import '../../vn/utils/vndb_safe_content_filter.dart';
 
 class VndbClient {
   static const String _baseUrl = 'https://api.vndb.org/kana';
   final Dio _dio;
-  final String? _token;
 
-  VndbClient({Dio? dio, String? token}) : _dio = dio ?? Dio(), _token = token {
+  VndbClient({Dio? dio, String? token}) : _dio = dio ?? Dio() {
     _dio.options.baseUrl = _baseUrl;
     _dio.options.headers = {
       'Content-Type': 'application/json',
-      if (_token != null) 'Authorization': 'Token $_token',
+      if (token != null) 'Authorization': 'Token $token',
     };
 
     _dio.interceptors.add(
@@ -188,8 +188,7 @@ class VndbClient {
         '=',
         ['id', '=', vnId],
       ],
-      'fields':
-          'title,alttitle,released,platforms,languages{lang,title,latin,mtl,main},vns{id,title,rtype},minage,patch,freeware,uncensored,official',
+      'fields': 'title,alttitle,released,platforms,languages{lang,title,latin,mtl,main},vns{id,title,rtype},minage,patch,freeware,uncensored,official',
       'sort': 'released',
       'reverse': true,
       'results': 100,

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/widgets/app_confirmation_dialog.dart';
@@ -45,8 +45,7 @@ class DisableExplicitContentTile extends ConsumerWidget {
       final isConfirmed = await showAppConfirmationDialog(
         context: context,
         title: 'Show mature content?',
-        message:
-            'This allows VNDB results that may contain sexual or violent content to appear. Confirm that you are old enough under the laws in your region to view adult content.',
+        message: 'This allows VNDB results that may contain sexual or violent content to appear. Confirm that you are old enough under the laws in your region to view adult content.',
         confirmLabel: 'I Confirm',
       );
 

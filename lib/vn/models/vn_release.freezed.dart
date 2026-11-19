@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'vn_release.dart';
@@ -9,6 +9,7 @@ part of 'vn_release.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $VnReleaseCopyWith<VnRelease> get copyWith => _$VnReleaseCopyWithImpl<VnRelease>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnRelease&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.altTitle, altTitle) || other.altTitle == altTitle)&&(identical(other.released, released) || other.released == released)&&const DeepCollectionEquality().equals(other.platforms, platforms)&&const DeepCollectionEquality().equals(other.languages, languages)&&const DeepCollectionEquality().equals(other.vns, vns)&&(identical(other.minage, minage) || other.minage == minage)&&(identical(other.patch, patch) || other.patch == patch)&&(identical(other.freeware, freeware) || other.freeware == freeware)&&(identical(other.uncensored, uncensored) || other.uncensored == uncensored)&&(identical(other.official, official) || other.official == official));
+  final _this = this as VnRelease;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnRelease&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.altTitle, _this.altTitle) || other.altTitle == _this.altTitle)&&(identical(other.released, _this.released) || other.released == _this.released)&&const DeepCollectionEquality().equals(other.platforms, _this.platforms)&&const DeepCollectionEquality().equals(other.languages, _this.languages)&&const DeepCollectionEquality().equals(other.vns, _this.vns)&&(identical(other.minage, _this.minage) || other.minage == _this.minage)&&(identical(other.patch, _this.patch) || other.patch == _this.patch)&&(identical(other.freeware, _this.freeware) || other.freeware == _this.freeware)&&(identical(other.uncensored, _this.uncensored) || other.uncensored == _this.uncensored)&&(identical(other.official, _this.official) || other.official == _this.official));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,altTitle,released,const DeepCollectionEquality().hash(platforms),const DeepCollectionEquality().hash(languages),const DeepCollectionEquality().hash(vns),minage,patch,freeware,uncensored,official);
+int get hashCode {
+  final _this = this as VnRelease;
+  return Object.hash(runtimeType,_this.id,_this.title,_this.altTitle,_this.released,const DeepCollectionEquality().hash(_this.platforms),const DeepCollectionEquality().hash(_this.languages),const DeepCollectionEquality().hash(_this.vns),_this.minage,_this.patch,_this.freeware,_this.uncensored,_this.official);
+}
 
 @override
 String toString() {
-  return 'VnRelease(id: $id, title: $title, altTitle: $altTitle, released: $released, platforms: $platforms, languages: $languages, vns: $vns, minage: $minage, patch: $patch, freeware: $freeware, uncensored: $uncensored, official: $official)';
+  final _this = this as VnRelease;
+  return 'VnRelease(id: ${_this.id}, title: ${_this.title}, altTitle: ${_this.altTitle}, released: ${_this.released}, platforms: ${_this.platforms}, languages: ${_this.languages}, vns: ${_this.vns}, minage: ${_this.minage}, patch: ${_this.patch}, freeware: ${_this.freeware}, uncensored: ${_this.uncensored}, official: ${_this.official})';
 }
 
 
@@ -66,7 +72,7 @@ class _$VnReleaseCopyWithImpl<$Res>
 /// Create a copy of VnRelease
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? altTitle = freezed,Object? released = freezed,Object? platforms = null,Object? languages = null,Object? vns = null,Object? minage = freezed,Object? patch = null,Object? freeware = null,Object? uncensored = freezed,Object? official = null,}) {
-  return _then(_self.copyWith(
+  return _then(VnRelease(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,altTitle: freezed == altTitle ? _self.altTitle : altTitle // ignore: cast_nullable_to_non_nullable
@@ -220,7 +226,7 @@ return $default(_that.id,_that.title,_that.altTitle,_that.released,_that.platfor
 @JsonSerializable()
 
 class _VnRelease extends VnRelease {
-  const _VnRelease({required this.id, required this.title, @JsonKey(name: 'alttitle') this.altTitle, this.released, final  List<String> platforms = const [], final  List<VnReleaseLanguage> languages = const [], final  List<VnReleaseVn> vns = const [], this.minage, this.patch = false, this.freeware = false, this.uncensored, this.official = false}): _platforms = platforms,_languages = languages,_vns = vns,super._();
+  const _VnRelease({required this.id, required this.title, @JsonKey(name: 'alttitle') this.altTitle, this.released,  List<String> platforms = const [],  List<VnReleaseLanguage> languages = const [],  List<VnReleaseVn> vns = const [], this.minage, this.patch = false, this.freeware = false, this.uncensored, this.official = false}): _platforms = platforms,_languages = languages,_vns = vns,super._();
   factory _VnRelease.fromJson(Map<String, dynamic> json) => _$VnReleaseFromJson(json);
 
 @override final  String id;
@@ -267,16 +273,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnRelease&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.altTitle, altTitle) || other.altTitle == altTitle)&&(identical(other.released, released) || other.released == released)&&const DeepCollectionEquality().equals(other._platforms, _platforms)&&const DeepCollectionEquality().equals(other._languages, _languages)&&const DeepCollectionEquality().equals(other._vns, _vns)&&(identical(other.minage, minage) || other.minage == minage)&&(identical(other.patch, patch) || other.patch == patch)&&(identical(other.freeware, freeware) || other.freeware == freeware)&&(identical(other.uncensored, uncensored) || other.uncensored == uncensored)&&(identical(other.official, official) || other.official == official));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnRelease&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.altTitle, altTitle) || other.altTitle == altTitle)&&(identical(other.released, released) || other.released == released)&&const DeepCollectionEquality().equals(other.platforms, _platforms)&&const DeepCollectionEquality().equals(other.languages, _languages)&&const DeepCollectionEquality().equals(other.vns, _vns)&&(identical(other.minage, minage) || other.minage == minage)&&(identical(other.patch, patch) || other.patch == patch)&&(identical(other.freeware, freeware) || other.freeware == freeware)&&(identical(other.uncensored, uncensored) || other.uncensored == uncensored)&&(identical(other.official, official) || other.official == official));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,altTitle,released,const DeepCollectionEquality().hash(_platforms),const DeepCollectionEquality().hash(_languages),const DeepCollectionEquality().hash(_vns),minage,patch,freeware,uncensored,official);
+int get hashCode {
+    return Object.hash(runtimeType,id,title,altTitle,released,const DeepCollectionEquality().hash(_platforms),const DeepCollectionEquality().hash(_languages),const DeepCollectionEquality().hash(_vns),minage,patch,freeware,uncensored,official);
+}
 
 @override
 String toString() {
-  return 'VnRelease(id: $id, title: $title, altTitle: $altTitle, released: $released, platforms: $platforms, languages: $languages, vns: $vns, minage: $minage, patch: $patch, freeware: $freeware, uncensored: $uncensored, official: $official)';
+    return 'VnRelease(id: $id, title: $title, altTitle: $altTitle, released: $released, platforms: $platforms, languages: $languages, vns: $vns, minage: $minage, patch: $patch, freeware: $freeware, uncensored: $uncensored, official: $official)';
 }
 
 
@@ -342,16 +350,21 @@ $VnReleaseLanguageCopyWith<VnReleaseLanguage> get copyWith => _$VnReleaseLanguag
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnReleaseLanguage&&(identical(other.lang, lang) || other.lang == lang)&&(identical(other.title, title) || other.title == title)&&(identical(other.latin, latin) || other.latin == latin)&&(identical(other.mtl, mtl) || other.mtl == mtl)&&(identical(other.main, main) || other.main == main));
+  final _this = this as VnReleaseLanguage;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnReleaseLanguage&&(identical(other.lang, _this.lang) || other.lang == _this.lang)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.latin, _this.latin) || other.latin == _this.latin)&&(identical(other.mtl, _this.mtl) || other.mtl == _this.mtl)&&(identical(other.main, _this.main) || other.main == _this.main));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,lang,title,latin,mtl,main);
+int get hashCode {
+  final _this = this as VnReleaseLanguage;
+  return Object.hash(runtimeType,_this.lang,_this.title,_this.latin,_this.mtl,_this.main);
+}
 
 @override
 String toString() {
-  return 'VnReleaseLanguage(lang: $lang, title: $title, latin: $latin, mtl: $mtl, main: $main)';
+  final _this = this as VnReleaseLanguage;
+  return 'VnReleaseLanguage(lang: ${_this.lang}, title: ${_this.title}, latin: ${_this.latin}, mtl: ${_this.mtl}, main: ${_this.main})';
 }
 
 
@@ -380,7 +393,7 @@ class _$VnReleaseLanguageCopyWithImpl<$Res>
 /// Create a copy of VnReleaseLanguage
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? lang = null,Object? title = freezed,Object? latin = freezed,Object? mtl = null,Object? main = null,}) {
-  return _then(_self.copyWith(
+  return _then(VnReleaseLanguage(
 lang: null == lang ? _self.lang : lang // ignore: cast_nullable_to_non_nullable
 as String,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,latin: freezed == latin ? _self.latin : latin // ignore: cast_nullable_to_non_nullable
@@ -549,16 +562,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnReleaseLanguage&&(identical(other.lang, lang) || other.lang == lang)&&(identical(other.title, title) || other.title == title)&&(identical(other.latin, latin) || other.latin == latin)&&(identical(other.mtl, mtl) || other.mtl == mtl)&&(identical(other.main, main) || other.main == main));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnReleaseLanguage&&(identical(other.lang, lang) || other.lang == lang)&&(identical(other.title, title) || other.title == title)&&(identical(other.latin, latin) || other.latin == latin)&&(identical(other.mtl, mtl) || other.mtl == mtl)&&(identical(other.main, main) || other.main == main));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,lang,title,latin,mtl,main);
+int get hashCode {
+    return Object.hash(runtimeType,lang,title,latin,mtl,main);
+}
 
 @override
 String toString() {
-  return 'VnReleaseLanguage(lang: $lang, title: $title, latin: $latin, mtl: $mtl, main: $main)';
+    return 'VnReleaseLanguage(lang: $lang, title: $title, latin: $latin, mtl: $mtl, main: $main)';
 }
 
 
@@ -617,16 +632,21 @@ $VnReleaseVnCopyWith<VnReleaseVn> get copyWith => _$VnReleaseVnCopyWithImpl<VnRe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnReleaseVn&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.rtype, rtype) || other.rtype == rtype));
+  final _this = this as VnReleaseVn;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnReleaseVn&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.rtype, _this.rtype) || other.rtype == _this.rtype));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,rtype);
+int get hashCode {
+  final _this = this as VnReleaseVn;
+  return Object.hash(runtimeType,_this.id,_this.title,_this.rtype);
+}
 
 @override
 String toString() {
-  return 'VnReleaseVn(id: $id, title: $title, rtype: $rtype)';
+  final _this = this as VnReleaseVn;
+  return 'VnReleaseVn(id: ${_this.id}, title: ${_this.title}, rtype: ${_this.rtype})';
 }
 
 
@@ -655,7 +675,7 @@ class _$VnReleaseVnCopyWithImpl<$Res>
 /// Create a copy of VnReleaseVn
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = freezed,Object? rtype = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(VnReleaseVn(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,rtype: freezed == rtype ? _self.rtype : rtype // ignore: cast_nullable_to_non_nullable
@@ -820,16 +840,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnReleaseVn&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.rtype, rtype) || other.rtype == rtype));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnReleaseVn&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.rtype, rtype) || other.rtype == rtype));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,rtype);
+int get hashCode {
+    return Object.hash(runtimeType,id,title,rtype);
+}
 
 @override
 String toString() {
-  return 'VnReleaseVn(id: $id, title: $title, rtype: $rtype)';
+    return 'VnReleaseVn(id: $id, title: $title, rtype: $rtype)';
 }
 
 

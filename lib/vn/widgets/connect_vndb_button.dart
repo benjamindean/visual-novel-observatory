@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../theme/app_theme.dart';
 
 class ConnectVndbButton extends StatelessWidget {

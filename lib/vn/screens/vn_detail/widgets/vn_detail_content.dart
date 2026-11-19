@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../models/visual_novel.dart';
 import 'vn_detail_palette_theme.dart';

@@ -1,6 +1,7 @@
 import 'dart:developer' as developer;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../core/storage/app_storage.dart';
 import '../models/visual_novel.dart';
 import '../models/vndb_label.dart';

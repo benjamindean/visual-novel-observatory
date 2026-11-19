@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+
 import 'expand_chip_button.dart';
 
 class ExpandToggleButton extends StatelessWidget {

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'vn_tag.dart';
@@ -9,6 +9,7 @@ part of 'vn_tag.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $VnTagCopyWith<VnTag> get copyWith => _$VnTagCopyWithImpl<VnTag>(this as VnTag, 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnTag&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.spoiler, spoiler) || other.spoiler == spoiler)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.category, category) || other.category == category));
+  final _this = this as VnTag;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VnTag&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.spoiler, _this.spoiler) || other.spoiler == _this.spoiler)&&(identical(other.rating, _this.rating) || other.rating == _this.rating)&&(identical(other.category, _this.category) || other.category == _this.category));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,spoiler,rating,category);
+int get hashCode {
+  final _this = this as VnTag;
+  return Object.hash(runtimeType,_this.id,_this.name,_this.spoiler,_this.rating,_this.category);
+}
 
 @override
 String toString() {
-  return 'VnTag(id: $id, name: $name, spoiler: $spoiler, rating: $rating, category: $category)';
+  final _this = this as VnTag;
+  return 'VnTag(id: ${_this.id}, name: ${_this.name}, spoiler: ${_this.spoiler}, rating: ${_this.rating}, category: ${_this.category})';
 }
 
 
@@ -66,7 +72,7 @@ class _$VnTagCopyWithImpl<$Res>
 /// Create a copy of VnTag
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? spoiler = null,Object? rating = freezed,Object? category = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(VnTag(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,spoiler: null == spoiler ? _self.spoiler : spoiler // ignore: cast_nullable_to_non_nullable
@@ -235,16 +241,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnTag&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.spoiler, spoiler) || other.spoiler == spoiler)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.category, category) || other.category == category));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VnTag&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.spoiler, spoiler) || other.spoiler == spoiler)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.category, category) || other.category == category));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,spoiler,rating,category);
+int get hashCode {
+    return Object.hash(runtimeType,id,name,spoiler,rating,category);
+}
 
 @override
 String toString() {
-  return 'VnTag(id: $id, name: $name, spoiler: $spoiler, rating: $rating, category: $category)';
+    return 'VnTag(id: $id, name: $name, spoiler: $spoiler, rating: $rating, category: $category)';
 }
 
 
